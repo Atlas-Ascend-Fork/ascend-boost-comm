@@ -7,7 +7,7 @@
 # INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
 # See LICENSE in the root of the software repository for the full text of the License.
 path="${BASH_SOURCE[0]}"
-if [[ -f "$path" ]] && [[ "$path" =~ 'set_env.sh' ]];then
+if [[ -f "$path" ]] && [[ "$path" =~ set_env.sh ]];then
     mki_path=$(cd $(dirname $path); pwd )
     export MKI_HOME_PATH="${mki_path}"
     export ATB_HOME_PATH="${mki_path}"

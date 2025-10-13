@@ -14,7 +14,7 @@ import torch
 import sys
 import logging
 
-sys.path.insert(0, f"{os.environ['MKI_HOME_PATH']}/tests/pythontest")
+sys.path.append(f"{os.environ['MKI_HOME_PATH']}/tests/pythontest")
 import op_test
 
 

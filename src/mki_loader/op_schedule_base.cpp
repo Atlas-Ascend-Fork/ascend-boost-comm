@@ -68,7 +68,7 @@ void OpScheduleBase::AddAllOperations(const OperationCreators &opCreators,
 }
 
 void OpScheduleBase::UpdateLoaderBinary(const OperationCreators &opCreators, const KernelCreators &kerCreators,
-    const AicpuKernelCreators &aicpuKerCreators, const BinaryBasicInfoMap &binaryMap)
+    const AicpuKernelCreators &aicpuKerCreators, const BinaryBasicInfoMap &binMap)
 {
     loader_->ReLoad();
 }

@@ -48,12 +48,14 @@ def build_op_list(ops_src_root_dir, dst_yaml_path):
                     add_operation_text = match_operation.group()
                     match_kernel_text_list = re.findall(pattern_kernel, context)
                     op_name = parse_operation(add_operation_text)
-                    assert op_name not in op_kernel_list, f"operation {op_name} is duplicate"
+                    if op_name in op_kernel_list:
+                        raise ValueError(f"operation {op_name} is duplicate")
                     kernel_list = {}
                     for add_kernel_text in match_kernel_text_list:
                         kernel_name, soc = parse_kernel(add_kernel_text)
                         if kernel_name in kernel_list:
-                            assert soc not in kernel_list[kernel_name], f"{op_name}: kernel {kernel_name}-{soc} is duplicate"
+                            if soc in kernel_list[kernel_name]:
+                                raise ValueError(f"{op_name}: kernel {kernel_name}-{soc} is duplicate")
                             kernel_list[kernel_name][soc] = True
                         else:
                             kernel_list[kernel_name] = {soc: True}
@@ -107,23 +109,27 @@ def build_cmake_options(yaml_file_path, cmake_option_path, json_ini_path=''):
         with open(yaml_file_path) as f:
             op_kernel_list = yaml.safe_load(f)
             for op_name in op_kernel_list:
-                assert op_name.endswith('Operation'), f'{op_name} is an invalid operation name'
+                if not op_name.endswith('Operation'):
+                    raise ValueError(f'{op_name} is an invalid operation name')
                 option_list.append(f'set(BUILD_{op_name} ON)')
                 kernel_list = op_kernel_list[op_name]
                 if isinstance(kernel_list, str):
-                    assert kernel_list == 'host-only', f'{op_name} kernel parse fail, invalid string: {kernel_list}'
+                    if kernel_list != 'host-only':
+                        raise ValueError(f'{op_name} kernel parse fail, invalid string: {kernel_list}')
                     continue
                 kernel_built_count = 0
                 reuse_kernels = set()
                 if tbe_ini is not None and op_name in tbe_ini.sections():
                     reuse_kernels = dict(tbe_ini.items(op_name)).keys()
                 for kernel_name in kernel_list:
-                    assert kernel_name.endswith('Kernel'), f'{kernel_name} is an invalid kernel name'
+                    if not kernel_name.endswith('Kernel'):
+                        raise ValueError(f'{kernel_name} is an invalid kernel name')
                     soc_list = kernel_list[kernel_name]
                     for soc in soc_list:
-                        assert soc in all_device_list, f'{soc} is an invalid soc type'
-                        assert isinstance(soc_list[soc], bool), f'{soc_list[soc]} is not bool type'
-
+                        if soc not in all_device_list:
+                            raise ValueError(f'{soc} is an invalid soc type')
+                        if not isinstance(soc_list[soc], bool):
+                            raise TypeError(f'{soc_list[soc]} is not bool type')
                         full_name = f'{kernel_name}.{soc}'
                         op_switch = 'OFF'
                         if soc_list[soc] and soc in built_device_list and full_name not in reuse_kernels:
@@ -145,7 +151,7 @@ def build_cmake_options(yaml_file_path, cmake_option_path, json_ini_path=''):
         else:
             logging.error(f'an error occurred when parse {yaml_file_path}')
         exit(1)
-    except AssertionError as e:
+    except ValueError as e:
         logging.error(e.args[0])
         exit(1)
     except TypeError as e:

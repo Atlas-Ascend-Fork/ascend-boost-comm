@@ -48,7 +48,7 @@ function fn_install_cann_and_kernel()
     fi
     mkdir -p ${cann_install_path}
     mkdir -p ${cann_install_path}/opp/built-in/op_impl/ai_core/tbe/kernel/
-    chmod 755 ${cann_install_path}
+    chmod 750 ${cann_install_path}
     export ASCEND_HOME_PATH=${cann_install_path}
 
     cd $CANN_DIR
