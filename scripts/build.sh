@@ -172,7 +172,7 @@ function fn_build_nlohmann_json()
     rm -rf nlohmann
     mkdir nlohmann
     cd nlohmann
-    git clone -b v3.11.3 --depth 1 https://gitee.com/mirrors/nlohmann-json.git
+    git clone -b v3.11.3 --depth 1 https://gitcode.com/sound/nlohmann-json.git
     mkdir -p $THIRD_PARTY_DIR/nlohmannJson
     mv nlohmann-json/include $THIRD_PARTY_DIR/nlohmannJson
     cd $CACHE_DIR
