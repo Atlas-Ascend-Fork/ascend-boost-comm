@@ -2,10 +2,10 @@
 
 🔥 [2025/09] Ascend Boost Comm项目首次上线。
 ## 一、什么是ABC
-#### ABC介绍
+### ABC介绍
 领域加速库公共组件，Ascend Boost Comm，ABC。它统一定义了算子调用的L0级接口。南向对接不同组织开发的算子库，北向支撑不同加速库应用，实现M x N算子能力复用。 
 
-#### 软件架构
+### 软件架构
 软件架构说明
 1. 调用关系  
 [Ascend Transformer Boost加速库(ATB)](https://gitcode.com/cann/ascend-transformer-boost) --> ABC
@@ -62,10 +62,10 @@ pip3 install attrs cython 'numpy>=1.19.2,<=1.24.0' decorator sympy cffi pyyaml p
 * [CANN安装后操作](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/83RC1alpha002/softwareinst/instg/instg_0094.html?Mode=PmIns&InstallType=local&OS=Debian&Software=cannToolKit)
 
 ## 三、快速上手
-#### 安装教程
+### 安装教程
 无需安装， 直接与算子包一起编译。见下一节[使用说明](#使用说明)。  
 
-#### 使用说明
+### 使用说明
 两种典型使用场景：
 
 - 场景1. 与加速库一起编译出包使用
