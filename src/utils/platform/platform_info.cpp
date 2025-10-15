@@ -9,12 +9,14 @@
  */
 
 #include "mki/utils/platform/platform_info.h"
+#include <mutex>
 #include "mki/utils/assert/assert.h"
 #include "mki/utils/file_system/file_system.h"
 #include "mki/utils/log/log.h"
 #include "mki/utils/rt/rt.h"
 #include "mki/utils/platform/platform_manager.h"
-#include "acl/acl_rt.h"
+#include "mki/utils/rt/resource/resource.h"
+#include "mki/types.h"
 
 namespace Mki {
 constexpr uint32_t MAX_CORE_NUM = 128;
@@ -71,27 +73,33 @@ bool PlatformInfo::Inited() const { return inited_; }
 uint32_t PlatformInfo::GetCoreNum(CoreType type)
 {
     uint32_t coreNum = 0;
-    aclrtDevResLimitType resType;
+    int8_t resType;
     if (type == CoreType::CORE_TYPE_VECTOR) {
-        resType = ACL_RT_DEV_RES_VECTOR_CORE;
+        resType = 1;
     } else {
-        resType = ACL_RT_DEV_RES_CUBE_CORE;
+        resType = 0;
     }
-    aclError getResRet = aclrtGetResInCurrentThread(resType, &coreNum);
-    if (getResRet != ACL_SUCCESS) {
-        if (platformType_ == PlatformType::ASCEND_910B) {
-            switch (type) {
-                case CoreType::CORE_TYPE_VECTOR:
-                    coreNum = platformConfigs_.GetCoreNumByType("VectorCore");
-                    break;
-                default:
-                    coreNum = platformConfigs_.GetCoreNumByType("AiCore");
-                    break;
-            }
+    int getResRet = GetResInCurrentThread(resType, coreNum);
+    if (getResRet == NO_ERROR) {
+        if (coreNum == 0 || coreNum > MAX_CORE_NUM) {
+            MKI_LOG(ERROR) << "core_num is out of range : " << coreNum;
+            return 1;
         } else {
-            coreNum = platformConfigs_.GetCoreNumByType("AiCore");
+            return coreNum;
         }
-        MKI_FLOG_WARN("Failed to get thread core number");
+    }
+
+    if (platformType_ == PlatformType::ASCEND_910B) {
+        switch (type) {
+            case CoreType::CORE_TYPE_VECTOR:
+                coreNum = platformConfigs_.GetCoreNumByType("VectorCore");
+                break;
+            default:
+                coreNum = platformConfigs_.GetCoreNumByType("AiCore");
+                break;
+        }
+    } else {
+        coreNum = platformConfigs_.GetCoreNumByType("AiCore");
     }
     if (coreNum == 0 || coreNum > MAX_CORE_NUM) {
         MKI_LOG(ERROR) << "core_num is out of range : " << coreNum;
