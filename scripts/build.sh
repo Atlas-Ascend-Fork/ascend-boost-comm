@@ -1,7 +1,7 @@
 #!/bin/bash
 # Copyright (c) 2024 Huawei Technologies Co., Ltd.
 # This file is a part of the CANN Open Software.
-# Licensed under CANN Open Software License Agreement Version 1.0 (the "License").
+# Licensed under CANN Open Software License Agreement Version 2.0 (the "License").
 # Please refer to the License for details. You may not use this file except in compliance with the License.
 # THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
 # INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
@@ -172,7 +172,7 @@ function fn_build_nlohmann_json()
     rm -rf nlohmann
     mkdir nlohmann
     cd nlohmann
-    git clone -b v3.11.3 --depth 1 https://gitee.com/mirrors/nlohmann-json.git
+    git clone -b v3.11.3 --depth 1 https://gitcode.com/sound/nlohmann-json.git
     mkdir -p $THIRD_PARTY_DIR/nlohmannJson
     mv nlohmann-json/include $THIRD_PARTY_DIR/nlohmannJson
     cd $CACHE_DIR

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2024 Huawei Technologies Co., Ltd.
  * This file is a part of the CANN Open Software.
- * Licensed under CANN Open Software License Agreement Version 1.0 (the "License").
+ * Licensed under CANN Open Software License Agreement Version 2.0 (the "License").
  * Please refer to the License for details. You may not use this file except in compliance with the License.
  * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
@@ -79,7 +79,9 @@ enum ErrorType : int {
     ERROR_NOT_CONSISTANT = 10,
     ERROR_ALLOC_HOST = 11,
     ERROR_MEMERY_COPY_ERROR = 12,
-    ERROR_RUN_TIME_ERROR = 13
+    ERROR_RUN_TIME_ERROR = 13,
+    ERROR_FUNC_NOT_INITIALIZED = 14,
+    ERROR_FUNC_NOT_FOUND = 15
 };
 
 size_t GetTensorElementSize(const TensorDType dtype);
