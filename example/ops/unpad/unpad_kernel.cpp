@@ -17,8 +17,7 @@
 
 static constexpr uint32_t TENSOR_INPUT_NUM = 4;
 static constexpr uint32_t TENSOR_OUTPUT_NUM = 3;
-namespace AtbOps {
-using namespace Mki;
+namespace Mki {
 class UnpadKernel : public KernelBase {
 public:
     explicit UnpadKernel(const std::string &kernelName, const BinHandle *handle) noexcept
@@ -109,4 +108,4 @@ public:
     }
 };
 REG_KERNEL_BASE(UnpadKernel);
-} // namespace AtbOps
+} // namespace Mki

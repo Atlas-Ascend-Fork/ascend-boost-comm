@@ -12,7 +12,7 @@
 
 #include <cstdint>
 
-namespace AtbOps {
+namespace Mki {
 
 struct UnpadTilingData {
     uint32_t padLength{1};
