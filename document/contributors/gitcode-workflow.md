@@ -3,7 +3,7 @@
 ### 1. 开展工作流前的准备
 
 - 安装Git：请先确保您的电脑上已经安装了Git软件。如您需了解GIt，可以在Google、baidu或其他搜索引擎上求助相关内容。
-- 在开展Gitcode的工作流之前，您需要先在Ascend的代码托管平台的上找到[ABC](https://gitcode.com/cann/ascend-boost-comm)仓库。
+- 在开展Gitcode的工作流之前，您需要先在Ascend的代码托管平台的上找到[Ascend Boost Comm](https://gitcode.com/cann/ascend-boost-comm)仓库。
 
 ### 2. 准备本地代码
 

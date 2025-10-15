@@ -1,18 +1,18 @@
 # Ascend Boost Comm
 
 🔥 [2025/09] Ascend Boost Comm项目首次上线。
-## 一、什么是ABC
-### ABC介绍
-领域加速库公共组件，Ascend Boost Comm，ABC。它统一定义了算子调用的L0级接口。南向对接不同组织开发的算子库，北向支撑不同加速库应用，实现M x N算子能力复用。 
+## 一、什么是Ascend Boost Comm
+### Ascend Boost Comm介绍
+领域加速库公共组件，Ascend Boost Comm。它统一定义了算子调用的L0级接口。南向对接不同组织开发的算子库，北向支撑不同加速库应用，实现M x N算子能力复用。 
 
 ### 软件架构
 软件架构说明
 1. 调用关系  
-[Ascend Transformer Boost加速库(ATB)](https://gitcode.com/cann/ascend-transformer-boost) --> ABC
+[Ascend Transformer Boost加速库(ATB)](https://gitcode.com/cann/ascend-transformer-boost) --> Ascend Boost Comm
 
-### ABC仓介绍
+### Ascend Boost Comm仓介绍
 
-ABC库的目录结构如下
+Ascend Boost Comm库的目录结构如下
 
 ```
 ascend-boost-comm
@@ -70,7 +70,7 @@ pip3 install attrs cython 'numpy>=1.19.2,<=1.24.0' decorator sympy cffi pyyaml p
 
 - 场景1. 与加速库一起编译出包使用
 下面假设 Ascend Boost Comm、加速库（本例中是Ascend Transformer Boost）代码都已经准备好，且处于同一级目录下。
-1.  使用算子命名空间作为参数， 编译abc, 并将编译产物拷贝到加速库的3rdparty目录：在这里例子中， 命名空间参数是AtbOps
+1.  使用算子命名空间作为参数， 编译Ascend Boost Comm, 并将编译产物拷贝到加速库的3rdparty目录：在这里例子中， 命名空间参数是AtbOps
 
     ```shell
     cd ascend-boost-comm
@@ -92,7 +92,7 @@ pip3 install attrs cython 'numpy>=1.19.2,<=1.24.0' decorator sympy cffi pyyaml p
 - 场景2：单算子工程（待补充）
 适用于仅简单测试新写的单个算子， 而不想构建完整算子库的用户。
 1. 参照example中的算子用例， 实现算子并编写测试用例
-2. 编译带example的ABC
+2. 编译带example的Ascend Boost Comm
 3. 测试算子 
 
 ## 四、参与贡献
