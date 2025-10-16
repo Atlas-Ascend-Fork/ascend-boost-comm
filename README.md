@@ -1,4 +1,4 @@
-# ascend-boost-comm
+# ascend-boost-commcici
 
 #### 介绍
 算子公共平台，ascend-boost-comm，缩写abc。它统一定义了算子调用的L0级接口。南向对接不同组织开发的算子库，北向支撑不同加速库应用，实现M x N算子能力复用。 
