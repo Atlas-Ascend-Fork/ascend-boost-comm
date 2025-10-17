@@ -16,6 +16,7 @@ link_directories(
 
 set(BUILD_MemsetOperation_MemsetKernel_ascend310p ON)
 set(BUILD_MemsetOperation_MemsetKernel_ascend910b ON)
+set(BUILD_MemsetOperation_MemsetKernel_ascend910 ON)
 
 set(op_name MemsetOperation)
 
@@ -23,4 +24,7 @@ add_kernel(memory_set ascend310p vector
     memset.cc MemsetKernel)
 
 add_kernel(memory_set ascend910b vector
+    memset.cc MemsetKernel)
+
+add_kernel(memory_set ascend910 vector
     memset.cc MemsetKernel)
