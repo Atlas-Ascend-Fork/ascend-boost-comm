@@ -18,11 +18,10 @@
 namespace Mki {
 namespace OpParam {
 struct Addcustom {
-    int addcustomDim = 0;
-
     bool operator==(const Addcustom &other) const
     {
-        return this->addcustomDim == other.addcustomDim;
+        (void)other;
+        return true;
     }
 };
 

@@ -22,11 +22,11 @@ OP_NAME = "AddcustomOperation"
 OP_PARAM0 = {"addcustomDim": 0}
 
 
-class TestUnpad(op_test.OpTest):
+class TestAddcustom(op_test.OpTest):
     def golden_calc(self, in_tensors):
         a = in_tensors[0]
         b = in_tensors[1]
-        return [a+b]
+        return [a + b]
 
     def golden_compare(self, out_tensors, golden_out_tensors):
 
@@ -38,8 +38,7 @@ class TestUnpad(op_test.OpTest):
         b = torch.randn(shape).to(torch.float16)
 
         self.set_param(OP_NAME, OP_PARAM0)
-        self.execute([a, b],\
-                     [torch.ones(shape).to(torch.float16)])
+        self.execute([a, b], [torch.ones(shape).to(torch.float16)])
 
 
 if __name__ == '__main__':

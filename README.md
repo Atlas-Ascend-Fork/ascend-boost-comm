@@ -8,7 +8,7 @@
 ### 软件架构
 软件架构说明
 1. 调用关系  
-[Ascend Transformer Boost加速库(ATB)](https://gitcode.com/cann/ascend-transformer-boost) --> Ascend Boost Comm
+领域加速库（[Ascend Transformer Boost加速库(ATB)](https://gitcode.com/cann/ascend-transformer-boost)、信号加速库等） --> Ascend Boost Comm
 
 ### Ascend Boost Comm仓介绍
 
@@ -16,18 +16,18 @@ Ascend Boost Comm库的目录结构如下
 
 ```
 ascend-boost-comm
-├── cmake                 //编译和链接相关配置文件
-├── configs               //构建相关配置文件
-├── document              //文档文件存放目录
-├── example               //算子调用示例代码
-├── scripts               //脚本文件存放目录
-├── src                   //主体源代码目录
-│   ├── include           //存放公共头文件
-│   ├── mki_loader        //算子加载相关逻辑代码
-│   ├── schedule          //算子调度相关逻辑代码
-│   ├── utils             //工具类存放目录
+├── cmake                 // 编译和链接相关配置文件
+├── configs               // 构建相关配置文件
+├── document              // 文档文件存放目录
+├── example               // 算子调用示例代码
+├── scripts               // 脚本文件存放目录
+├── src                   // 主体源代码目录
+│   ├── include           // 存放公共头文件
+│   ├── mki_loader        // 算子加载相关逻辑代码
+│   ├── schedule          // 算子调度相关逻辑代码
+│   ├── utils             // 工具类存放目录
 │   └── CMakeLists.txt
-└── tests                 //测试代码
+└── tests                 // 测试代码
 ```
 
 ## 二、环境构建
