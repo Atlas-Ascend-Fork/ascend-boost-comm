@@ -11,4 +11,5 @@
 #define ATBOPS_PARAMS_PARAMS_H
 #include "atbops/params/common.h"
 #include "atbops/params/unpad.h"
+#include "atbops/params/addcustom.h"
 #endif

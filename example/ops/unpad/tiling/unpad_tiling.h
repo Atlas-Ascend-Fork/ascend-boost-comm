@@ -14,8 +14,7 @@
 #include <mki/utils/status/status.h>
 #include <mki/kernel_info.h>
 
-namespace AtbOps {
-using namespace Mki;
+namespace Mki {
 Status UnpadTiling(const LaunchParam &launchParam, KernelInfo &kernelInfo);
-} // namespace AtbOps
+} // namespace Mki
 #endif

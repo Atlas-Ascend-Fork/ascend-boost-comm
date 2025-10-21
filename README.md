@@ -89,11 +89,25 @@ pip3 install attrs cython 'numpy>=1.19.2,<=1.24.0' decorator sympy cffi pyyaml p
 
 3.  运行模型或算子测试用例
 
-- 场景2：单算子工程（待补充）
-适用于仅简单测试新写的单个算子， 而不想构建完整算子库的用户。
-1. 参照example中的算子用例， 实现算子并编写测试用例
-2. 编译带example的Ascend Boost Comm
+- 场景2：单算子工程
+适用于仅简单测试新写的单个算子，而不想构建完整算子库的用户，下面以example目录中的addcustom算子为例介绍算子运行流程：
+1. 参照example中的算子用例，实现算子并编写测试用例
+2. 编译带example的Ascend Boost Comm，第一次编译example时，需要先编译testframework，再编译example
+
+    ```shell
+    cd ascend-boost-comm
+    bash scripts/build.sh testframework
+    bash scripts/build.sh example
+    source output/mki/./set_env.sh
+    ```
+
 3. 测试算子 
+
+    ```shell
+    python example/tests/pythontest/optest/test_addcustom.py
+    ```
+
+您可参考该文档进行自定义算子开发：[自定义算子开发示例](document/自定义算子开发示例.md)
 
 ## 四、参与贡献
  

@@ -50,7 +50,7 @@ add_custom_target(BINARY_SRC_TARGET ALL
 #########################
 # 设置target名称
 #########################
-add_library(atbops SHARED ${BINARY_SRC_LIST})
+add_library(atbops SHARED ${BINARY_SRC_LIST} ops.cpp)
 add_dependencies(atbops BINARY_SRC_TARGET)
 target_link_libraries(atbops PRIVATE ${ops_objects} mki)
 
