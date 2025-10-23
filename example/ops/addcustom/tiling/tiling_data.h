@@ -7,6 +7,8 @@
  * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
  * See LICENSE in the root of the software repository for the full text of the License.
  */
+#ifndef ATBOPS_ADDCUSTOM_TILING_DATA
+#define ATBOPS_ADDCUSTOM_TILING_DATA
 
 #include<cstdint>
 namespace Mki {
@@ -15,3 +17,4 @@ struct AddcustomTilingData {
     uint32_t tileNum;      // Tiling 块数
 };
 }
+#endif

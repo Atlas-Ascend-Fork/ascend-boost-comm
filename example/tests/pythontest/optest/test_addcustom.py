@@ -29,8 +29,6 @@ class TestUnpad(op_test.OpTest):
         return [a+b]
 
     def golden_compare(self, out_tensors, golden_out_tensors):
-        #print("out_tensors[0]: \n", out_tensors[0])
-        #print("golden_out_tensors[0]: \n", golden_out_tensors[0])
 
         return torch.allclose(out_tensors[0], golden_out_tensors[0], rtol=0.001, atol=0.001)
 
