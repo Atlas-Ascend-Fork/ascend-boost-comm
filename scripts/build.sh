@@ -76,6 +76,8 @@ function fn_install_cann_and_kernel()
     mkdir ${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw
     find "${ASCEND_HOME_PATH}/toolkit/$(arch)-linux/ascendc/include/basic_api/" -mindepth 1 -maxdepth 1 -exec ln -s {} "${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/" \; 2>/dev/null
     find "${ASCEND_HOME_PATH}/toolkit/$(arch)-linux/ascendc/include/highlevel_api/" -mindepth 1 -maxdepth 1 -exec ln -s {} "${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/" \; 2>/dev/null
+    ln -s "${ASCEND_HOME_PATH}/compiler/$(arch)-linux/asc/include" "${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/"
+    ln -s "${ASCEND_HOME_PATH}/compiler/$(arch)-linux/asc/include/adv_api" "${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/lib"
     ln -s "${ASCEND_HOME_PATH}/compiler/$(arch)-linux/asc/include/interface" "${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/"
     ln -s "${ASCEND_HOME_PATH}/compiler/$(arch)-linux/asc/include/kernel_operator.h" "${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/"
     ln -s ${ASCEND_HOME_PATH}/compiler/$(arch)-linux/ascendc/include/highlevel_api/lib/ascendc_api_version.h ${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/
@@ -90,7 +92,7 @@ function fn_install_cann_and_kernel()
     ln -s ${ASCEND_HOME_PATH}/opp/built-in/op_impl/ai_core/tbe/op_api/include/aclnnop             ${ASCEND_HOME_PATH}/include/
     ln -s ${ASCEND_HOME_PATH}/compiler/$(arch)-linux/ascendc/                                     ${ASCEND_HOME_PATH}/include/
     ln -s ${ASCEND_HOME_PATH}/compiler/$(arch)-linux/ascendc/include/highlevel_api/kernel_tiling/ ${ASCEND_HOME_PATH}/include/ # kernel_tiling
-    ln -s ${ASCEND_HOME_PATH}/compiler/$(arch)-linux/ascendc/include/highlevel_api/tiling/        ${ASCEND_HOME_PATH}/include/ # tiling
+    ln -s ${ASCEND_HOME_PATH}/compiler/$(arch)-linux/asc/include/tiling/                          ${ASCEND_HOME_PATH}/include/ # tiling
 
     ln -s ${ASCEND_HOME_PATH}/compiler/include/acl/acl_tdt.h                                      ${ASCEND_HOME_PATH}/runtime/include/acl/
     ln -s ${ASCEND_HOME_PATH}/toolkit/tools/custom_operator_sample/AICPU/Tensorflow/cpukernel/context/inc/cpu_kernel_utils.h ${ASCEND_HOME_PATH}/opp/include/aicpu/
@@ -130,7 +132,7 @@ function fn_install_cann_and_kernel()
     ln -s ${ASCEND_HOME_PATH}/compiler/$(arch)-linux/ascendc/                                     ${ASCEND_HOME_PATH}/$(arch)-linux/include/
     ln -s ${ASCEND_HOME_PATH}/compiler/include/flow_graph/                                        ${ASCEND_HOME_PATH}/$(arch)-linux/include/
     ln -s ${ASCEND_HOME_PATH}/compiler/$(arch)-linux/ascendc/include/highlevel_api/kernel_tiling/ ${ASCEND_HOME_PATH}/$(arch)-linux/include/ # kernel_tiling
-    ln -s ${ASCEND_HOME_PATH}/compiler/$(arch)-linux/ascendc/include/highlevel_api/tiling/        ${ASCEND_HOME_PATH}/$(arch)-linux/include/ # tiling
+    ln -s ${ASCEND_HOME_PATH}/compiler/$(arch)-linux/asc/include/tiling/                          ${ASCEND_HOME_PATH}/$(arch)-linux/include/ # tiling
     ln -s ${ASCEND_HOME_PATH}/toolkit/include/experiment                                          ${ASCEND_HOME_PATH}/$(arch)-linux/include/
     ln -s ${ASCEND_HOME_PATH}/toolkit/include/experiment/slog/toolchain/                          ${ASCEND_HOME_PATH}/$(arch)-linux/include/experiment/
     # atb
