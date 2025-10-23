@@ -33,7 +33,7 @@ public:
 
         auto dtype = launchParam.GetInTensor(0).desc.dtype;
         MKI_CHECK(dtype == TENSOR_DTYPE_FLOAT16,
-                     "Only int32 supported", return nullptr);
+                     "Only Float16 supported", return nullptr);
 
         return GetKernelByName("AddcustomKernel");   // 内核名字必须与注册一致
     }

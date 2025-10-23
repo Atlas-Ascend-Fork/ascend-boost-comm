@@ -22,7 +22,7 @@ OP_NAME = "AddcustomOperation"
 OP_PARAM0 = {"addcustomDim": 0}
 
 
-class TestUnpad(op_test.OpTest):
+class TestAddcustom(op_test.OpTest):
     def golden_calc(self, in_tensors):
         a = in_tensors[0]
         b = in_tensors[1]
