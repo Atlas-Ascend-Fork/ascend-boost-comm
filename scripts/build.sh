@@ -76,6 +76,8 @@ function fn_install_cann_and_kernel()
     mkdir ${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw
     find "${ASCEND_HOME_PATH}/toolkit/$(arch)-linux/ascendc/include/basic_api/" -mindepth 1 -maxdepth 1 -exec ln -s {} "${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/" \; 2>/dev/null
     find "${ASCEND_HOME_PATH}/toolkit/$(arch)-linux/ascendc/include/highlevel_api/" -mindepth 1 -maxdepth 1 -exec ln -s {} "${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/" \; 2>/dev/null
+    ln -s "${ASCEND_HOME_PATH}/compiler/$(arch)-linux/asc/include/interface" "${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/"
+    ln -s "${ASCEND_HOME_PATH}/compiler/$(arch)-linux/asc/include/kernel_operator.h" "${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/"
     ln -s ${ASCEND_HOME_PATH}/compiler/$(arch)-linux/ascendc/include/highlevel_api/lib/ascendc_api_version.h ${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/
     ## include
     rm -rf ${ASCEND_HOME_PATH}/include ${ASCEND_HOME_PATH}/$(arch)-linux/
@@ -141,11 +143,11 @@ function fn_install_cann_and_kernel()
     # mki
     rm -rf ${ASCEND_HOME_PATH}/lib64
     mkdir -p ${ASCEND_HOME_PATH}/lib64
-    find "${ASCEND_HOME_PATH}/runtime/lib64"  -mindepth 1  -exec ln -s {} "${ASCEND_HOME_PATH}/lib64" \; 2>/dev/null
-    find "${ASCEND_HOME_PATH}/compiler/lib64" -mindepth 1  -exec ln -s {} "${ASCEND_HOME_PATH}/lib64" \; 2>/dev/null
-    find "${ASCEND_HOME_PATH}/aoe/lib64"      -mindepth 1  -exec ln -s {} "${ASCEND_HOME_PATH}/lib64" \; 2>/dev/null
-    find "${ASCEND_HOME_PATH}/hccl/lib64"     -mindepth 1  -exec ln -s {} "${ASCEND_HOME_PATH}/lib64" \; 2>/dev/null
-    find "${ASCEND_HOME_PATH}/toolkit/lib64"  -mindepth 1  -exec ln -s {} "${ASCEND_HOME_PATH}/lib64" \; 2>/dev/null
+    find "${ASCEND_HOME_PATH}/runtime/lib64"  -mindepth 1 -maxdepth 1 -exec ln -s {} "${ASCEND_HOME_PATH}/lib64" \; 2>/dev/null
+    find "${ASCEND_HOME_PATH}/compiler/lib64" -mindepth 1 -maxdepth 1 -exec ln -s {} "${ASCEND_HOME_PATH}/lib64" \; 2>/dev/null
+    find "${ASCEND_HOME_PATH}/aoe/lib64"      -mindepth 1 -maxdepth 1 -exec ln -s {} "${ASCEND_HOME_PATH}/lib64" \; 2>/dev/null
+    find "${ASCEND_HOME_PATH}/hccl/lib64"     -mindepth 1 -maxdepth 1 -exec ln -s {} "${ASCEND_HOME_PATH}/lib64" \; 2>/dev/null
+    find "${ASCEND_HOME_PATH}/toolkit/lib64"  -mindepth 1 -maxdepth 1 -exec ln -s {} "${ASCEND_HOME_PATH}/lib64" \; 2>/dev/null
     set -e
 }
 
