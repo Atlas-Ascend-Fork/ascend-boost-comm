@@ -26,7 +26,7 @@ class TestAddcustom(op_test.OpTest):
     def golden_calc(self, in_tensors):
         a = in_tensors[0]
         b = in_tensors[1]
-        return [a+b]
+        return [a + b]
 
     def golden_compare(self, out_tensors, golden_out_tensors):
 
