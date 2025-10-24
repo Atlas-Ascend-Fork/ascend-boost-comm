@@ -8,7 +8,7 @@
 ### 软件架构
 软件架构说明
 1. 调用关系  
-[Ascend Transformer Boost加速库(ATB)](https://gitcode.com/cann/ascend-transformer-boost) --> Ascend Boost Comm
+领域加速库（[Ascend Transformer Boost加速库(ATB)](https://gitcode.com/cann/ascend-transformer-boost)、信号加速库等） --> Ascend Boost Comm
 
 ### Ascend Boost Comm仓介绍
 
