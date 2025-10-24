@@ -38,8 +38,7 @@ class TestAddcustom(op_test.OpTest):
         b = torch.randn(shape).to(torch.float16)
 
         self.set_param(OP_NAME, OP_PARAM0)
-        self.execute([a, b],\
-                     [torch.ones(shape).to(torch.float16)])
+        self.execute([a, b], [torch.ones(shape).to(torch.float16)])
 
 
 if __name__ == '__main__':

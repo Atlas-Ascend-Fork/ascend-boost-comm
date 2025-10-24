@@ -41,7 +41,7 @@ public:
 
     Status InitImpl(const LaunchParam &launchParam) override
     {
-        return AddcustomTiling(launchParam, kernelInfo_);   // 复用前面写的 tiling 函数
+        return AddcustomTiling(launchParam, kernelInfo_);   // 复用 addcustom_tiling.cpp 中的 tiling 函数
     }
 };
 
