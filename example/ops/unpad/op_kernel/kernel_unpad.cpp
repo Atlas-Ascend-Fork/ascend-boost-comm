@@ -189,7 +189,7 @@ private:
     int64_t seqLenZero_{0};
 };
 
-inline __aicore__ void InitTilingData(const __gm__ uint8_t *p_tilingdata, AtbOps::UnpadTilingData *tilingdata)
+inline __aicore__ void InitTilingData(const __gm__ uint8_t *p_tilingdata, Mki::UnpadTilingData *tilingdata)
 {
 #if defined(__CCE_KT_TEST__) || (__CCE_AICORE__ == 220)
     tilingdata->padLength = (*(const __gm__ uint32_t *)(p_tilingdata + 0));
@@ -198,7 +198,7 @@ inline __aicore__ void InitTilingData(const __gm__ uint8_t *p_tilingdata, AtbOps
 #else
     AscendC::TPipe pipe;
     __ubuf__ uint8_t *tilingdata_in_ub = nullptr;
-    CopyGmTilingToUb(tilingdata_in_ub, p_tilingdata, sizeof(AtbOps::UnpadTilingData), &pipe);
+    CopyGmTilingToUb(tilingdata_in_ub, p_tilingdata, sizeof(Mki::UnpadTilingData), &pipe);
     AscendC::PipeBarrier<PIPE_ALL>();
     tilingdata->padLength = (*(__ubuf__ uint32_t *)(tilingdata_in_ub + 0));
     tilingdata->batch = (*(__ubuf__ uint32_t *)(tilingdata_in_ub + 4));
@@ -207,7 +207,7 @@ inline __aicore__ void InitTilingData(const __gm__ uint8_t *p_tilingdata, AtbOps
 }
 
 #define GET_TILING_DATA(tiling_data, tiling_arg) \
-    AtbOps::UnpadTilingData tiling_data;         \
+    Mki::UnpadTilingData tiling_data;         \
     InitTilingData(tiling_arg, &(tiling_data))
 
 extern "C" __global__ __aicore__ void unpad(GM_ADDR input_ids,

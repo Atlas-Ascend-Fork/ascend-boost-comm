@@ -205,7 +205,8 @@ function fn_init_pytorch_env()
 {
     export PYTHON_INCLUDE_PATH="$(python3 -c 'from sysconfig import get_paths; print(get_paths()["include"])')"
     export PYTHON_LIB_PATH="$(python3 -c 'from sysconfig import get_paths; print(get_paths()["include"])')"
-    export PYTORCH_INSTALL_PATH="$(python3 -c 'import torch, os; print(os.path.dirname(os.path.abspath(torch.__file__)))')"
+    export PYTORCH_INSTALL_PATH="$(python3 -c 'import importlib.util; spec=importlib.util.find_spec("torch"); \
+                                                   print(spec.submodule_search_locations[0])')"
     export PYTORCH_NPU_INSTALL_PATH="$(python3 -c 'import importlib.util; spec=importlib.util.find_spec("torch_npu"); \
                                                    print(spec.submodule_search_locations[0])')"
     echo "PYTHON_INCLUDE_PATH=$PYTHON_INCLUDE_PATH"

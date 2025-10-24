@@ -14,8 +14,7 @@
 #include "atbops/params/params.h"
 
 
-namespace AtbOps {
-using namespace Mki;
+namespace Mki {
 class UnpadOperation : public OperationBase {
 public:
     explicit UnpadOperation(const std::string &opName) noexcept : OperationBase(opName) {}
@@ -66,4 +65,4 @@ public:
 };
 
 REG_OPERATION(UnpadOperation);
-} //    namespace AtbOps
+} //    namespace Mki

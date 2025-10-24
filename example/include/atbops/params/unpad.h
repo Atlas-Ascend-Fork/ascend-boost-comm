@@ -16,7 +16,7 @@
 #include <vector>
 #include "mki/utils/compare/compare.h"
 
-namespace AtbOps {
+namespace Mki {
 namespace OpParam {
 struct Unpad {
     bool operator==(const Unpad &other) const
@@ -26,6 +26,6 @@ struct Unpad {
     }
 };
 } // namespace OpParam
-} // namespace AtbOps
+} // namespace Mki
 
 #endif // ATBOPS_PARAMS_UNPAD_H

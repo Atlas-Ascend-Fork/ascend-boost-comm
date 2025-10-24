@@ -12,7 +12,7 @@
 
 #include <mki/utils/SVector/SVector.h>
 
-namespace AtbOps {
+namespace Mki {
 template<class T>
 bool CheckParamAllPositive(SVector<T> &param)
 {
@@ -33,6 +33,6 @@ bool CheckParamAnyNegative(SVector<T> &param)
     }
     return false;
 }
-} // namespace AtbOps
+} // namespace Mki
 
 #endif

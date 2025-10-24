@@ -11,8 +11,7 @@
 #include <mki/kernel_info.h>
 #include "tiling_data.h"
 
-namespace AtbOps {
-using namespace Mki;
+namespace Mki {
 void FillTilingParam(const LaunchParam &launchParam, UnpadTilingData *tilingDataPtr)
 {
     tilingDataPtr->padLength = launchParam.GetInTensor(0).desc.dims[1];
@@ -29,4 +28,4 @@ Status UnpadTiling(const LaunchParam &launchParam, KernelInfo &kernelInfo)
     kernelInfo.GetScratchSizes() = {sysWorkspaceSize};
     return Status::OkStatus();
 }
-} // namespace AtbOps
+} // namespace Mki
