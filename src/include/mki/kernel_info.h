@@ -29,6 +29,8 @@ struct TilingExtInfo {
     uint64_t usedSize = 0; // actual tiling size used
     uint8_t *hostTilingAddr = nullptr;
     uint64_t hostTilingSize = 0;
+    uint32_t localMemorySize = 0;
+    uint8_t scheduleMode = 0;
 };
 
 struct MemsetInfo {
@@ -73,6 +75,13 @@ public:
     // TilingExtInfo - ConstTensorOffset
     void SetConstTensorOffset(uint64_t offset);
     uint64_t GetConstTensorOffset() const;
+
+    // TilingExtInfo - localMemorySize / scheduleMode
+    void SetLocalMemorySize(uint32_t localMemorySize);
+    uint32_t GetLocalMemorySize() const;
+    void SetScheduleMode(uint32_t scheduleMode);
+    uint32_t GetScheduleMode() const;
+
 
     // ConstTensor
     template <typename T_SRC, typename T_DST = T_SRC, typename T_CONT = SVector<T_SRC>>

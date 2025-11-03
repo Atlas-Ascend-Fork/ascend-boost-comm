@@ -111,6 +111,24 @@ def gen_compile_cmd_v300(args, dst: str, sub_arch: str, compile_options):
     return compile_cmd
 
 
+def gen_compile_cmd_c310(args, dst: str, sub_arch: str, compile_options):
+    compile_cmd = [os.path.join(args.code_root, '3rdparty', 'compiler',
+                                'ccec_compiler', 'bin', 'bisheng'),
+                   '-c']
+    compile_cmd += compile_options
+    compile_cmd += [args.srcs, "--cce-aicore-arch=%s" % sub_arch,
+                    "--cce-aicore-only", "-o", dst,
+                    "-mllvm", "-cce-aicore-stack-size=0x8000",
+                    "-mllvm", "-cce-aicore-function-stack-size=0x8000",
+                    "-mllvm", "-cce-aicore-record-overflow=true",
+                    "-mllvm", "-cce-aicore-addr-transform",
+                    "-mllvm", "-cce-aicore-jump-expand=true",
+                    "-mllvm", "-cce-aicore-dcci-insert-for-scalar=false",
+                    "-mllvm", "-cce-aicore-dcci-before-kernel-end=false"]
+    compile_cmd += ["-std=c++17"]
+    return compile_cmd
+
+
 def gen_fatbin_cmd(args, obj_file: list, dst_file: str):
     compile_cmd = [os.path.join(args.code_root, '3rdparty', 'compiler',
                                 'ccec_compiler', 'bin', 'ld.lld'),
@@ -195,7 +213,8 @@ def get_arch(soc, channel):
         "ascend310b": {"vector": "dav-m300", "cube": "dav-m300"},
         "ascend310p": {"vector": "dav-m200", "cube": "dav-m200"},
         "ascend910":  {"vector": "dav-c100", "cube": "dav-c100"},
-        "ascend910b": {"vector": "dav-c220-vec", "cube": "dav-c220-cube", "mix": "mix"}
+        "ascend910b": {"vector": "dav-c220-vec", "cube": "dav-c220-cube", "mix": "mix"},
+        "ascend910_95": {"vector": "dav-c310", "cube": "dav-c310", "mix": "mix"}
     }
     try:
         return arch_dict[soc][channel]
@@ -275,6 +294,27 @@ def compile_ascendc_operation(args):
             if(exe_cmd(compile_cmd)) != 0:
                 return -1
             dsts.append(dst)
+        elif args.soc == "ascend910_95":
+            if args.channel != "mix":
+                dst = os.path.splitext(args.dst)[0] + f"_{key}.o"
+                opt = options + [f'-D{args.kernel}={args.kernel}_{key}', f'-DTILING_KEY_VAR={key}']
+                compile_cmd = ' '.join(gen_compile_cmd_c310(args, dst, arch, opt))
+                if(exe_cmd(compile_cmd)) != 0:
+                    return -1
+                dsts.append(dst)
+            else:
+                dst = os.path.splitext(args.dst)[0] + f"_mix_aic_{key}.o"
+                aic_opt = options + [f'-D{args.kernel}={args.kernel}_{key}_mix_aic', f'-DTILING_KEY_VAR={key}']
+                compile_cmd = ' '.join(gen_compile_cmd_c310(args, dst, "dav-c310", aic_opt))
+                if(exe_cmd(compile_cmd)) != 0:
+                    return -1
+                dsts.append(dst)
+                dst = os.path.splitext(args.dst)[0] + f"_mix_aiv_{key}.o"
+                aiv_opt = options + [f'-D{args.kernel}={args.kernel}_{key}_mix_aiv', f'-DTILING_KEY_VAR={key}']
+                compile_cmd = ' '.join(gen_compile_cmd_c310(args, dst, "dav-c310", aiv_opt))
+                if(exe_cmd(compile_cmd)) != 0:
+                    return -1
+                dsts.append(dst)
         else:
             logging.error("soc version %s is not supported", args.soc)
             exit(1)
