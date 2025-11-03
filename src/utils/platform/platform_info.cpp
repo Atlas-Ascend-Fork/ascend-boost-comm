@@ -53,7 +53,8 @@ void PlatformInfo::Init()
         {"Ascend310B",   {PlatformType::ASCEND_310B, "ascend310b"}},
         {"Ascend910",    {PlatformType::ASCEND_910A, "ascend910"}},
         {"Ascend910B",   {PlatformType::ASCEND_910B, "ascend910b"}},
-        {"Ascend910_93", {PlatformType::ASCEND_910B, "ascend910b"}}};
+        {"Ascend910_93", {PlatformType::ASCEND_910B, "ascend910b"}},
+        {"Ascend910_95", {PlatformType::ASCEND_910_95, "ascend910_95"}}};
 
     (void)platformConfigs_.GetPlatformSpec("version", "Short_SoC_version", platformName_);
     const auto it = supportedPlatform.find(platformName_);
@@ -89,7 +90,7 @@ uint32_t PlatformInfo::GetCoreNum(CoreType type)
         }
     }
 
-    if (platformType_ == PlatformType::ASCEND_910B) {
+    if (platformType_ == PlatformType::ASCEND_910B || platformType_ == PlatformType::ASCEND_910_95) {
         switch (type) {
             case CoreType::CORE_TYPE_VECTOR:
                 coreNum = platformConfigs_.GetCoreNumByType("VectorCore");
