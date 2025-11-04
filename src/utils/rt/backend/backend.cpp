@@ -12,5 +12,5 @@
 namespace Mki {
 Backend::Backend() {}
 
-Backend::~Backend() {}
+virtual Backend::~Backend() {}
 }
