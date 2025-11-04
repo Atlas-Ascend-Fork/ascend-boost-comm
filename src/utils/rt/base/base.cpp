@@ -14,7 +14,7 @@
 
 #define ERROR_ITEM(item)   \
     {                      \
-        item, "##item"     \
+        item, "#item"     \
     }
 namespace Mki {
 constexpr int VERSION_MAJOR = 1;
