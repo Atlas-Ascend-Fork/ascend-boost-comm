@@ -14,6 +14,7 @@
 namespace Mki {
 void LogSinkStdout::Log(const char *log, uint64_t logLen)
 {
+    (void)logLen;
     std::lock_guard<std::mutex> guard(mtx_);
     std::cout << log;
 }
