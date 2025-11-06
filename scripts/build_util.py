@@ -29,6 +29,7 @@ def get_build_target_list(with_all: bool=False):
             script_file_path), "../configs/build_config.json")
     else:
         build_config_json_file_path = os.path.join(usr_config_file_dir, "build_config.json")
+        build_config_json_file_path = os.path.realpath(build_config_json_file_path)
     built_device_set = set()
     all_device_set = set()
     try:
@@ -289,6 +290,7 @@ def copy_tbe_device_code(args):
         logging.error(
             "env CACHE_DIR not exist!")
         exit(1)
+    env_cache_dir = os.path.realpath(env_cache_dir)
     target_version_list = get_build_target_list()
 
     if (args.op_type == "tbe" or args.op_type is None):
@@ -299,6 +301,8 @@ def copy_tbe_device_code(args):
             "env CODE_ROOT | ASCEND_KERNEL_PATH not exist!")
             exit(1)
         logging.info(f"tbe_kernel_path: {tbe_kernel_path}")
+        env_code_root = os.path.realpath(env_code_root)
+        tbe_kernel_path = os.path.realpath(tbe_kernel_path)
         input_path = os.path.join(env_code_root, args.tbe_ini_path)
         if not os.path.exists(input_path):
             logging.error("ini file: %s not exist!", input_path)
