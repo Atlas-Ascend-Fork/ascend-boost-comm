@@ -122,44 +122,33 @@ void LogSinkFile::Log(const char *log, uint64_t logLen)
     currentFileSize_ += writeSize;
 }
 
-static bool IsValidFileName(const std::string &name)
-{
-    size_t len = name.size();
-    if (len == 0 || len > MAX_FILE_NAME_LEN) {
-        return false;
-    }
-
-    for (size_t i = 0; i < len; ++i) {
-        char c = name[i];
-        if (!isalnum(c) && c != '_' && c != '/') {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 void LogSinkFile::Init()
 {
     boostType_ = "atb";
 
     std::string logRootDir = GetHomeDir();
+    char *rawEnv = nullptr;
+    std::string env = "";
 
-    std::string env = std::string(std::getenv("HOME") != nullptr ? std::getenv("HOME") : "");
-    logRootDir = IsValidFileName(env) ? env + "/ascend/log" : logRootDir;
+    rawEnv = std::getenv("HOME");
+    env = std::string(rawEnv != nullptr ? rawEnv : "");
+    logRootDir = CheckNameValid(env) ? env + "/ascend/log" : logRootDir;
     logRootDir = PathCheckAndRegular(logRootDir);
 
-    env = std::string(std::getenv("ASCEND_WORK_PATH") != nullptr ? std::getenv("ASCEND_WORK_PATH") : "");
-    logRootDir = IsValidFileName(env) ? env + "/log" : logRootDir;
+    rawEnv = std::getenv("ASCEND_WORK_PATH");
+    env = std::string(rawEnv != nullptr ? rawEnv : "");
+    logRootDir = CheckNameValid(env) ? env + "/log" : logRootDir;
     logRootDir = PathCheckAndRegular(logRootDir);
 
-    env = std::string(std::getenv("ASCEND_PROCESS_LOG_PATH") != nullptr ? std::getenv("ASCEND_PROCESS_LOG_PATH") : "");
-    logRootDir = IsValidFileName(env) ? env : logRootDir;
+    rawEnv = std::getenv("ASCEND_PROCESS_LOG_PATH");
+    env = std::string(rawEnv != nullptr ? rawEnv : "");
+    logRootDir = CheckNameValid(env) ? env : logRootDir;
     logRootDir = PathCheckAndRegular(logRootDir);
 
     logDir_ = logRootDir + "/" + boostType_;
 
-    env = std::string(std::getenv("ASCEND_LOG_SYNC_SAVE") != nullptr ? std::getenv("ASCEND_LOG_SYNC_SAVE") : "");
+    rawEnv = std::getenv("ASCEND_LOG_SYNC_SAVE");
+    env = std::string(rawEnv != nullptr ? rawEnv : "");
     isFlush_ = env.size() > 0 && env.size() <= MAX_ENV_STRING_LEN - 1 ? env == "1" : false;
 }
 
