@@ -33,7 +33,7 @@ class TestAddcustom(op_test.OpTest):
         return torch.allclose(out_tensors[0], golden_out_tensors[0], rtol=0.001, atol=0.001)
 
     def test_2d_half(self):
-        shape = (2 * 16,)
+        shape = (2 * 32,)
         a = torch.randn(shape).to(torch.float16)
         b = torch.randn(shape).to(torch.float16)
 
