@@ -122,23 +122,6 @@ void LogSinkFile::Log(const char *log, uint64_t logLen)
     currentFileSize_ += writeSize;
 }
 
-static bool IsValidFileName(const std::string &name)
-{
-    size_t len = name.size();
-    if (len == 0 || len > MAX_FILE_NAME_LEN) {
-        return false;
-    }
-
-    for (size_t i = 0; i < len; ++i) {
-        char c = name[i];
-        if (!isalnum(c) && c != '_' && c != '/') {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 void LogSinkFile::Init()
 {
     boostType_ = "atb";
