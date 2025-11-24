@@ -128,15 +128,15 @@ void LogSinkFile::Init()
     std::string logRootDir = GetHomeDir();
 
     std::string env = std::string(std::getenv("HOME") != nullptr ? std::getenv("HOME") : "");
-    logRootDir = CheckNameValid(env) ? env + "/ascend/log" : logRootDir;
+    logRootDir = CheckNameValid(env, MAX_FILE_NAME_LEN) ? env + "/ascend/log" : logRootDir;
     logRootDir = PathCheckAndRegular(logRootDir);
 
     env = std::string(std::getenv("ASCEND_WORK_PATH") != nullptr ? std::getenv("ASCEND_WORK_PATH") : "");
-    logRootDir = CheckNameValid(env) ? env + "/log" : logRootDir;
+    logRootDir = CheckNameValid(env, MAX_FILE_NAME_LEN) ? env + "/log" : logRootDir;
     logRootDir = PathCheckAndRegular(logRootDir);
 
     env = std::string(std::getenv("ASCEND_PROCESS_LOG_PATH") != nullptr ? std::getenv("ASCEND_PROCESS_LOG_PATH") : "");
-    logRootDir = CheckNameValid(env) ? env : logRootDir;
+    logRootDir = CheckNameValid(env, MAX_FILE_NAME_LEN) ? env : logRootDir;
     logRootDir = PathCheckAndRegular(logRootDir);
 
     logDir_ = logRootDir + "/" + boostType_;
