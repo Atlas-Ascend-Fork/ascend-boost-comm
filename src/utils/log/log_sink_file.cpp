@@ -121,6 +121,32 @@ void LogSinkFile::Log(const char *log, uint64_t logLen)
 
     currentFileSize_ += writeSize;
 }
+
+static bool IsValidFileName(const std::string &name)
+{
+    // 1. check the name not empty
+    if (name.empty()) {
+        MKI_LOG(ERROR) << "The name is empty";
+        return false;
+    }
+
+    // 2. check the length of the name
+    if (name.size() > 256) {
+        MKI_LOG(ERROR) << "The length of the name " << name.size() << " > " << 256;
+        return false;
+    }
+
+    // 3. check the name has invalid characters
+    const std::vector<char> invalidChars = { '\n', '\f', '\r', '\v', '\t', '\b', '\u007f', ' ', '$'};
+    for (auto c : invalidChars) {
+        if (name.find(c) != std::string::npos) {
+            MKI_LOG(ERROR) << "Name contains invalid characters: " << c;
+            return false;
+        }
+    }
+    return true;
+}
+
 void LogSinkFile::Init()
 {
     boostType_ = "atb";
@@ -128,15 +154,15 @@ void LogSinkFile::Init()
     std::string logRootDir = GetHomeDir();
 
     std::string env = std::string(std::getenv("HOME") != nullptr ? std::getenv("HOME") : "");
-    logRootDir = CheckNameValid(env, MAX_FILE_NAME_LEN) ? env + "/ascend/log" : logRootDir;
+    logRootDir = IsValidFileName(env) ? env + "/ascend/log" : logRootDir;
     logRootDir = PathCheckAndRegular(logRootDir);
 
     env = std::string(std::getenv("ASCEND_WORK_PATH") != nullptr ? std::getenv("ASCEND_WORK_PATH") : "");
-    logRootDir = CheckNameValid(env, MAX_FILE_NAME_LEN) ? env + "/log" : logRootDir;
+    logRootDir = IsValidFileName(env) ? env + "/log" : logRootDir;
     logRootDir = PathCheckAndRegular(logRootDir);
 
     env = std::string(std::getenv("ASCEND_PROCESS_LOG_PATH") != nullptr ? std::getenv("ASCEND_PROCESS_LOG_PATH") : "");
-    logRootDir = CheckNameValid(env, MAX_FILE_NAME_LEN) ? env : logRootDir;
+    logRootDir = IsValidFileName(env) ? env : logRootDir;
     logRootDir = PathCheckAndRegular(logRootDir);
 
     logDir_ = logRootDir + "/" + boostType_;
