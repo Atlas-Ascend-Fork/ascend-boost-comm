@@ -27,6 +27,17 @@ public:
     void DeleteLogFileSink();
     void AddSink(std::shared_ptr<LogSink> sink);
     const std::vector<std::shared_ptr<LogSink>> &GetAllSinks() const;
+    template <typename SinkType>
+    void RemoveSink()
+    {
+        for (auto it = sinks_.begin(); it != sinks_.end(); ) {
+            if (std::dynamic_pointer_cast<SinkType>(*it) != nullptr) {
+                it = sinks_.erase(it);
+            } else {
+                ++it;
+            }
+        }
+    }
 
 private:
     std::vector<std::shared_ptr<LogSink>> sinks_;
