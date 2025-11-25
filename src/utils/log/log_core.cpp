@@ -82,7 +82,7 @@ static void GetModuleLogLevelFromEnvCfg(bool &isSet, bool &isOpen, LogLevel &log
     for (const auto &i : envLogLevels) {
         std::vector<std::string> key_value = splitString(i, '=');
         if (key_value.size() >= 1) {
-            if (key_value[0] == "ATB") {
+            if (key_value[0] == "OP") {
                 if (key_value.size() == 2) { // 2: correct key-value pair
                     isSet = true;
                     envLogLevel = key_value[1];
