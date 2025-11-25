@@ -32,7 +32,7 @@
 
 namespace Mki {
 constexpr size_t MAX_LOG_FILE_COUNT = 50;                               // 50 回滚管理50个日志文件
-constexpr size_t MAX_FILE_NAME_LEN = 256;                               // 127: max file length without '\0' = 128 - 1
+constexpr size_t MAX_FILE_NAME_LEN = 255;                               // 255: max file length without '\0' = 256 - 1
 constexpr uint64_t MAX_FILE_SIZE_THRESHOLD = 1073741824;                // 1073741824 当前单个日志文件最大1G
 constexpr uint64_t DISK_AVAILABEL_LIMIT = 10 * MAX_FILE_SIZE_THRESHOLD; // 磁盘剩余空间门限10G
 
@@ -168,6 +168,7 @@ void LogSinkFile::Init()
 
     rawEnv = std::getenv("ASCEND_LOG_SYNC_SAVE");
     env = std::string(rawEnv != nullptr ? rawEnv : "");
+
     isFlush_ = env.size() > 0 && env.size() <= MAX_ENV_STRING_LEN - 1 ? env == "1" : false;
 }
 
