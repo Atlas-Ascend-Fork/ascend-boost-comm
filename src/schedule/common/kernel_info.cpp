@@ -171,6 +171,26 @@ uint64_t KernelInfo::GetTilingSize() const
     return tilingExtInfo_.hostTilingSize;
 }
 
+uint32_t KernelInfo::GetLocalMemorySize() const
+{
+    return tilingExtInfo_.localMemorySize;
+}
+
+uint32_t KernelInfo::GetScheduleMode() const
+{
+    return tilingExtInfo_.scheduleMode;
+}
+
+void KernelInfo::SetLocalMemorySize(uint32_t localMemorySize)
+{
+    tilingExtInfo_.localMemorySize= localMemorySize;
+}
+
+void KernelInfo::SetScheduleMode(uint32_t scheduleMode)
+{
+    tilingExtInfo_.scheduleMode = scheduleMode;
+}
+
 void KernelInfo::SetConstTensorOffset(uint64_t offset)
 {
     MKI_CHECK(offset > 0 && offset < tilingExtInfo_.hostTilingSize,

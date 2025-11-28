@@ -134,10 +134,14 @@ typedef struct {
 } RtAicpuArgsExT;
 
 typedef struct {
-    uint8_t qos{0};
-    uint8_t partId{0};
-    uint8_t schemMode{0};
-    uint8_t res[1] = {0};
+    uint8_t qos;
+    uint8_t partId;
+    uint8_t schemMode; 
+    bool d2dCrossFlag; 
+    uint32_t blockDimOffset;
+    uint8_t dumpflag; 
+    uint8_t rev[3];
+    uint32_t localMemorySize; 
 } RtTaskCfgInfoT;
 
 typedef struct {
