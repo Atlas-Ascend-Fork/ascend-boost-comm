@@ -372,6 +372,8 @@ function fn_main()
             COMPILE_OPTIONS="${COMPILE_OPTIONS} -DNO_WERROR=ON"
             ;;
         "--msdebug")
+            # In msdebug mode, ATB uses the same kernel configuration for 910c and 910b.
+            # Map 910c to 910b to keep the CMake SOC-matching logic consistent.
             if npu-smi info -t board -i 0 -c 0 | grep -qE 'NPU Name\s*:\s*(9392|9382)'; then
                 CHIP_TYPE='ascend910b'
             else
