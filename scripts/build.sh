@@ -373,7 +373,7 @@ function fn_main()
             ;;
         "--msdebug")
             if npu-smi info -t board -i 0 -c 0 | grep -qE 'NPU Name\s*:\s*(9392|9382)'; then
-                CHIP_TYPE='ascend910c'
+                CHIP_TYPE='ascend910b'
             else
                 CHIP_TYPE=$(npu-smi info -m | grep -oE 'Ascend\s*\S+' | head -n 1 | tr -d ' ' | tr '[:upper:]' '[:lower:]')
             fi
