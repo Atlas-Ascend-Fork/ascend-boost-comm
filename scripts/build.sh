@@ -372,7 +372,11 @@ function fn_main()
             COMPILE_OPTIONS="${COMPILE_OPTIONS} -DNO_WERROR=ON"
             ;;
         "--msdebug")
-            CHIP_TYPE=$(npu-smi info -m | grep -oE 'Ascend\s*\S+' | head -n 1 | tr -d ' ' | tr '[:upper:]' '[:lower:]')
+            if npu-smi info -t board -i 0 -c 0 | grep -qE 'NPU Name\s*:\s*(9392|9382)'; then
+                CHIP_TYPE='ascend910c'
+            else
+                CHIP_TYPE=$(npu-smi info -m | grep -oE 'Ascend\s*\S+' | head -n 1 | tr -d ' ' | tr '[:upper:]' '[:lower:]')
+            fi
             COMPILE_OPTIONS="${COMPILE_OPTIONS} -DUSE_MSDEBUG=ON -DCHIP_TYPE=${CHIP_TYPE}"
             ;;
         "--ascendc_dump")
