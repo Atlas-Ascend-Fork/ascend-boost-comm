@@ -26,7 +26,11 @@
 namespace Mki {
 std::mutex g_pcLock;
 const std::string FIXPIPE_CONFIG_KEY = "Intrinsic_fix_pipe_";
-const std::string PLATFORM_RELATIVE_PATH = "/runtime/data/platform_config";
+#if defined(__aarch64__)
+const std::string PLATFORM_RELATIVE_PATH = "/aarch64-linux/data/platform_config";
+#elif defined(__x86_64__)
+const std::string PLATFORM_RELATIVE_PATH = "/x86_64-linux/data/platform_config";
+#endif
 const std::string INI_FILE_SUFFIX = "ini";
 const std::string STR_SOC_VERSION = "SoC_version";
 const std::string STR_AIC_VERSION = "AIC_version";
