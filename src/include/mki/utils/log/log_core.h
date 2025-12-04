@@ -11,6 +11,7 @@
 #define MKI_UTILS_LOG_LOG_CORE_H
 #include <memory>
 #include <vector>
+#include <mutex>
 #include "mki/utils/log/log_entity.h"
 #include "mki/utils/log/log_sink.h"
 #include "mki/utils/SVector/SVector.h"
@@ -30,6 +31,7 @@ public:
     template <typename SinkType>
     void RemoveSink()
     {
+        std::lock_guard<std::shared_mutex> lock(sinksMutex_);
         for (auto it = sinks_.begin(); it != sinks_.end(); ) {
             if (std::dynamic_pointer_cast<SinkType>(*it) != nullptr) {
                 it = sinks_.erase(it);
@@ -42,6 +44,7 @@ public:
 private:
     std::vector<std::shared_ptr<LogSink>> sinks_;
     LogLevel level_ = LogLevel::INFO;
+    std::shared_mutex sinksMutex_;
 };
 } // namespace Mki
 #endif
