@@ -11,7 +11,7 @@
 #define MKI_UTILS_LOG_LOG_CORE_H
 #include <memory>
 #include <vector>
-#include <mutex>
+#include <shared_mutex>
 #include "mki/utils/log/log_entity.h"
 #include "mki/utils/log/log_sink.h"
 #include "mki/utils/SVector/SVector.h"
