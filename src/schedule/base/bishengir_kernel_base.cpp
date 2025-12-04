@@ -367,6 +367,16 @@ void BishengIRKernelBase::Copy(const BishengIRKernelBase &other)
     kernelInfo_.Copy(other.kernelInfo_);
 }
 
+void BishengIRKernelBase::ToCopy(const BishengIRKernelBase &other)
+{
+    kernelName_ = other.kernelName_;
+    launchBufferSize_ = other.launchBufferSize_;
+    handle_ = other.handle_;
+    kernelType_ = other.kernelType_;
+    creator_ = other.creator_;
+    kernelInfo_.ToCopy(other.kernelInfo_);
+}
+
 uint64_t BishengIRKernelBase::GetTilingSize(const LaunchParam &launchParam) const
 {
     UNUSED_VALUE(launchParam);
@@ -387,6 +397,14 @@ Kernel *BishengIRKernelBase::Clone() const
     kernel->Copy(*this);
     return kernel;
 }
+
+void BishengIRKernelBase::Clone(std::shared_ptr<Kernel>& kernel_) {
+    if (!kernel_) {
+        kernel_ = std::shared_ptr<BishengIRKernelBase>(creator_());
+    }
+    std::static_pointer_cast<BishengIRKernelBase>(kernel_)->ToCopy(*this);
+}
+
 
 void SetKernelSelfCreator(BishengIRKernelBase &kernel, BishengIRKernelBase::KernelSelfCreator func)
 {

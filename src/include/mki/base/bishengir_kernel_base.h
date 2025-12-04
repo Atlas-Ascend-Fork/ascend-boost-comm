@@ -28,6 +28,7 @@ public:
     BishengIRKernelBase(const std::string &opName, const BinHandle *handle);
     ~BishengIRKernelBase() override;
     Kernel *Clone() const override;
+    void Clone(std::shared_ptr<Kernel>& kernel_) override;
     void Reset() override;
 
     bool CanSupport(const LaunchParam &launchParam) const override;
@@ -52,6 +53,7 @@ protected:
     virtual Status InitImpl(const LaunchParam &launchParam);
     const BinHandle *GetBinHandle() const;
     void Copy(const BishengIRKernelBase &other);
+    void ToCopy(const BishengIRKernelBase &other);
 
 protected:
     uint32_t launchBufferSize_ = 0;

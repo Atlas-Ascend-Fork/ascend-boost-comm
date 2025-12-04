@@ -214,6 +214,17 @@ void AicpuKernelBase::Copy(const AicpuKernelBase &other)
     soName_ = other.soName_;
 }
 
+void AicpuKernelBase::ToCopy(const AicpuKernelBase &other)
+{
+    kernelName_ = other.kernelName_;
+    launchBufferSize_ = other.launchBufferSize_;
+    creator_ = other.creator_;
+    kernelInfo_.ToCopy(other.kernelInfo_);
+
+    deviceKernelName_ = other.deviceKernelName_;
+    soName_ = other.soName_;
+}
+
 uint64_t AicpuKernelBase::GetTilingSize(const LaunchParam &launchParam) const
 {
     UNUSED_VALUE(launchParam);
@@ -232,6 +243,13 @@ Kernel *AicpuKernelBase::Clone() const
     AicpuKernelBase *kernel = creator_();
     kernel->Copy(*this);
     return kernel;
+}
+
+void AicpuKernelBase::Clone(std::shared_ptr<Kernel>& kernel_) {
+    if (!kernel_) {
+        kernel_ = std::shared_ptr<AicpuKernelBase>(creator_());
+    }
+    std::static_pointer_cast<AicpuKernelBase>(kernel_)->ToCopy(*this);
 }
 
 void SetAicpuKernelSelfCreator(AicpuKernelBase &kernel, AicpuKernelBase::AicpuKernelSelfCreator func)

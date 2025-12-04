@@ -26,6 +26,7 @@ public:
     AicpuKernelBase(const std::string &opName, const char* deviceKernelName);
     ~AicpuKernelBase() override;
     Kernel *Clone() const override;
+    void Clone(std::shared_ptr<Kernel>& kernel_) override;
     void Reset() override;
 
     bool CanSupport(const LaunchParam &launchParam) const override;
@@ -45,6 +46,7 @@ protected:
     virtual Status InitImpl(const LaunchParam &launchParam);
     const std::string GetDeviceKernelName() const;
     void Copy(const AicpuKernelBase &other);
+    void ToCopy(const AicpuKernelBase &other);
 
 protected:
     uint32_t launchBufferSize_ = 0;

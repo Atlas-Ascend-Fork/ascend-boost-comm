@@ -44,6 +44,8 @@ public:
     KernelInfo(const KernelInfo &) = delete;
     KernelInfo &operator=(const KernelInfo &other) = delete;
     void Copy(const KernelInfo &other);
+    void ToCopy(const KernelInfo &other);
+    void FreeTilingHost();
     std::string ToString() const;
 
 public:
@@ -105,7 +107,7 @@ public:
     const MiniVector<KernelInfo::MemsetInfo> &GetMemsetInfo() const;
 
     // BishengIR kernel args index
-    void SetKernelArgsIndex(const MiniVector<uint64_t>& index);
+    // void SetKernelArgsIndex(const MiniVector<uint64_t>& index);
     const MiniVector<uint64_t>& GetKernelArgsIndex() const;
     MiniVector<uint64_t>& GetKernelArgsIndex();
 
