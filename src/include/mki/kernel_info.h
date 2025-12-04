@@ -107,7 +107,7 @@ public:
     const MiniVector<KernelInfo::MemsetInfo> &GetMemsetInfo() const;
 
     // BishengIR kernel args index
-    // void SetKernelArgsIndex(const MiniVector<uint64_t>& index);
+    void SetKernelArgsIndex(const MiniVector<uint64_t>& index);
     const MiniVector<uint64_t>& GetKernelArgsIndex() const;
     MiniVector<uint64_t>& GetKernelArgsIndex();
 
