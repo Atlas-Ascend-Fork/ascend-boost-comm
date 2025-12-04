@@ -44,7 +44,7 @@ public:
 private:
     std::vector<std::shared_ptr<LogSink>> sinks_;
     LogLevel level_ = LogLevel::INFO;
-    std::shared_mutex sinksMutex_;
+    mutable std::shared_mutex sinksMutex_;
 };
 } // namespace Mki
 #endif
