@@ -151,24 +151,37 @@ void LogCore::SetLogLevel(LogLevel level) { level_ = level; }
 
 void LogCore::Log(const char *log, uint64_t logLen)
 {
-    for (auto &sink : sinks_) {
+    std::vector<std::shared_ptr<LogSink>> sinksCopy;
+    {
+        std::lock_guard<std::mutex> lock(sinksMutex_);
+        sinksCopy = sinks_;
+    }
+    
+    for (auto &sink : sinksCopy) {
         sink->Log(log, logLen);
     }
 }
 
 void LogCore::DeleteLogFileSink()
 {
+    std::lock_guard<std::mutex> lock(sinksMutex_);
     sinks_.pop_back();
 }
 
 void LogCore::AddSink(std::shared_ptr<LogSink> sink)
 {
+    std::lock_guard<std::mutex> lock(sinksMutex_);
     if (sink == nullptr) {
-        MKI_LOG(ERROR) << "sink is NULL";
+        // MKI_LOG(ERROR) << "sink is NULL";
+        std::cerr << "sink is NULL" << std::endl;
         return;
     }
     sinks_.push_back(sink);
 }
 
-const std::vector<std::shared_ptr<LogSink>> &LogCore::GetAllSinks() const { return sinks_; }
+std::vector<std::shared_ptr<LogSink>> LogCore::GetAllSinks() const 
+{
+    std::lock_guard<std::mutex> lock(sinksMutex_);
+    return sinks_;
+}
 } // namespace Mki
