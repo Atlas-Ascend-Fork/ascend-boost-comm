@@ -44,7 +44,6 @@ public:
     KernelInfo(const KernelInfo &) = delete;
     KernelInfo &operator=(const KernelInfo &other) = delete;
     void Copy(const KernelInfo &other);
-    void ToCopy(const KernelInfo &other);
     void FreeTilingHost();
     std::string ToString() const;
 
@@ -52,7 +51,7 @@ public:
     void Reset();
     // Args
     Status InitArgs(uint64_t len);
-    Status KernelInfo::UpdateArgs(uint64_t len);
+    Status UpdateArgs(uint64_t len);
     uint8_t *GetArgs() const;
     uint64_t GetArgsSize() const;
 
