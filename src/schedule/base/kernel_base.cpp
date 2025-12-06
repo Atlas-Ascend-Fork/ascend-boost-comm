@@ -373,16 +373,6 @@ void KernelBase::Copy(const KernelBase &other)
     kernelInfo_.Copy(other.kernelInfo_);
 }
 
-void KernelBase::ToCopy(const KernelBase &other)
-{
-    kernelName_ = other.kernelName_;
-    launchBufferSize_ = other.launchBufferSize_;
-    handle_ = other.handle_;
-    kernelType_ = other.kernelType_;
-    creator_ = other.creator_;
-    kernelInfo_.ToCopy(other.kernelInfo_);
-}
-
 uint64_t KernelBase::GetTilingSize(const LaunchParam &launchParam) const
 {
     UNUSED_VALUE(launchParam);
@@ -409,7 +399,7 @@ void KernelBase::Clone(std::shared_ptr<Kernel>& kernel_) {
     if (!kernel_) {
         kernel_ = std::shared_ptr<KernelBase>(creator_());
     }
-    std::static_pointer_cast<KernelBase>(kernel_)->ToCopy(*this);
+    std::static_pointer_cast<KernelBase>(kernel_)->Copy(*this);
 }
 
 Status KernelBase::BuildArgs(const LaunchParam &launchParam, RunInfo &runinfo, void *hostBuffer)

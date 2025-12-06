@@ -41,17 +41,31 @@ Status KernelInfo::InitArgs(uint64_t len)
     constexpr uint64_t maxArgsSize = 1024 * 1024; // 1mb
     MKI_CHECK(len <= maxArgsSize, "failed to check args len " << len, return Status::FailStatus(ERROR_INVALID_VALUE));
 
+    args_ = new (std::nothrow) uint8_t[len];
+    MKI_CHECK(args_ != nullptr, "failed to new args, len " << len, return Status::FailStatus(ERROR_INVALID_VALUE));
+
+    int ret = memset_s(args_, len, 0, len);
+    MKI_CHECK(ret == EOK, "memset_s args Error! Error Code: " << ret, return Status::FailStatus(ERROR_INVALID_VALUE));
+
+    argsSize_ = len;
+    MKI_LOG(INFO) << "args inited successfully, len " << len;
+
+    initFlag_ = true;
+    return Status::OkStatus();
+}
+
+Status KernelInfo::UpdateArgs(uint64_t len)
+{
+    constexpr uint64_t maxArgsSize = 1024 * 1024; // 1mb
+    MKI_CHECK(len <= maxArgsSize, "failed to check args len " << len, return Status::FailStatus(ERROR_INVALID_VALUE));
+
     if (args_ != nullptr && argsSize_ != len) {
-        delete[] args_;
-        args_ = nullptr;
+        ResetArgs();
     }
 
     if (args_ == nullptr) {
         args_ = new (std::nothrow) uint8_t[len];
         MKI_CHECK(args_ != nullptr, "failed to new args, len " << len, return Status::FailStatus(ERROR_INVALID_VALUE));
-
-        int ret = memset_s(args_, len, 0, len);
-        MKI_CHECK(ret == EOK, "memset_s args Error! Error Code: " << ret, return Status::FailStatus(ERROR_INVALID_VALUE));
 
         argsSize_ = len;
         MKI_LOG(INFO) << "args inited successfully, len " << len;
@@ -339,7 +353,7 @@ void KernelInfo::FreeTilingHost() {
     }
 }
 
-void KernelInfo::ToCopy(const KernelInfo &other)
+void KernelInfo::Copy(const KernelInfo &other)
 {
     launchWithTiling_ = other.launchWithTiling_;
     if (!other.initFlag_) {
@@ -365,7 +379,7 @@ void KernelInfo::ToCopy(const KernelInfo &other)
                               ", other.tilingExtInfo_.hostTilingSize: " << other.tilingExtInfo_.hostTilingSize,
                               return);
 
-        MKI_CHECK(InitArgs(other.argsSize_).Ok(), "failed to init args size, len " << other.argsSize_, return);
+        MKI_CHECK(UpdateArgs(other.argsSize_).Ok(), "failed to init args size, len " << other.argsSize_, return);
         ret = memcpy_s(args_, argsSize_, other.args_, other.argsSize_);
         MKI_CHECK(ret == EOK, "failed to copy kernel info args, errorCode: " << ret <<
                               ", argsSize_: " << argsSize_ <<
@@ -375,46 +389,6 @@ void KernelInfo::ToCopy(const KernelInfo &other)
     } else {
         argsSize_ = other.argsSize_;
         tilingExtInfo_.hostTilingSize = other.tilingExtInfo_.hostTilingSize;
-        SetTilingHostAddr(other.tilingExtInfo_.hostTilingAddr, tilingExtInfo_.hostTilingSize);
-        MKI_CHECK(InitArgs(argsSize_).Ok(), "failed to init args size, len " << argsSize_, return);
-    }
-    hwsyncIdx_ = other.hwsyncIdx_;
-    tilingExtInfo_.blockDim = other.tilingExtInfo_.blockDim;
-    tilingExtInfo_.tilingId = other.tilingExtInfo_.tilingId;
-    tilingExtInfo_.constTensorOffset = other.tilingExtInfo_.constTensorOffset;
-    tilingExtInfo_.usedSize = other.tilingExtInfo_.usedSize;
-    constTensorInfo_ = other.constTensorInfo_;
-    scratchSizes_ = other.scratchSizes_;
-    memsetInfo_ = other.memsetInfo_;
-}
-
-void KernelInfo::Copy(const KernelInfo &other)
-{
-    launchWithTiling_ = other.launchWithTiling_;
-    if (!other.initFlag_) {
-        MKI_LOG(WARN) << "copy blank kernel info";
-        initFlag_ = false;
-        return;
-    }
-
-    tilingExtInfo_.hostTilingSize = other.tilingExtInfo_.hostTilingSize;
-    argsSize_ = other.argsSize_;
-    if (launchWithTiling_) {
-        Status st = AllocTilingHost(tilingExtInfo_.hostTilingSize);
-        MKI_CHECK(st.Ok(), "failed to alloc tiling buffer, len " << tilingExtInfo_.hostTilingSize, return);
-        auto ret = memcpy_s(tilingExtInfo_.hostTilingAddr, tilingExtInfo_.hostTilingSize,
-                            other.tilingExtInfo_.hostTilingAddr, other.tilingExtInfo_.hostTilingSize);
-        MKI_CHECK(ret == EOK, "failed to copy kernel info tiling, errorCode: " << ret <<
-                              ", tilingExtInfo_.hostTilingSize: " << tilingExtInfo_.hostTilingSize <<
-                              ", other.tilingExtInfo_.hostTilingSize: " << other.tilingExtInfo_.hostTilingSize,
-                              return);
-        MKI_CHECK(InitArgs(argsSize_).Ok(), "failed to init args size, len " << argsSize_, return);
-        ret = memcpy_s(args_, argsSize_, other.args_, other.argsSize_);
-        MKI_CHECK(ret == EOK, "failed to copy kernel info args, errorCode: " << ret <<
-                              ", argsSize_: " << argsSize_ <<
-                              ", other.argsSize_: " << other.argsSize_,
-                              return);
-    } else {
         SetTilingHostAddr(other.tilingExtInfo_.hostTilingAddr, tilingExtInfo_.hostTilingSize);
         MKI_CHECK(InitArgs(argsSize_).Ok(), "failed to init args size, len " << argsSize_, return);
     }

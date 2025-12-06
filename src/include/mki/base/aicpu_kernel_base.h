@@ -46,7 +46,6 @@ protected:
     virtual Status InitImpl(const LaunchParam &launchParam);
     const std::string GetDeviceKernelName() const;
     void Copy(const AicpuKernelBase &other);
-    void ToCopy(const AicpuKernelBase &other);
 
 protected:
     uint32_t launchBufferSize_ = 0;

@@ -52,6 +52,7 @@ public:
     void Reset();
     // Args
     Status InitArgs(uint64_t len);
+    Status KernelInfo::UpdateArgs(uint64_t len);
     uint8_t *GetArgs() const;
     uint64_t GetArgsSize() const;
 
