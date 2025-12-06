@@ -395,11 +395,11 @@ Kernel *KernelBase::Clone() const
     return kernel;
 }
 
-void KernelBase::Clone(std::shared_ptr<Kernel>& kernel_) {
-    if (!kernel_) {
-        kernel_ = std::shared_ptr<KernelBase>(creator_());
+void KernelBase::Clone(std::shared_ptr<Kernel>& kernel) {
+    if (!kernel) {
+        kernel = std::shared_ptr<KernelBase>(creator_());
     }
-    std::static_pointer_cast<KernelBase>(kernel_)->Copy(*this);
+    std::static_pointer_cast<KernelBase>(kernel)->Copy(*this);
 }
 
 Status KernelBase::BuildArgs(const LaunchParam &launchParam, RunInfo &runinfo, void *hostBuffer)

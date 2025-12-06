@@ -388,11 +388,11 @@ Kernel *BishengIRKernelBase::Clone() const
     return kernel;
 }
 
-void BishengIRKernelBase::Clone(std::shared_ptr<Kernel>& kernel_) {
-    if (!kernel_) {
-        kernel_ = std::shared_ptr<BishengIRKernelBase>(creator_());
+void BishengIRKernelBase::Clone(std::shared_ptr<Kernel>& kernel) {
+    if (!kernel) {
+        kernel = std::shared_ptr<BishengIRKernelBase>(creator_());
     }
-    std::static_pointer_cast<BishengIRKernelBase>(kernel_)->Copy(*this);
+    std::static_pointer_cast<BishengIRKernelBase>(kernel)->Copy(*this);
 }
 
 

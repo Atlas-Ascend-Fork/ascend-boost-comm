@@ -234,11 +234,11 @@ Kernel *AicpuKernelBase::Clone() const
     return kernel;
 }
 
-void AicpuKernelBase::Clone(std::shared_ptr<Kernel>& kernel_) {
-    if (!kernel_) {
-        kernel_ = std::shared_ptr<AicpuKernelBase>(creator_());
+void AicpuKernelBase::Clone(std::shared_ptr<Kernel>& kernel) {
+    if (!kernel) {
+        kernel = std::shared_ptr<AicpuKernelBase>(creator_());
     }
-    std::static_pointer_cast<AicpuKernelBase>(kernel_)->Copy(*this);
+    std::static_pointer_cast<AicpuKernelBase>(kernel)->Copy(*this);
 }
 
 void SetAicpuKernelSelfCreator(AicpuKernelBase &kernel, AicpuKernelBase::AicpuKernelSelfCreator func)
