@@ -357,14 +357,16 @@ bool BishengIRKernelBase::CanSupport(const LaunchParam &launchParam) const
     MKI_CHECK(false, "CanSupport has to be overriden!", return false);
 }
 
-void BishengIRKernelBase::Copy(const BishengIRKernelBase &other)
+Status BishengIRKernelBase::Copy(const BishengIRKernelBase &other)
 {
-    kernelName_ = other.kernelName_;
-    launchBufferSize_ = other.launchBufferSize_;
-    handle_ = other.handle_;
-    kernelType_ = other.kernelType_;
-    creator_ = other.creator_;
-    kernelInfo_.Copy(other.kernelInfo_);
+    auto const* kernelbase = dynamic_cast<const BishengIRKernelBase*>(&other);
+    MKI_CHECK(kernelbase != nullptr, "failed to convert kernel type", return Status::FailStatus(ERROR_KERNEL_NOT_EXIST));
+    kernelName_ = kernelbase.kernelName_;
+    launchBufferSize_ = kernelbase.launchBufferSize_;
+    handle_ = kernelbase.handle_;
+    kernelType_ = kernelbase.kernelType_;
+    creator_ = kernelbase.creator_;
+    kernelInfo_.Copy(kernelbase.kernelInfo_);
 }
 
 uint64_t BishengIRKernelBase::GetTilingSize(const LaunchParam &launchParam) const
@@ -387,14 +389,6 @@ Kernel *BishengIRKernelBase::Clone() const
     kernel->Copy(*this);
     return kernel;
 }
-
-void BishengIRKernelBase::Clone(std::shared_ptr<Kernel>& kernel) {
-    if (!kernel) {
-        kernel = std::shared_ptr<BishengIRKernelBase>(creator_());
-    }
-    std::static_pointer_cast<BishengIRKernelBase>(kernel)->Copy(*this);
-}
-
 
 void SetKernelSelfCreator(BishengIRKernelBase &kernel, BishengIRKernelBase::KernelSelfCreator func)
 {
