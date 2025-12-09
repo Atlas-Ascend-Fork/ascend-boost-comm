@@ -367,6 +367,7 @@ Status BishengIRKernelBase::Copy(const Kernel &other)
     kernelType_ = kernelbase->kernelType_;
     creator_ = kernelbase->creator_;
     kernelInfo_.Copy(kernelbase->kernelInfo_);
+    return Status::OkStatus();
 }
 
 uint64_t BishengIRKernelBase::GetTilingSize(const LaunchParam &launchParam) const

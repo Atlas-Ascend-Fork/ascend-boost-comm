@@ -373,6 +373,7 @@ Status KernelBase::Copy(const Kernel &other)
     kernelType_ = kernelbase->kernelType_;
     creator_ = kernelbase->creator_;
     kernelInfo_.Copy(kernelbase->kernelInfo_);
+    return Status::OkStatus();
 }
 
 uint64_t KernelBase::GetTilingSize(const LaunchParam &launchParam) const
