@@ -365,7 +365,7 @@ bool KernelBase::CanSupport(const LaunchParam &launchParam) const
 
 Status KernelBase::Copy(const Kernel &other)
 {
-    auto const* kernelbase = dynamic_cast<const BishengIRKernelBase*>(&other);
+    auto const* kernelbase = dynamic_cast<const KernelBase*>(&other);
     MKI_CHECK(kernelbase != nullptr, "failed to convert kernel type", return Status::FailStatus(ERROR_KERNEL_NOT_EXIST));
     kernelName_ = kernelbase->kernelName_;
     launchBufferSize_ = kernelbase->launchBufferSize_;

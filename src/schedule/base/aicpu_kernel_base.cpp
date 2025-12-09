@@ -213,7 +213,7 @@ Status AicpuKernelBase::Copy(const Kernel &other)
     kernelInfo_.Copy(kernelbase->kernelInfo_);
 
     deviceKernelName_ = kernelbase->deviceKernelName_;
-    soName_ = kernelbase.->soName_;
+    soName_ = kernelbase->soName_;
     return Status::OkStatus();
 }
 
