@@ -48,7 +48,6 @@ public:
 protected:
     virtual Status InitImpl(const LaunchParam &launchParam);
     const BinHandle *GetBinHandle() const;
-    void Copy(const KernelBase &other);
 
 protected:
     uint32_t launchBufferSize_ = 0;
