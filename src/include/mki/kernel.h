@@ -37,7 +37,6 @@ public:
     Kernel(const Kernel &kernel) = delete;
     virtual ~Kernel() = default;
     virtual Kernel *Clone() const = 0;
-    virtual void Clone(std::shared_ptr<Kernel>& kernel_) = 0;
     virtual Status Copy(const Kernel &other) = 0;
     virtual void Reset() = 0;
 
