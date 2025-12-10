@@ -26,7 +26,7 @@ int GetResInCurrentThread(int type, uint32_t &resource)
         std::string p;
         const char *c = GetEnv("ASCEND_HOME_PATH");
         if (c) {
-            p = std::string(c) + "/runtime/lib64/libascendcl.so";
+            p = std::string(c) + "/lib64/libascendcl.so";
         } else {
             p = "libascendcl.so";
         }
