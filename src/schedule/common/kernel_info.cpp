@@ -72,7 +72,7 @@ Status KernelInfo::UpdateArgs(uint64_t newLen, const uint8_t *&newArgs)
         argsSize_ = newLen;
         MKI_LOG(INFO) << "args update successfully, len " << newLen;
     }
-    ret = memcpy_s(args_, argsSize_, newArgs, newLen);
+    auto ret = memcpy_s(args_, argsSize_, newArgs, newLen);
     MKI_CHECK(ret == EOK, "failed to copy kernel info args, errorCode: " << ret <<
                           ", argsSize_: " << argsSize_ <<
                           ",newLen: " << newLen,
