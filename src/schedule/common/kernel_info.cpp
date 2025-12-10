@@ -59,7 +59,7 @@ Status KernelInfo::InitArgs(uint64_t len)
 
 Status KernelInfo::UpdateArgs(uint64_t newLen, const uint8_t *&newArgs)
 {
-    MKI_CHECK(len <= maxArgsSize, "failed to check args len " << newLen, return Status::FailStatus(ERROR_INVALID_VALUE));
+    MKI_CHECK(newLen <= maxArgsSize, "failed to check args len " << newLen, return Status::FailStatus(ERROR_INVALID_VALUE));
     initFlag_ = false;
     if (args_ != nullptr && argsSize_ != newLen) {
         ResetArgs();
@@ -70,12 +70,12 @@ Status KernelInfo::UpdateArgs(uint64_t newLen, const uint8_t *&newArgs)
         MKI_CHECK(args_ != nullptr, "failed to new args, len " << newLen, return Status::FailStatus(ERROR_INVALID_VALUE));
 
         argsSize_ = newLen;
-        MKI_LOG(INFO) << "args inited successfully, len " << newLen;
+        MKI_LOG(INFO) << "args update successfully, len " << newLen;
     }
     ret = memcpy_s(args_, argsSize_, newArgs, newLen);
     MKI_CHECK(ret == EOK, "failed to copy kernel info args, errorCode: " << ret <<
                           ", argsSize_: " << argsSize_ <<
-                          ", other.argsSize_: " << other.argsSize_,
+                          ",newLen: " << newLen,
                           return);
     initFlag_ = true;
     return Status::OkStatus();
