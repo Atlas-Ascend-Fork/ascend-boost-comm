@@ -76,7 +76,7 @@ Status KernelInfo::UpdateArgs(uint64_t newLen, const uint8_t *newArgs)
     MKI_CHECK(ret == EOK, "failed to copy kernel info args, errorCode: " << ret <<
                           ", argsSize_: " << argsSize_ <<
                           ",newLen: " << newLen,
-                          return);
+                          return Status::FailStatus(ERROR_MEMERY_COPY_ERROR));
     initFlag_ = true;
     return Status::OkStatus();
 }
