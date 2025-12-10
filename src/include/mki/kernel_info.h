@@ -50,7 +50,7 @@ public:
     void Reset();
     // Args
     Status InitArgs(uint64_t len);
-    Status UpdateArgs(uint64_t newLen, const uint8_t *&newArgs);
+    Status UpdateArgs(uint64_t newLen, const uint8_t *newArgs);
     uint8_t *GetArgs() const;
     uint64_t GetArgsSize() const;
 

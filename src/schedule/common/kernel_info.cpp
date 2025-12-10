@@ -57,7 +57,7 @@ Status KernelInfo::InitArgs(uint64_t len)
     return Status::OkStatus();
 }
 
-Status KernelInfo::UpdateArgs(uint64_t newLen, const uint8_t *&newArgs)
+Status KernelInfo::UpdateArgs(uint64_t newLen, const uint8_t *newArgs)
 {
     MKI_CHECK(newLen <= maxArgsSize, "failed to check args len " << newLen, return Status::FailStatus(ERROR_INVALID_VALUE));
     initFlag_ = false;
