@@ -182,8 +182,13 @@ function fn_build_dependency()
 
     [[ -d "$THIRD_PARTY_DIR/compiler" ]] && rm -rf $THIRD_PARTY_DIR/compiler
     mkdir -p $THIRD_PARTY_DIR/compiler
-    ln -s $ASCEND_HOME_PATH/compiler/ccec_compiler $CCEC_COMPILER_DIR
-    ln -s $ASCEND_HOME_PATH/compiler/tikcpp $TIKCPP_DIR
+    if [ -f "$ASCEND_HOME_PATH/compiler/ccec_compiler/bin/ccec" ]; then
+        ln -s $ASCEND_HOME_PATH/compiler/ccec_compiler $CCEC_COMPILER_DIR
+        ln -s $ASCEND_HOME_PATH/compiler/tikcpp $TIKCPP_DIR
+    else
+        ln -s $ASCEND_HOME_PATH/tools/ccec_compiler $CCEC_COMPILER_DIR
+        ln -s $ASCEND_HOME_PATH/tools/tikcpp $TIKCPP_DIR
+    fi
 }
 
 function fn_build_release_3rdparty()
