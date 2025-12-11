@@ -28,6 +28,7 @@ public:
     KernelBase(const std::string &opName, const BinHandle *handle);
     ~KernelBase() override;
     Kernel *Clone() const override;
+    Status Copy(const Kernel &other) override;
     void Reset() override;
 
     bool CanSupport(const LaunchParam &launchParam) const override;
@@ -47,7 +48,6 @@ public:
 protected:
     virtual Status InitImpl(const LaunchParam &launchParam);
     const BinHandle *GetBinHandle() const;
-    void Copy(const KernelBase &other);
 
 protected:
     uint32_t launchBufferSize_ = 0;

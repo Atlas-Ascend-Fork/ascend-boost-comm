@@ -50,6 +50,7 @@ public:
     void Reset();
     // Args
     Status InitArgs(uint64_t len);
+    Status UpdateArgs(uint64_t newLen, const uint8_t *newArgs);
     uint8_t *GetArgs() const;
     uint64_t GetArgsSize() const;
 
@@ -68,6 +69,7 @@ public:
     void SetTilingHostAddr(uint8_t *addr, uint64_t len);
     uint8_t *GetTilingHostAddr() const;
     uint64_t GetTilingSize() const;
+    void FreeTilingHost();
 
     void SetTilingUsedSize(uint64_t usedSize);
     uint64_t GetTilingUsedSize() const;
