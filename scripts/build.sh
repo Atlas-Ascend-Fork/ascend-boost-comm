@@ -152,10 +152,10 @@ function fn_build_googletest()
     fi
     [[ ! -d "$THIRD_PARTY_DIR" ]] && mkdir -p $THIRD_PARTY_DIR
     cd $THIRD_PARTY_DIR
-    wget --no-check-certificate https://github.com/google/googletest/archive/refs/tags/v1.13.0.tar.gz
-    tar -xf v1.13.0.tar.gz
-    mv googletest-1.13.0 googletest
-    rm v1.13.0.tar.gz
+    wget --no-check-certificate https://gitcode.com/cann-src-third-party/googletest/blob/master/googletest-1.14.0.tar.gz
+    tar -xf googletest-1.14.0.tar.gz
+    mv googletest-1.14.0 googletest
+    rm googletest-1.14.0.tar.gz
 }
 
 function fn_build_nlohmann_json()
