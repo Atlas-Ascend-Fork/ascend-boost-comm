@@ -65,7 +65,7 @@ function fn_install_cann_and_kernel()
     wait
     echo "INSTALL CANN TOOLKIT finished"
 
-    OPS_PKG_LIST=(cann-910b-ops-legacy_*.run cann-opbase_*.run cann-hixl_*.run cann-hccl_*.run cann-dvpp_*.run cann-910b-ops-math_*.run cann-910b-ops-nn_*.run cann-910b-ops-cv_*.run cann-910b-ops-transformer_*.run)
+    OPS_PKG_LIST=(cann-910b-ops-legacy_*.run cann-hixl_*.run cann-dvpp_*.run cann-910b-ops-math_*.run cann-910b-ops-nn_*.run cann-910b-ops-cv_*.run cann-910b-ops-transformer_*.run)
  
     for ((i = 0; i < ${#OPS_PKG_LIST[@]}; i++)); do
         if ls ${OPS_PKG_LIST[i]} &> /dev/null; then
@@ -90,7 +90,7 @@ function fn_install_cann_and_kernel()
     mkdir -p ${cann_install_path}/latest/opp/built-in/op_impl/ai_core/tbe/kernel/
     chmod -R 777 ${cann_install_path}
 
-    SOC_ARCH_LIST=(910b 310p 910 310b)
+    SOC_ARCH_LIST=(310p 910 310b)
     for ((i = 0; i < ${#SOC_ARCH_LIST[@]}; i++)); do
         soc_arch=${SOC_ARCH_LIST[i]}
         SUB_OPS_PKG_LIST=(cann-${soc_arch}-ops-legacy_*.run cann-${soc_arch}-ops-math_*.run cann-${soc_arch}-ops-nn_*.run cann-${soc_arch}-ops-cv_*.run cann-${soc_arch}-ops-transformer_*.run)
@@ -140,8 +140,8 @@ function fn_install_cann_and_kernel()
     set -e
 
     # atb
-    cp -rf /usr1/CANN/mstx ${ASCEND_HOME_PATH}/tools/
-    cp -rf /usr1/CANN/mstx/include/mstx ${ASCEND_HOME_PATH}/include/
+    cp -rf ${CODE_ROOT}/../mstx ${ASCEND_HOME_PATH}/tools/
+    cp -rf ${CODE_ROOT}/../mstx/include/mstx ${ASCEND_HOME_PATH}/include/
 }
 
 function fn_build_googletest()
