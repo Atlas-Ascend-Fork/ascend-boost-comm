@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2024 Huawei Technologies Co., Ltd.
- * This file is a part of the CANN Open Software.
- * Licensed under CANN Open Software License Agreement Version 2.0 (the "License").
+ * This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+ * CANN Open Software License Agreement Version 2.0 (the "License").
  * Please refer to the License for details. You may not use this file except in compliance with the License.
  * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
@@ -82,7 +82,7 @@ static void GetModuleLogLevelFromEnvCfg(bool &isSet, bool &isOpen, LogLevel &log
     for (const auto &i : envLogLevels) {
         std::vector<std::string> key_value = splitString(i, '=');
         if (key_value.size() >= 1) {
-            if (key_value[0] == "ATB") {
+            if (key_value[0] == "OP") {
                 if (key_value.size() == 2) { // 2: correct key-value pair
                     isSet = true;
                     envLogLevel = key_value[1];

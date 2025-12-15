@@ -1,7 +1,7 @@
 #!/bin/bash
 # Copyright (c) 2024 Huawei Technologies Co., Ltd.
-# This file is a part of the CANN Open Software.
-# Licensed under CANN Open Software License Agreement Version 2.0 (the "License").
+# This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+# CANN Open Software License Agreement Version 2.0 (the "License").
 # Please refer to the License for details. You may not use this file except in compliance with the License.
 # THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
 # INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
@@ -205,10 +205,10 @@ function fn_init_pytorch_env()
 {
     export PYTHON_INCLUDE_PATH="$(python3 -c 'from sysconfig import get_paths; print(get_paths()["include"])')"
     export PYTHON_LIB_PATH="$(python3 -c 'from sysconfig import get_paths; print(get_paths()["include"])')"
-    export PYTORCH_INSTALL_PATH="$(python3 -c 'import importlib.util; spec=importlib.util.find_spec("torch"); \
-                                                   print(spec.submodule_search_locations[0])')"
-    export PYTORCH_NPU_INSTALL_PATH="$(python3 -c 'import importlib.util; spec=importlib.util.find_spec("torch_npu"); \
-                                                   print(spec.submodule_search_locations[0])')"
+    export PYTORCH_INSTALL_PATH="$(python3 -c 'import importlib.util; SPEC=importlib.util.find_spec("torch"); \
+                                                   print(SPEC.submodule_search_locations[0])')"
+    export PYTORCH_NPU_INSTALL_PATH="$(python3 -c 'import importlib.util; SPEC=importlib.util.find_spec("torch_npu"); \
+                                                   print(SPEC.submodule_search_locations[0])')"
     echo "PYTHON_INCLUDE_PATH=$PYTHON_INCLUDE_PATH"
     echo "PYTHON_LIB_PATH=$PYTHON_LIB_PATH"
     echo "PYTORCH_INSTALL_PATH=$PYTORCH_INSTALL_PATH"
@@ -372,7 +372,13 @@ function fn_main()
             COMPILE_OPTIONS="${COMPILE_OPTIONS} -DNO_WERROR=ON"
             ;;
         "--msdebug")
-            CHIP_TYPE=$(npu-smi info -m | grep -oE 'Ascend\s*\S+' | head -n 1 | tr -d ' ' | tr '[:upper:]' '[:lower:]')
+            # In msdebug mode, ATB uses the same kernel configuration for 910c and 910b.
+            # Map 910c to 910b to keep the CMake SOC-matching logic consistent.
+            if npu-smi info -t board -i 0 -c 0 | grep -qE 'NPU Name\s*:\s*(9392|9382)'; then
+                CHIP_TYPE='ascend910b'
+            else
+                CHIP_TYPE=$(npu-smi info -m | grep -oE 'Ascend\s*\S+' | head -n 1 | tr -d ' ' | tr '[:upper:]' '[:lower:]')
+            fi
             COMPILE_OPTIONS="${COMPILE_OPTIONS} -DUSE_MSDEBUG=ON -DCHIP_TYPE=${CHIP_TYPE}"
             ;;
         "--ascendc_dump")
