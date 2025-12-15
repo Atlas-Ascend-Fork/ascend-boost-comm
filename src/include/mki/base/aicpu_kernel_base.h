@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2024 Huawei Technologies Co., Ltd.
- * This file is a part of the CANN Open Software.
- * Licensed under CANN Open Software License Agreement Version 2.0 (the "License").
+ * This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+ * CANN Open Software License Agreement Version 2.0 (the "License").
  * Please refer to the License for details. You may not use this file except in compliance with the License.
  * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
@@ -26,6 +26,7 @@ public:
     AicpuKernelBase(const std::string &opName, const char* deviceKernelName);
     ~AicpuKernelBase() override;
     Kernel *Clone() const override;
+    Status Copy(const Kernel &other) override;
     void Reset() override;
 
     bool CanSupport(const LaunchParam &launchParam) const override;
@@ -44,7 +45,6 @@ public:
 protected:
     virtual Status InitImpl(const LaunchParam &launchParam);
     const std::string GetDeviceKernelName() const;
-    void Copy(const AicpuKernelBase &other);
 
 protected:
     uint32_t launchBufferSize_ = 0;

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2024 Huawei Technologies Co., Ltd.
- * This file is a part of the CANN Open Software.
- * Licensed under CANN Open Software License Agreement Version 2.0 (the "License").
+ * This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+ * CANN Open Software License Agreement Version 2.0 (the "License").
  * Please refer to the License for details. You may not use this file except in compliance with the License.
  * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
@@ -62,6 +62,7 @@ const std::string SOC_VERSION_ASCEND910_9382 = "Ascend910_9382";
 const std::string SOC_VERSION_ASCEND910_9372 = "Ascend910_9372";
 const std::string SOC_VERSION_ASCEND910_9361 = "Ascend910_9361";
 const std::string SOC_VERSION_ASCEND910_95 = "Ascend910_95";
+const std::string SOC_VERSION_ASCEND910_9579 = "Ascend910_9579";
 const std::string SOC_VERSION_ASCEND910_9589 = "Ascend910_9589";
 const std::string SOC_VERSION_ASCEND910_9599 = "Ascend910_9599";
 
@@ -69,7 +70,8 @@ const std::unordered_set<std::string> FIXPIPE_SOCVERSION = {
     SOC_VERSION_ASCEND310B1, SOC_VERSION_ASCEND910B1, SOC_VERSION_ASCEND910B2, SOC_VERSION_ASCEND910B3,
     SOC_VERSION_ASCEND910B4, SOC_VERSION_ASCEND910B4_1, SOC_VERSION_ASCEND910_9391, SOC_VERSION_ASCEND910_9381,
     SOC_VERSION_ASCEND910_9392, SOC_VERSION_ASCEND910_9382, SOC_VERSION_ASCEND910_9372, SOC_VERSION_ASCEND910_9361,
-    SOC_VERSION_ASCEND031, SOC_VERSION_ASCEND910_95, SOC_VERSION_ASCEND910_9589, SOC_VERSION_ASCEND910_9599
+    SOC_VERSION_ASCEND031, SOC_VERSION_ASCEND910_95, SOC_VERSION_ASCEND910_9579, SOC_VERSION_ASCEND910_9589,
+    SOC_VERSION_ASCEND910_9599
 };
 
 enum class PlatformInfoType {

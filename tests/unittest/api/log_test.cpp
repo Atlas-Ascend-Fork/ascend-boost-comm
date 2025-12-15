@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2024 Huawei Technologies Co., Ltd.
- * This file is a part of the CANN Open Software.
- * Licensed under CANN Open Software License Agreement Version 2.0 (the "License").
+ * This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+ * CANN Open Software License Agreement Version 2.0 (the "License").
  * Please refer to the License for details. You may not use this file except in compliance with the License.
  * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
@@ -20,7 +20,7 @@ namespace Mki {
 TEST(LogCore, InitTest1)
 {
     char envGlobalLogLevel[] = "ASCEND_GLOBAL_LOG_LEVEL=4";
-    char envModuleLogLevel[] = "ASCEND_MODULE_LOG_LEVEL=ATB=:$ASCEND_MODULE_LOG_LEVEL";
+    char envModuleLogLevel[] = "ASCEND_MODULE_LOG_LEVEL=OP=:$ASCEND_MODULE_LOG_LEVEL";
     char envLogToStdout[] = "ASCEND_SLOG_PRINT_TO_STDOUT=0";
     putenv(envGlobalLogLevel);
     putenv(envModuleLogLevel);
@@ -35,7 +35,7 @@ TEST(LogCore, InitTest1)
 TEST(LogCore, InitTest2)
 {
     char envGlobalLogLevel[] = "ASCEND_GLOBAL_LOG_LEVEL=1";
-    char envModuleLogLevel[] = "ASCEND_MODULE_LOG_LEVEL=ATB=4:$ASCEND_MODULE_LOG_LEVEL";
+    char envModuleLogLevel[] = "ASCEND_MODULE_LOG_LEVEL=OP=4:$ASCEND_MODULE_LOG_LEVEL";
     char envLogToStdout[] = "ASCEND_SLOG_PRINT_TO_STDOUT=1";
     putenv(envGlobalLogLevel);
     putenv(envModuleLogLevel);
@@ -50,7 +50,7 @@ TEST(LogCore, InitTest2)
 TEST(LogCore, InitTest3)
 {
     char envGlobalLogLevel[] = "ASCEND_GLOBAL_LOG_LEVEL=";
-    char envModuleLogLevel[] = "ASCEND_MODULE_LOG_LEVEL=ATB=:$ASCEND_MODULE_LOG_LEVEL";
+    char envModuleLogLevel[] = "ASCEND_MODULE_LOG_LEVEL=OP=:$ASCEND_MODULE_LOG_LEVEL";
     char envLogToStdout[] = "ASCEND_SLOG_PRINT_TO_STDOUT=1";
     putenv(envGlobalLogLevel);
     putenv(envModuleLogLevel);
@@ -65,7 +65,7 @@ TEST(LogCore, InitTest3)
 TEST(LogCore, InitTest4)
 {
     char envGlobalLogLevel[] = "ASCEND_GLOBAL_LOG_LEVEL=1";
-    char envModuleLogLevel[] = "ASCEND_MODULE_LOG_LEVEL=ATB=2:$ASCEND_MODULE_LOG_LEVEL";
+    char envModuleLogLevel[] = "ASCEND_MODULE_LOG_LEVEL=OP=2:$ASCEND_MODULE_LOG_LEVEL";
     char envLogToStdout[] = "ASCEND_SLOG_PRINT_TO_STDOUT=0";
     putenv(envGlobalLogLevel);
     putenv(envModuleLogLevel);
@@ -80,7 +80,7 @@ TEST(LogCore, InitTest4)
 TEST(LogCore, InitTest5)
 {
     char envGlobalLogLevel[] = "ASCEND_GLOBAL_LOG_LEVEL=0";
-    char envModuleLogLevel[] = "ASCEND_MODULE_LOG_LEVEL=ATB=:$ASCEND_MODULE_LOG_LEVEL";
+    char envModuleLogLevel[] = "ASCEND_MODULE_LOG_LEVEL=OP=:$ASCEND_MODULE_LOG_LEVEL";
     char envLogToStdout[] = "ASCEND_SLOG_PRINT_TO_STDOUT=1";
     putenv(envGlobalLogLevel);
     putenv(envModuleLogLevel);
@@ -107,7 +107,7 @@ TEST(LogCore, InitTest6)
 TEST(LogCore, LogTest1)
 {
     char envGlobalLogLevel[] = "ASCEND_GLOBAL_LOG_LEVEL=1";
-    char envModuleLogLevel[] = "ASCEND_MODULE_LOG_LEVEL=ATB=:$ASCEND_MODULE_LOG_LEVEL";
+    char envModuleLogLevel[] = "ASCEND_MODULE_LOG_LEVEL=OP=:$ASCEND_MODULE_LOG_LEVEL";
     char envLogToStdout[] = "ASCEND_SLOG_PRINT_TO_STDOUT=1";
     putenv(envGlobalLogLevel);
     putenv(envModuleLogLevel);
@@ -124,7 +124,7 @@ TEST(LogCore, LogTest1)
 TEST(LogCore, LogTest2)
 {
     char envGlobalLogLevel[] = "ASCEND_GLOBAL_LOG_LEVEL=1";
-    char envModuleLogLevel[] = "ASCEND_MODULE_LOG_LEVEL=ATB=:$ASCEND_MODULE_LOG_LEVEL";
+    char envModuleLogLevel[] = "ASCEND_MODULE_LOG_LEVEL=OP=:$ASCEND_MODULE_LOG_LEVEL";
     char envLogToStdout[] = "ASCEND_SLOG_PRINT_TO_STDOUT=1";
     putenv(envGlobalLogLevel);
     putenv(envModuleLogLevel);

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2024 Huawei Technologies Co., Ltd.
- * This file is a part of the CANN Open Software.
- * Licensed under CANN Open Software License Agreement Version 2.0 (the "License").
+ * This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+ * CANN Open Software License Agreement Version 2.0 (the "License").
  * Please refer to the License for details. You may not use this file except in compliance with the License.
  * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
@@ -32,7 +32,7 @@
 
 namespace Mki {
 constexpr size_t MAX_LOG_FILE_COUNT = 50;                               // 50 回滚管理50个日志文件
-constexpr size_t MAX_FILE_NAME_LEN = 127;                               // 127: max file length without '\0' = 128 - 1
+constexpr size_t MAX_FILE_NAME_LEN = 255;                               // 255: max file length without '\0' = 256 - 1
 constexpr uint64_t MAX_FILE_SIZE_THRESHOLD = 1073741824;                // 1073741824 当前单个日志文件最大1G
 constexpr uint64_t DISK_AVAILABEL_LIMIT = 10 * MAX_FILE_SIZE_THRESHOLD; // 磁盘剩余空间门限10G
 
@@ -124,18 +124,21 @@ void LogSinkFile::Log(const char *log, uint64_t logLen)
 
 static bool IsValidFileName(const std::string &name)
 {
-    size_t len = name.size();
-    if (len == 0 || len > MAX_FILE_NAME_LEN) {
+    // 1. check the name not empty
+    if (name.empty()) {
         return false;
     }
-
-    for (size_t i = 0; i < len; ++i) {
-        char c = name[i];
-        if (!isalnum(c) && c != '_' && c != '/') {
+    // 2. check the length of the name
+    if (name.size() > MAX_FILE_NAME_LEN) {
+        return false;
+    }
+    // 3. check the name has invalid characters
+    const std::vector<char> invalidChars = { '\n', '\f', '\r', '\v', '\t', '\b', '\u007f', ' ', '$'};
+    for (auto c : invalidChars) {
+        if (name.find(c) != std::string::npos) {
             return false;
         }
     }
-
     return true;
 }
 
@@ -144,22 +147,28 @@ void LogSinkFile::Init()
     boostType_ = "atb";
 
     std::string logRootDir = GetHomeDir();
-
-    std::string env = std::string(std::getenv("HOME") != nullptr ? std::getenv("HOME") : "");
+    char *rawEnv = nullptr;
+    std::string env = "";
+    rawEnv = std::getenv("HOME");
+    env = std::string(rawEnv != nullptr ? rawEnv : "");
     logRootDir = IsValidFileName(env) ? env + "/ascend/log" : logRootDir;
     logRootDir = PathCheckAndRegular(logRootDir);
 
-    env = std::string(std::getenv("ASCEND_WORK_PATH") != nullptr ? std::getenv("ASCEND_WORK_PATH") : "");
+    rawEnv = std::getenv("ASCEND_WORK_PATH");
+    env = std::string(rawEnv != nullptr ? rawEnv : "");
     logRootDir = IsValidFileName(env) ? env + "/log" : logRootDir;
     logRootDir = PathCheckAndRegular(logRootDir);
 
-    env = std::string(std::getenv("ASCEND_PROCESS_LOG_PATH") != nullptr ? std::getenv("ASCEND_PROCESS_LOG_PATH") : "");
+    rawEnv = std::getenv("ASCEND_PROCESS_LOG_PATH");
+    env = std::string(rawEnv != nullptr ? rawEnv : "");
     logRootDir = IsValidFileName(env) ? env : logRootDir;
     logRootDir = PathCheckAndRegular(logRootDir);
 
     logDir_ = logRootDir + "/" + boostType_;
 
-    env = std::string(std::getenv("ASCEND_LOG_SYNC_SAVE") != nullptr ? std::getenv("ASCEND_LOG_SYNC_SAVE") : "");
+    rawEnv = std::getenv("ASCEND_LOG_SYNC_SAVE");
+    env = std::string(rawEnv != nullptr ? rawEnv : "");
+
     isFlush_ = env.size() > 0 && env.size() <= MAX_ENV_STRING_LEN - 1 ? env == "1" : false;
 }
 
