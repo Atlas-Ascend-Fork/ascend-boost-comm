@@ -167,8 +167,8 @@ private:
         static std::once_flag overflowFlag;
         static void *overflowAddr = nullptr;
         static int32_t st = MKIRT_SUCCESS;
-        std::call_once(overflowFlag, [&]() {st = MkiRtCtxGetOverflowAddr(&overflowAddr); });
-        MKI_CHECK(st == MKIRT_SUCCESS, "Mki Get RtC2cCtrlAddr failed: %d" << st,
+        std::call_once(overflowFlag, [&]() { st = MkiRtCtxGetOverflowAddr(&overflowAddr); });
+        MKI_CHECK(st == MKIRT_SUCCESS, "Mki Get OverflowAddr failed: %d" << st,
                   return Status::FailStatus(ERROR_RUN_TIME_ERROR));
         args[argsNum - OVERFLOW_ADDR_NEG_IDX] = overflowAddr;
         MKI_LOG(DEBUG) << "args info: overflow addr " << (argsNum - OVERFLOW_ADDR_NEG_IDX);
