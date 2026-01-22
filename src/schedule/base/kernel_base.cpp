@@ -8,6 +8,7 @@
  * See LICENSE in the root of the software repository for the full text of the License.
  */
 #include "mki/base/kernel_base.h"
+#include <mutex>
 #include <acl/acl.h>
 #include <securec.h>
 #include "mki/utils/assert/assert.h"
@@ -163,9 +164,11 @@ private:
 
     Status UpdateOverflowArgs(void **args, uint64_t argsNum) const
     {
-        void *overflowAddr = nullptr;
-        int32_t st = MkiRtCtxGetOverflowAddr(&overflowAddr);
-        MKI_CHECK(st == MKIRT_SUCCESS, "Mki Get RtC2cCtrlAddr failed: %d" << st,
+        static std::once_flag overflowFlag;
+        static void *overflowAddr = nullptr;
+        static int32_t st = MKIRT_SUCCESS;
+        std::call_once(overflowFlag, [&]() { st = MkiRtCtxGetOverflowAddr(&overflowAddr); });
+        MKI_CHECK(st == MKIRT_SUCCESS, "Mki Get OverflowAddr failed: %d" << st,
                   return Status::FailStatus(ERROR_RUN_TIME_ERROR));
         args[argsNum - OVERFLOW_ADDR_NEG_IDX] = overflowAddr;
         MKI_LOG(DEBUG) << "args info: overflow addr " << (argsNum - OVERFLOW_ADDR_NEG_IDX);
