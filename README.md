@@ -31,6 +31,15 @@ ascend-boost-comm
 ```
 
 ## 二、环境构建
+### 基础环境依赖
+Ascend Boost Comm库依赖Python、PyTorch以及torch_npu，具体版本信息如下表：  
+
+|    | 版本 |
+|---|---|
+| Python | 3.10.x或3.11.x |
+| PyTorch | 2.1.0 |
+| torch_npu | ≥6.0.rc2, ≤7.2.0.1 |
+
 ### 快速安装CANN软件
 本节提供快速安装CANN软件的示例命令，更多安装步骤请参考[详细安装指南](#cann详细安装指南)。
 

@@ -8,6 +8,7 @@
  * See LICENSE in the root of the software repository for the full text of the License.
  */
 #include "mki/base/kernel_base.h"
+#include <mutex>
 #include <acl/acl.h>
 #include <securec.h>
 #include "mki/utils/assert/assert.h"
@@ -163,9 +164,11 @@ private:
 
     Status UpdateOverflowArgs(void **args, uint64_t argsNum) const
     {
-        void *overflowAddr = nullptr;
-        int32_t st = MkiRtCtxGetOverflowAddr(&overflowAddr);
-        MKI_CHECK(st == MKIRT_SUCCESS, "Mki Get RtC2cCtrlAddr failed: %d" << st,
+        static std::once_flag overflowFlag;
+        static void *overflowAddr = nullptr;
+        static int32_t st = MKIRT_SUCCESS;
+        std::call_once(overflowFlag, [&]() { st = MkiRtCtxGetOverflowAddr(&overflowAddr); });
+        MKI_CHECK(st == MKIRT_SUCCESS, "Mki Get OverflowAddr failed: %d" << st,
                   return Status::FailStatus(ERROR_RUN_TIME_ERROR));
         args[argsNum - OVERFLOW_ADDR_NEG_IDX] = overflowAddr;
         MKI_LOG(DEBUG) << "args info: overflow addr " << (argsNum - OVERFLOW_ADDR_NEG_IDX);
@@ -363,14 +366,17 @@ bool KernelBase::CanSupport(const LaunchParam &launchParam) const
     MKI_CHECK(false, "CanSupport has to be overriden!", return false);
 }
 
-void KernelBase::Copy(const KernelBase &other)
+Status KernelBase::Copy(const Kernel &other)
 {
-    kernelName_ = other.kernelName_;
-    launchBufferSize_ = other.launchBufferSize_;
-    handle_ = other.handle_;
-    kernelType_ = other.kernelType_;
-    creator_ = other.creator_;
-    kernelInfo_.Copy(other.kernelInfo_);
+    auto const* kernelbase = dynamic_cast<const KernelBase*>(&other);
+    MKI_CHECK(kernelbase != nullptr, "failed to convert kernel type", return Status::FailStatus(ERROR_KERNEL_NOT_EXIST));
+    kernelName_ = kernelbase->kernelName_;
+    launchBufferSize_ = kernelbase->launchBufferSize_;
+    handle_ = kernelbase->handle_;
+    kernelType_ = kernelbase->kernelType_;
+    creator_ = kernelbase->creator_;
+    kernelInfo_.Copy(kernelbase->kernelInfo_);
+    return Status::OkStatus();
 }
 
 uint64_t KernelBase::GetTilingSize(const LaunchParam &launchParam) const

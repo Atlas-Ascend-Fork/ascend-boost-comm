@@ -203,15 +203,18 @@ bool AicpuKernelBase::CanSupport(const LaunchParam &launchParam) const
     MKI_CHECK(false, "CanSupport has to be overriden!", return false);
 }
 
-void AicpuKernelBase::Copy(const AicpuKernelBase &other)
+Status AicpuKernelBase::Copy(const Kernel &other)
 {
-    kernelName_ = other.kernelName_;
-    launchBufferSize_ = other.launchBufferSize_;
-    creator_ = other.creator_;
-    kernelInfo_.Copy(other.kernelInfo_);
+    auto const* kernelbase = dynamic_cast<const AicpuKernelBase*>(&other);
+    MKI_CHECK(kernelbase != nullptr, "failed to convert kernel type", return Status::FailStatus(ERROR_KERNEL_NOT_EXIST));
+    kernelName_ = kernelbase->kernelName_;
+    launchBufferSize_ = kernelbase->launchBufferSize_;
+    creator_ = kernelbase->creator_;
+    kernelInfo_.Copy(kernelbase->kernelInfo_);
 
-    deviceKernelName_ = other.deviceKernelName_;
-    soName_ = other.soName_;
+    deviceKernelName_ = kernelbase->deviceKernelName_;
+    soName_ = kernelbase->soName_;
+    return Status::OkStatus();
 }
 
 uint64_t AicpuKernelBase::GetTilingSize(const LaunchParam &launchParam) const

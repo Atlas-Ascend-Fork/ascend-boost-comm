@@ -26,7 +26,11 @@
 namespace Mki {
 std::mutex g_pcLock;
 const std::string FIXPIPE_CONFIG_KEY = "Intrinsic_fix_pipe_";
-const std::string PLATFORM_RELATIVE_PATH = "/runtime/data/platform_config";
+#if defined(__aarch64__)
+const std::string PLATFORM_RELATIVE_PATH = "/aarch64-linux/data/platform_config";
+#elif defined(__x86_64__)
+const std::string PLATFORM_RELATIVE_PATH = "/x86_64-linux/data/platform_config";
+#endif
 const std::string INI_FILE_SUFFIX = "ini";
 const std::string STR_SOC_VERSION = "SoC_version";
 const std::string STR_AIC_VERSION = "AIC_version";
@@ -61,12 +65,17 @@ const std::string SOC_VERSION_ASCEND910_9392 = "Ascend910_9392";
 const std::string SOC_VERSION_ASCEND910_9382 = "Ascend910_9382";
 const std::string SOC_VERSION_ASCEND910_9372 = "Ascend910_9372";
 const std::string SOC_VERSION_ASCEND910_9361 = "Ascend910_9361";
+const std::string SOC_VERSION_ASCEND910_95 = "Ascend910_95";
+const std::string SOC_VERSION_ASCEND910_9579 = "Ascend910_9579";
+const std::string SOC_VERSION_ASCEND910_9589 = "Ascend910_9589";
+const std::string SOC_VERSION_ASCEND910_9599 = "Ascend910_9599";
 
 const std::unordered_set<std::string> FIXPIPE_SOCVERSION = {
     SOC_VERSION_ASCEND310B1, SOC_VERSION_ASCEND910B1, SOC_VERSION_ASCEND910B2, SOC_VERSION_ASCEND910B3,
     SOC_VERSION_ASCEND910B4, SOC_VERSION_ASCEND910B4_1, SOC_VERSION_ASCEND910_9391, SOC_VERSION_ASCEND910_9381,
     SOC_VERSION_ASCEND910_9392, SOC_VERSION_ASCEND910_9382, SOC_VERSION_ASCEND910_9372, SOC_VERSION_ASCEND910_9361,
-    SOC_VERSION_ASCEND031
+    SOC_VERSION_ASCEND031, SOC_VERSION_ASCEND910_95, SOC_VERSION_ASCEND910_9579, SOC_VERSION_ASCEND910_9589,
+    SOC_VERSION_ASCEND910_9599
 };
 
 enum class PlatformInfoType {
