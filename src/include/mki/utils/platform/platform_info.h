@@ -20,7 +20,7 @@ enum class PlatformType {
     ASCEND_910A,
     ASCEND_910B,
     ASCEND_310B,
-    ASCEND_910_95,
+    ASCEND_950,
     PLATFORM_INVALID,
 };
 
