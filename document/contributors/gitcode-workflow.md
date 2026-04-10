@@ -3,7 +3,7 @@
 ### 1. 开展工作流前的准备
 
 - 安装Git：请先确保您的电脑上已经安装了Git软件。如您需了解GIt，可以在Google、baidu或其他搜索引擎上求助相关内容。
-- 在开展Gitcode的工作流之前，您需要先在Ascend的代码托管平台的上找到[Ascend Boost Comm](https://gitcode.com/cann/ascend-boost-comm)仓库。
+- 在开展Gitcode的工作流之前，您需要先在Ascend的代码托管平台上找到[Ascend Boost Comm](https://gitcode.com/cann/ascend-boost-comm)仓库。
 
 ### 2. 准备本地代码
 
@@ -16,7 +16,7 @@
 
 #### 2.2 把fork分支克隆到本地
 
-请按照以下的复制过程将repository内的代码下载到您的在计算机上。
+请按照以下的复制过程将repository内的代码下载到您的计算机上。
 
 1）**创建本地工作目录**：
 
@@ -138,7 +138,7 @@ git add .
 git commit -m "提交内容描述"
 ```
 
-您可能会在前次提交的基础上，继续编辑构建并测试更多内容，可以使用 `commit --amend` 继续添加提交。
+您可能会在前次提交的基础上，继续编辑构建并测试更多内容，可以使用 `git commit --amend` 继续添加提交。
 
 
 

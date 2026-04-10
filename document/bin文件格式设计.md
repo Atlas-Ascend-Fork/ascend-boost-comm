@@ -1,5 +1,5 @@
 # object文件
-原始object文件，毕昇C++编译生成或者TBE二进制包里
+原始object文件，由毕昇C++编译生成，或者位于TBE二进制包里
 
 # bin文件
 version = 1.0  
