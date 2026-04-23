@@ -9,6 +9,7 @@
  */
 #ifndef MKI_UTILS_STATUS_STATUS_H
 #define MKI_UTILS_STATUS_STATUS_H
+#include <cstdint>
 #include <string>
 
 namespace Mki {

@@ -10,6 +10,7 @@
 #ifndef MKI_UTILS_SHARE_MEMORY_SHARE_MEMORY_H
 #define MKI_UTILS_SHARE_MEMORY_SHARE_MEMORY_H
 
+#include <cstdint>
 #include <semaphore.h>
 #include <iostream>
 
