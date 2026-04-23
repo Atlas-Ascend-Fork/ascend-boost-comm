@@ -12,7 +12,7 @@
 
 #include <map>
 #include <string>
-#include "platform_configs.h"
+#include "mki/utils/platform/platform_configs.h"
 
 namespace Mki {
 

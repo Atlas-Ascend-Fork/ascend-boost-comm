@@ -10,6 +10,7 @@
 #ifndef MKI_UTILS_PLATFORM_PLATFORM_CONFIGS_H
 #define MKI_UTILS_PLATFORM_PLATFORM_CONFIGS_H
 
+#include <cstdint>
 #include <map>
 #include <string>
 #include <vector>

@@ -10,6 +10,7 @@
 #ifndef MKI_UTILS_PLATFORM_PLATFORM_INFO_H
 #define MKI_UTILS_PLATFORM_PLATFORM_INFO_H
 
+#include <cstdint>
 #include <string>
 #include <unordered_map>
 #include "mki/utils/platform/platform_manager.h"

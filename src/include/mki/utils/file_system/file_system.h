@@ -9,6 +9,7 @@
  */
 #ifndef MKI_UTILS_FILESYSTEM_FILESYSTEM_H
 #define MKI_UTILS_FILESYSTEM_FILESYSTEM_H
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <sys/stat.h>
