@@ -9,6 +9,7 @@
  */
 
 #include "mki/bin_handle.h"
+#include <cstring>
 #include "mki/utils/assert/assert.h"
 #include "mki/utils/rt/rt.h"
 
@@ -89,7 +90,8 @@ bool BinHandle::Init(const std::string &kernelName)
         uint32_t kernelNameSize = *reinterpret_cast<const uint32_t *>(kernelNameStart);
         kernelNameStart += UINT32_TYPE_LENGTH;
         MKI_CHECK(kernelNameStart + kernelNameSize <= maxAddr, "length error", return false);
-        std::string str = reinterpret_cast<const char *>(kernelNameStart);
+        size_t nameLen = strnlen(reinterpret_cast<const char *>(kernelNameStart), kernelNameSize);
+        std::string str(reinterpret_cast<const char *>(kernelNameStart), nameLen);
         MKI_CHECK(str.length() < kernelNameSize, "length error", return false);
         metaInfo_.kernelList.push_back(str);
         kernelNameStart += kernelNameSize;
