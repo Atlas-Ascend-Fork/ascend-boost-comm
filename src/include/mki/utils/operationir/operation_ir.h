@@ -19,6 +19,7 @@
 namespace Mki {
 // OperationIr中每个TensorInfoIr的supportedDtypes和supportedFormats的元素个数应该相等
 struct TensorInfoIr {
+    std::string name = "";
     std::vector<TensorDType> supportedDtypes;
     std::vector<TensorFormat> supportedFormats;
     bool isOptional = false;
@@ -45,6 +46,8 @@ private:
     std::vector<TensorDType> GetParsedDTypes(const std::string &dTypeStrLine) const;
     std::vector<TensorFormat> GetParseFormats(const std::string &formatStrLine) const;
 
+    bool SetTensorName(SVector<TensorInfoIr> &tensorInfoIrs, const size_t &index,
+        const std::string &tensorName) const;
     bool SetSupportedDtypes(SVector<TensorInfoIr> &tensorInfoIrs, const size_t &index,
         const std::vector<TensorDType> &supportedDtypes) const;
     bool SetSupportedFormats(SVector<TensorInfoIr> &tensorInfoIrs, const size_t &index,
