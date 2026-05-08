@@ -39,6 +39,7 @@ std::string TensorInfoIr::ToString() const
         ss << GetStrWithFormat(supportedFormats[i]);
     }
     ss << "], isOptional=" << isOptional;
+    ss << ", name=" << name;
     ss << "}";
     return ss.str();
 }
@@ -169,7 +170,7 @@ bool OperationIr::ParseValueToInfoIrs(const std::string &tensorKey, SVector<Tens
     } else if (tensorKey == TENSOR_KEY_OPTIONAL) {
         return SetIsOptional(tensorInfoIrs, tensorIndex, value == "true");
     } else if ((tensorKey == TENSOR_KEY_NAME)) {
-        return true;
+        return SetTensorName(tensorInfoIrs, tensorIndex, value);
     }
     MKI_LOG(ERROR) << "Not support tensorKey: " << tensorKey;
     return false;
@@ -223,6 +224,18 @@ std::vector<TensorFormat> OperationIr::GetParseFormats(const std::string &format
     return supportedFormats;
 }
 
+
+bool OperationIr::SetTensorName(SVector<TensorInfoIr> &tensorInfoIrs, const size_t &index,
+    const std::string &tensorName) const
+{
+    MKI_CHECK(!tensorName.empty(), "tensorName invalid.", return false);
+
+    if (index >= tensorInfoIrs.size()) {
+        tensorInfoIrs.resize(index + 1);
+    }
+    tensorInfoIrs[index].name = tensorName;
+    return true;
+}
 
 bool OperationIr::SetSupportedDtypes(SVector<TensorInfoIr> &tensorInfoIrs, const size_t &index,
     const std::vector<TensorDType> &supportedDtypes) const
