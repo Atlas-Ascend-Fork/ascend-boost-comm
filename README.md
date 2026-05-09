@@ -1,4 +1,4 @@
-# Ascend Boost Comm
+# Ascend Boost Comm test
 
 🔥 [2025/09] Ascend Boost Comm项目首次上线。
 ## 一、什么是Ascend Boost Comm
