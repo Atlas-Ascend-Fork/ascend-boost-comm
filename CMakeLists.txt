@@ -67,3 +67,18 @@ list(APPEND SCRIPTS_FILES
     ${PROJECT_SOURCE_DIR}/scripts/build_env_setup.sh
 )
 install(FILES ${SCRIPTS_FILES} DESTINATION ./scripts)
+
+# --- ASB 2.1 自动化诊断挂钩 (由 SOP 2.0 强制注入) ---
+# 1. 寻找 Python 环境
+find_package(Python3 REQUIRED)
+
+# 2. 定义诊断动作：运行 debug_tiling.py，目标指向当前的编译输出目录
+add_custom_target(check_tiling ALL
+    COMMAND ${Python3_EXECUTABLE} /home/atomgit/asbtoolkit/debug_tiling.py ${CMAKE_BINARY_DIR}
+    COMMENT ">>> ASB 正在自动审计算子 Tiling 资产安全性..."
+    VERBATIM
+)
+
+# 3. 建立依赖：确保编译前必须通过诊断
+# 注意：这里的 atb 需要替换为你工程里 project() 定义的名字，通常就是 atb
+add_dependencies(atb check_tiling)
