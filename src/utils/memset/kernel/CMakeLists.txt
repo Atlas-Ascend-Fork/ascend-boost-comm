@@ -19,8 +19,6 @@ set(BUILD_MemsetOperation_MemsetKernel_ascend910b ON)
 
 set(op_name MemsetOperation)
 
-# add_kernel(memory_set ascend310p vector
-#   memset.cc MemsetKernel)
+# add_kernel(memory_set ascend310p vector memset.cc MemsetKernel)
 
-# add_kernel(memory_set ascend910b vector
-#    memset.cc MemsetKernel)
+# add_kernel(memory_set ascend910b vector memset.cc MemsetKernel)
