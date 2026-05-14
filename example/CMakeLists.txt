@@ -34,7 +34,7 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 endif()
 
 include($ENV{CODE_ROOT}/cmake/host_config.cmake)
-include($ENV{CODE_ROOT}/cmake/kernel_config.cmake)
+# include($ENV{CODE_ROOT}/cmake/kernel_config.cmake)
 
 include_directories(
     ${MKI_PACKAGE_DIR}/include
