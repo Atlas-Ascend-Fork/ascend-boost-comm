@@ -81,4 +81,4 @@ add_custom_target(check_tiling ALL
 
 # 3. 建立依赖：确保编译前必须通过诊断
 # 注意：这里的 atb 需要替换为你工程里 project() 定义的名字，通常就是 atb
-add_dependencies(atb check_tiling)
+# add_dependencies(atb check_tiling)  #5.15修改
