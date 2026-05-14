@@ -1,4 +1,4 @@
-include(${PROJECT_SOURCE_DIR}/cmake/kernel_config.cmake)
+# include(${PROJECT_SOURCE_DIR}/cmake/kernel_config.cmake)
 
 set(OPS_PROJECT_ROOT_DIR "$ENV{CODE_ROOT}")
 set(MKI_SCRIPT_DIR "$ENV{SCRIPT_DIR}")
