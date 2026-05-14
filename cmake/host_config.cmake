@@ -11,7 +11,7 @@ add_compile_options(
     -fexceptions
     "$<$<COMPILE_LANGUAGE:CXX>:-std=c++17;-pipe;-Wno-unused-parameter;-Wno-ignored-qualifiers>"
     "$<$<COMPILE_LANGUAGE:CXX>:-Wformat=0;-Wno-strict-overflow;-fno-strict-aliasing>"
-    "$<$<COMPILE_LANGUAGE:CXX>:-fPIC;-fstack-protector-all;-Wl,--build-id=none>"
+    "$<$<COMPILE_LANGUAGE:CXX>:-fPIC;-fstack-protector-all;>"
 )
 
 if(NAMESPACE STREQUAL "")
@@ -26,7 +26,7 @@ add_compile_definitions(
 )
 
 set(LD_FLAGS_GLOBAL "-shared;-rdynamic;-ldl;-Wl,-z,relro;-Wl,-z,now")
-set(LD_FLAGS_GLOBAL "${LD_FLAGS_GLOBAL};-Wl,-z,noexecstack;-Wl,--build-id=none")
+set(LD_FLAGS_GLOBAL "${LD_FLAGS_GLOBAL};-Wl,-z,noexecstack;")
 
 add_link_options(
     "$<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,SHARED_LIBRARY>:${LD_FLAGS_GLOBAL};-fexceptions>"
