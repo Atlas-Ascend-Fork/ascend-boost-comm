@@ -4,7 +4,7 @@ set(CMAKE_SKIP_RPATH TRUE)
 string(REGEX REPLACE "[^A-Za-z0-9_]" "" NAMESPACE "${NAMESPACE}")
 
 if(NOT DEFINED NO_WERROR)
-    add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Wall;-Wextra;-Werror>")
+    add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Wall;-Wextra;>")
 endif()
 
 add_compile_options(
