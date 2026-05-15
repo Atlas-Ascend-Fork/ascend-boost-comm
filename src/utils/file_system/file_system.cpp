@@ -23,7 +23,6 @@
 #include "mki/utils/strings/str_checker.h"
 
 namespace Mki {
-[[maybe_unused]] constexpr size_t MAX_PATH_LEN = 256;
 
 void FileSystem::GetDirChildItems(const std::string &dirPath, std::vector<std::string> &itemPaths)
 {
