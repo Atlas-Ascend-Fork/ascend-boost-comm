@@ -72,7 +72,7 @@ typedef enum {
     MKIRT_MODULE_FUSEIO_BIN  // fusionbin头 + 连续的bin
 } MkiRtModuleType;
 
-typedef struct {
+typedef struct MkiRtModuleInfo {
     MkiRtModuleType type = MKIRT_MODULE_OBJECT;
     uint32_t version = 0;
     const void *data = nullptr;
@@ -80,12 +80,12 @@ typedef struct {
     uint32_t magic = MKIRT_DEV_BINARY_MAGIC_ELF_AICUBE;
 } MkiRtModuleInfo;
 
-typedef struct {
+typedef struct RtHostInputInfoT {
     uint32_t addrOffset{0};
     uint32_t dataOffset{0};
 } RtHostInputInfoT;
 
-typedef struct {
+typedef struct RtArgsExT {
     void *args{nullptr};
     RtHostInputInfoT *hostInputInfoPtr{nullptr};
     uint32_t argsSize{0};
@@ -99,7 +99,7 @@ typedef struct {
 
 #pragma pack(push, 1)
 
-typedef struct {
+typedef struct RtLoadOpFromBufArgs {
     uint8_t *kernelSoBuf;        // the starting address of custom operator so buf
     uint32_t kernelSoBufLen;     // the length of custom operator so buf
     uint8_t *kernelSoName;       // the starting address of custom operator so name
@@ -113,13 +113,13 @@ typedef struct  {
 
 #pragma pack(pop)
 
-typedef struct {
+typedef struct RtKernelLaunchNamesT {
     const char *soName;      // defined for so name
     const char *kernelName;  // defined for kernel type name
     const char *opName;      // defined for operator name
 } RtKernelLaunchNamesT;
 
-typedef struct {
+typedef struct RtAicpuArgsExT {
     void *args{nullptr}; // args host mem addr
     RtHostInputInfoT *hostInputInfoPtr{nullptr}; // nullptr means no host mem input
     RtHostInputInfoT *kernelOffsetInfoPtr{nullptr}; // KernelOffsetInfo, it is different for CCE Kernel and fwk kernel
@@ -133,7 +133,7 @@ typedef struct {
     uint8_t reserved[3] = {0};
 } RtAicpuArgsExT;
 
-typedef struct {
+typedef struct RtTaskCfgInfoT {
     uint8_t qos;
     uint8_t partId;
     uint8_t schemMode; 
@@ -144,7 +144,7 @@ typedef struct {
     uint32_t localMemorySize; 
 } RtTaskCfgInfoT;
 
-typedef struct {
+typedef struct MkiRtKernelParam {
     uint64_t tilingId = 0;
     uint32_t blockDim = 0;
     void *args = nullptr;
@@ -152,7 +152,7 @@ typedef struct {
     RtArgsExT *argsEx = nullptr;
 } MkiRtKernelParam;
 
-typedef struct {
+typedef struct MkiRtAicpuKernelParam {
     uint32_t blockDim = 0;
     void *args = nullptr;
     uint32_t argSize = 0;
