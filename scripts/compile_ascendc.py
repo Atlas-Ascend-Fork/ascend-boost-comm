@@ -131,7 +131,7 @@ def gen_compile_cmd_c310(args, dst: str, sub_arch: str, compile_options):
 
 def gen_fatbin_cmd(args, obj_file: list, dst_file: str):
     compile_cmd = [os.path.join(args.code_root, '3rdparty', 'compiler',
-                                'ccec_compiler', 'bin', 'ld.lld'),
+                                'ccec_compiler', 'bin', "/home/zenukha/Projects/Zenbase/.bin/ld.lld"),
                    '-m', 'aicorelinux', '-Ttext=0']
     compile_cmd += obj_file
     compile_cmd += ['-static', '-o', "%s" % dst_file]

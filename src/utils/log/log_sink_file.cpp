@@ -318,7 +318,7 @@ std::string LogSinkFile::GetHomeDir()
         return "";
     }
 
-    char buffer[bufsize] = {0};
+    char buffer[bufsize]; memset(buffer, 0, bufsize);
     struct passwd pwd;
     struct passwd *result = nullptr;
     if (getpwuid_r(getuid(), &pwd, buffer, bufsize, &result) != 0 || !result) {

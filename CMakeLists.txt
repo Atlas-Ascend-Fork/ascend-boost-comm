@@ -68,14 +68,14 @@ list(APPEND SCRIPTS_FILES
 )
 install(FILES ${SCRIPTS_FILES} DESTINATION ./scripts)
 
-# --- ASB 2.1 自动化诊断挂钩 (由 SOP 2.0 强制注入) ---
+# --- ZSE 2.1 自动化诊断挂钩 (由 SOP 2.0 强制注入) ---
 # 1. 寻找 Python 环境
 find_package(Python3 REQUIRED)
 
 # 2. 定义诊断动作：运行 debug_tiling.py，目标指向当前的编译输出目录
 add_custom_target(check_tiling ALL
-    COMMAND ${Python3_EXECUTABLE} /home/atomgit/asbtoolkit/debug_tiling.py ${CMAKE_BINARY_DIR}
-    COMMENT ">>> ASB 正在自动审计算子 Tiling 资产安全性..."
+    COMMAND ${Python3_EXECUTABLE} $ENV{ZSE_ROOT}/debug_tiling.py ${CMAKE_BINARY_DIR}
+    COMMENT ">>> ZSE 正在自动审计算子 Tiling 资产安全性..."
     VERBATIM
 )
 
