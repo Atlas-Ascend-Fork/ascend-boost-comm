@@ -267,6 +267,27 @@ function fn_cmake_configs_copy()
     done
 }
 
+function fn_warn_gcc_no_werror()
+{
+    if ! command -v gcc &> /dev/null; then
+        return 0
+    fi
+    local gcc_major
+    gcc_major=$(gcc -dumpversion 2>/dev/null | cut -d. -f1)
+    if [[ ! "$gcc_major" =~ ^[0-9]+$ ]]; then
+        return 0
+    fi
+    if (( gcc_major < 12 )); then
+        return 0
+    fi
+    if [[ "$COMPILE_OPTIONS" == *"NO_WERROR=ON"* ]]; then
+        return 0
+    fi
+    echo "Warning: detected GCC ${gcc_major} (>=12). Third-party headers (e.g. PyTorch) may trigger -Werror build failures."
+    echo "         Add --no_werror to the build command, for example:"
+    echo "         bash scripts/build.sh testframework --no_werror"
+}
+
 function fn_build()
 {
     local_ascend_path="/usr/local/Ascend/ascend-toolkit"
@@ -281,6 +302,8 @@ function fn_build()
         echo "env ASCEND_HOME_PATH not exists, build fail"
         exit 1
     fi
+
+    fn_warn_gcc_no_werror
 
     [ -n "$CACHE_DIR" ] && rm -rf $CACHE_DIR
     [[ ! -d "$CACHE_DIR" ]] && mkdir $CACHE_DIR
