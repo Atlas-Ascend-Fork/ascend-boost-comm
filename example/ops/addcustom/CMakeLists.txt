@@ -15,6 +15,10 @@ set(addcustom_srcs
 add_operation(AddcustomOperation "${addcustom_srcs}")
 
 
+add_kernel(addcustom ascend910 vector
+    op_kernel/addcustom.cpp
+    AddcustomKernel)
+
 add_kernel(addcustom ascend910b vector
     op_kernel/addcustom.cpp
     AddcustomKernel)
