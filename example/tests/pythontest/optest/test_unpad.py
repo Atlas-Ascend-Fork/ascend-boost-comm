@@ -25,7 +25,7 @@ batch = 4
 total_length_imm = 9
 shape = (batch, total_length_imm)
 input_ids = np.zeros(shape)
-seq_len = np.random.randint(total_length_imm / 2 , total_length_imm, size=shape[0])
+seq_len = np.random.randint(total_length_imm // 2 , total_length_imm, size=shape[0])
 seq_len[np.random.randint(1, batch, size= 1)] = 0
 
 logging.info(f"seq_len is {seq_len}")
@@ -44,35 +44,35 @@ token_num = np.sum(seq_len)
 class TestUnpad(op_test.OpTest):
     def golden_calc(self, in_tensors):
 
-        batch = in_tensors[0].shape[0]
-        total_length_imm = in_tensors[0].shape[1]
-        seq_len = in_tensors[3]
-        token_num = in_tensors[2]
-        cum_offsets_now = in_tensors[1]
-        input_ids = in_tensors[0]
+        g_batch = in_tensors[0].shape[0]
+        g_total_length_imm = in_tensors[0].shape[1]
+        g_seq_len = in_tensors[3].numpy().flatten()
+        g_token_num = in_tensors[2].item()
+        g_cum_offsets_now = in_tensors[1].numpy().flatten()
+        g_input_ids = in_tensors[0].numpy()
 
-        x_remove_padding = input_ids[0][0 : seq_len[0]]
-        for i in range(1, batch):
-            if seq_len[i] == 0:
+        x_remove_padding = g_input_ids[0][0 : g_seq_len[0]]
+        for i in range(1, g_batch):
+            if g_seq_len[i] == 0:
                 continue
             else:
-                x_remove_padding = np.concatenate((x_remove_padding, input_ids[i][0:seq_len[i]]))
+                x_remove_padding = np.concatenate((x_remove_padding, g_input_ids[i][0:g_seq_len[i]]))
 
-        x_remove_padding = np.pad(x_remove_padding, (0, batch * total_length_imm - token_num[0][0]))
-        cum_offsets_out = np.zeros(batch)
-        for i in range(1, batch):
-            cum_offsets_out[i] = cum_offsets_now[i - 1]
-        padding_offset =seq_len[0] * [0]
-        for i in range(1, batch):
-            if seq_len[i] == 0:
+        x_remove_padding = np.pad(x_remove_padding, (0, g_batch * g_total_length_imm - g_token_num))
+        cum_offsets_out = np.zeros(g_batch)
+        for i in range(1, g_batch):
+            cum_offsets_out[i] = g_cum_offsets_now[i - 1]
+        padding_offset = g_seq_len[0] * [0]
+        for i in range(1, g_batch):
+            if g_seq_len[i] == 0:
                 continue
             else:
-                temp_pad_out = np.array(seq_len[i] * [cum_offsets_now[i - 1]]).reshape(-1)
+                temp_pad_out = np.array(g_seq_len[i] * [g_cum_offsets_now[i - 1]]).reshape(-1)
                 padding_offset = np.concatenate((padding_offset, temp_pad_out))
-        padding_offset = np.pad(padding_offset, (0, batch * total_length_imm - token_num[0][0]))
-        x_remove_padding = torch.from_numpy(x_remove_padding.reshape(1, batch * total_length_imm)).long()
-        cum_offsets_out = torch.from_numpy(cum_offsets_out.reshape(batch, 1)).int()
-        padding_offset = torch.from_numpy(padding_offset.reshape(1, batch * total_length_imm).astype(np.int32))
+        padding_offset = np.pad(padding_offset, (0, g_batch * g_total_length_imm - g_token_num))
+        x_remove_padding = torch.from_numpy(x_remove_padding.reshape(1, g_batch * g_total_length_imm)).long()
+        cum_offsets_out = torch.from_numpy(cum_offsets_out.reshape(g_batch, 1)).int()
+        padding_offset = torch.from_numpy(padding_offset.reshape(1, g_batch * g_total_length_imm).astype(np.int32))
         return [x_remove_padding, cum_offsets_out, padding_offset]
 
     def golden_compare(self, out_tensors, golden_out_tensors):
