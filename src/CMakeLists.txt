@@ -1,3 +1,6 @@
+# Temporary suppress deprecation warnings from CANN/Ascend SDK headers
+add_compile_options(-Wno-deprecated-declarations)
+
 file(GLOB_RECURSE SOURCE_FILES "${CMAKE_CURRENT_LIST_DIR}/*/*.cpp")
 
 # Add memset kernel to libmki
