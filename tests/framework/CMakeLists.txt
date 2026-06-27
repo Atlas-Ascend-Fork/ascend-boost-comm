@@ -38,7 +38,7 @@ target_link_libraries(mki_torch PUBLIC mki_test_autogen mki torch torch_cpu c10 
 target_compile_options(mki_torch PRIVATE
     -Wno-unused-function
     -Wno-attributes
-    -Wno-maybe-uninitialized
+    -Wno-maybe-uninitialized -Wno-dangling-reference
 )
 install(TARGETS mki_torch DESTINATION tests)
 
