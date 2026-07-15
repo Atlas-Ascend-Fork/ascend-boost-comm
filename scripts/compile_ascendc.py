@@ -193,6 +193,7 @@ def get_common_options(args):
     if args.no_warning:
         options.append("-Wno-deprecated-declarations")
         options.append("-Wno-array-bounds")
+        options.append("-Wno-macro-redefined")
     return options
 
 
