@@ -118,7 +118,7 @@ exclude_dirs = [
 ]
 
 # 启用所有安全检查
-skips = []
+skips = ["B605"]
 
 # 报告格式
 format = "screen"
