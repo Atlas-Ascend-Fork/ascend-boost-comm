@@ -20,6 +20,7 @@
 #include <cstring>
 #include <dirent.h>
 #include <fcntl.h>
+#include <filesystem>
 #include <iomanip>
 #include <iostream>
 #include <pwd.h>
@@ -87,13 +88,9 @@ static std::string PathCheckAndRegular(const std::string &path) {
     return "";
   }
 
-  char resolvedPath[PATH_MAX] = {0};
-  std::string res;
-
-  if (realpath(path.c_str(), resolvedPath) != nullptr) {
-    res = resolvedPath;
-  }
-  return res;
+  std::error_code ec;
+  std::filesystem::path result = std::filesystem::weakly_canonical(path, ec);
+  return ec ? path : result.string();
 }
 
 LogSinkFile::LogSinkFile() { Init(); }
