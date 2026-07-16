@@ -97,7 +97,9 @@ std::string FileSystem::BaseName(const std::string &filePath)
 
 std::string FileSystem::DirName(const std::string &path)
 {
-    if (path.size() < 1) {return "";}
+    if (path.size() < 1) {
+        return "";
+    }
     int32_t idx = static_cast<int32_t>(path.size() - 1);
     while (idx >= 0 && path[idx] == '/') {
         idx--;
@@ -149,8 +151,8 @@ bool FileSystem::WriteFile(const char *codeBuf, uint64_t codeLen, const std::str
     }
 
     char resolvedDir[PATH_MAX] = {0};
-    MKI_CHECK(realpath(DirName(filePath).c_str(), resolvedDir) != nullptr,
-              filePath << " realpath resolved fail", return false);
+    MKI_CHECK(realpath(DirName(filePath).c_str(), resolvedDir) != nullptr, filePath << " realpath resolved fail",
+              return false);
 
     int fd = open(filePath.c_str(), O_RDWR | O_CREAT | O_TRUNC, mode);
     if (fd < 0) {
@@ -335,8 +337,8 @@ std::string FileSystem::RemoveTrailingSlash(const std::string &path)
     // If there is no non-/ character and the path is not empty, / is returned.
     if (lastNonSlash == std::string::npos && !path.empty()) {
         return "/";
-    // When the last non-/ character is not the last character,
-    // return the substring from the beginning of the path to the last non-/ character.
+        // When the last non-/ character is not the last character,
+        // return the substring from the beginning of the path to the last non-/ character.
     } else if (lastNonSlash != std::string::npos && lastNonSlash != path.size() - 1) {
         return path.substr(0, lastNonSlash + 1);
     } else {
