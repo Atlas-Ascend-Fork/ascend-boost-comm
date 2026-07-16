@@ -9,6 +9,7 @@
  */
 #include "mki/utils/file_system/file_system.h"
 #include <cstring>
+#include <filesystem>
 #include <cstdlib>
 #include <climits>
 #include <dirent.h>
@@ -285,15 +286,9 @@ std::string FileSystem::PathCheckAndRegular(const std::string &path, bool symlin
     }
 
     // 5. get the real path
-    char resolvedPath[PATH_MAX] = {0};
-    std::string res = "";
-
-    if (realpath(path.c_str(), resolvedPath) != nullptr) {
-        res = resolvedPath;
-    } else {
-        MKI_LOG(ERROR) << "path " << path.c_str() << " does not exist";
-    }
-    return res;
+  std::error_code ec;
+  std::filesystem::path result = std::filesystem::weakly_canonical(path, ec);
+  return ec ? path : result.string();
 }
 
 std::string FileSystem::PathCheckAndRegularNoLog(const std::string &path, bool symlinkCheck, bool parentReferenceCheck)
@@ -322,13 +317,9 @@ std::string FileSystem::PathCheckAndRegularNoLog(const std::string &path, bool s
     }
 
     // 5. get the real path
-    char resolvedPath[PATH_MAX] = {0};
-    std::string res = "";
-
-    if (realpath(path.c_str(), resolvedPath) != nullptr) {
-        res = resolvedPath;
-    }
-    return res;
+  std::error_code ec;
+  std::filesystem::path result = std::filesystem::weakly_canonical(path, ec);
+  return ec ? path : result.string();
 }
 
 std::string FileSystem::RemoveTrailingSlash(const std::string &path)
