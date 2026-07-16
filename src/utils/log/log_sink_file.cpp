@@ -84,14 +84,20 @@ static std::string PathCheckAndRegular(const std::string &path)
         return "";
     }
 
-  std::error_code ec;
-  std::filesystem::path result = std::filesystem::weakly_canonical(path, ec);
-  return ec ? path : result.string();
+    std::error_code ec;
+    std::filesystem::path result = std::filesystem::weakly_canonical(path, ec);
+    return ec ? path : result.string();
 }
 
-LogSinkFile::LogSinkFile() { Init(); }
+LogSinkFile::LogSinkFile()
+{
+    Init();
+}
 
-LogSinkFile::~LogSinkFile() { CloseFile(); }
+LogSinkFile::~LogSinkFile()
+{
+    CloseFile();
+}
 
 void LogSinkFile::Log(const char *log, uint64_t logLen)
 {
@@ -110,8 +116,7 @@ void LogSinkFile::Log(const char *log, uint64_t logLen)
 
     ssize_t writeSize = write(currentFd_, log, logLen);
     if (writeSize != static_cast<ssize_t>(logLen)) {
-        std::cout << "mki_log write file fail, want to write size: " << logLen
-                  << ", success write size:" << writeSize;
+        std::cout << "mki_log write file fail, want to write size: " << logLen << ", success write size:" << writeSize;
         CloseFile();
         return;
     }
@@ -130,7 +135,7 @@ static bool IsValidFileName(const std::string &name)
         return false;
     }
     // 3. check the name has invalid characters
-    const std::vector<char> invalidChars = { '\n', '\f', '\r', '\v', '\t', '\b', '\u007f', ' ', '$'};
+    const std::vector<char> invalidChars = {'\n', '\f', '\r', '\v', '\t', '\b', '\u007f', ' ', '$'};
     for (auto c : invalidChars) {
         if (name.find(c) != std::string::npos) {
             return false;
@@ -180,11 +185,11 @@ bool LogSinkFile::IsFileNameMatched(const std::string &fileName, std::string &cr
     if (!match) {
         return false;
     }
-    size_t subStrLen = fileName.length() - prefix.length() - 4;     // 4: length of ".log" postfix
+    size_t subStrLen = fileName.length() - prefix.length() - 4; // 4: length of ".log" postfix
     std::string subStr = fileName.substr(prefix.length(), subStrLen);
     std::vector<std::string> splitResult;
     StrSplit(subStr, '_', splitResult);
-    if (splitResult.size() != 2) {  // 2: time & pid
+    if (splitResult.size() != 2) { // 2: time & pid
         return false;
     }
     for (auto &str : splitResult) {
@@ -282,7 +287,7 @@ void LogSinkFile::MakeLogDir()
         return;
     }
 
-    mode_t mode = S_IRWXU | S_IRGRP |  S_IXGRP;
+    mode_t mode = S_IRWXU | S_IRGRP | S_IXGRP;
     uint32_t offset = 0;
     uint32_t pathLen = logDir_.size();
     do {
