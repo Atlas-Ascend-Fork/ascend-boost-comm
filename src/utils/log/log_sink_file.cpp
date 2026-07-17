@@ -21,7 +21,6 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
-#include <filesystem>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -72,6 +71,49 @@ std::string RemoveTrailingSlash(const std::string &path)
     return res;
 }
 
+static std::string NormalizePath(const std::string &path)
+{
+    std::string normalized;
+    if (path[0] != '/') {
+        char cwd[PATH_MAX] = {0};
+        if (getcwd(cwd, sizeof(cwd)) != nullptr) {
+            normalized = cwd;
+        }
+        normalized += '/';
+    }
+    normalized += path;
+
+    std::vector<std::string> parts;
+    std::string segment;
+    for (size_t i = 0; i <= normalized.size(); i++) {
+        if (i == normalized.size() || normalized[i] == '/') {
+            if (segment.empty() || segment == ".") {
+            } else if (segment == "..") {
+                if (!parts.empty()) {
+                    parts.pop_back();
+                }
+            } else {
+                parts.push_back(segment);
+            }
+            segment.clear();
+        } else {
+            segment += normalized[i];
+        }
+    }
+
+    std::string result;
+    if (!normalized.empty() && normalized[0] == '/') {
+        result = "/";
+    }
+    for (size_t i = 0; i < parts.size(); i++) {
+        result += parts[i];
+        if (i + 1 < parts.size()) {
+            result += '/';
+        }
+    }
+    return result;
+}
+
 static std::string PathCheckAndRegular(const std::string &path)
 {
     if (path.empty())
@@ -99,9 +141,7 @@ static std::string PathCheckAndRegular(const std::string &path)
         return "";
     }
 
-    std::error_code ec;
-    auto result = std::filesystem::weakly_canonical(path, ec);
-    return ec ? "" : result.string();
+    return NormalizePath(path);
 }
 
 LogSinkFile::LogSinkFile() { Init(); }

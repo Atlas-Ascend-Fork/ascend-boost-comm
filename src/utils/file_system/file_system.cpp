@@ -18,7 +18,6 @@
 #include <climits>
 #include <cstdlib>
 #include <cstring>
-#include <filesystem>
 #include <fstream>
 #include <iostream>
 
@@ -279,6 +278,49 @@ void FileSystem::GetDirChildItemsImpl(const std::string &dirPath, bool matchFile
     closedir(dirHandle);
 }
 
+static std::string NormalizePath(const std::string &path)
+{
+    std::string normalized;
+    if (path[0] != '/') {
+        char cwd[PATH_MAX] = {0};
+        if (getcwd(cwd, sizeof(cwd)) != nullptr) {
+            normalized = cwd;
+        }
+        normalized += '/';
+    }
+    normalized += path;
+
+    std::vector<std::string> parts;
+    std::string segment;
+    for (size_t i = 0; i <= normalized.size(); i++) {
+        if (i == normalized.size() || normalized[i] == '/') {
+            if (segment.empty() || segment == ".") {
+            } else if (segment == "..") {
+                if (!parts.empty()) {
+                    parts.pop_back();
+                }
+            } else {
+                parts.push_back(segment);
+            }
+            segment.clear();
+        } else {
+            segment += normalized[i];
+        }
+    }
+
+    std::string result;
+    if (!normalized.empty() && normalized[0] == '/') {
+        result = "/";
+    }
+    for (size_t i = 0; i < parts.size(); i++) {
+        result += parts[i];
+        if (i + 1 < parts.size()) {
+            result += '/';
+        }
+    }
+    return result;
+}
+
 bool FileSystem::IsSymLink(const std::string &filePath)
 {
     struct stat buf
@@ -326,9 +368,7 @@ std::string FileSystem::PathCheckAndRegular(const std::string &path, bool symlin
     }
 
     // 5. get the real path
-    std::error_code ec;
-    auto result = std::filesystem::weakly_canonical(path, ec);
-    return ec ? "" : result.string();
+    return NormalizePath(path);
 }
 
 std::string FileSystem::PathCheckAndRegularNoLog(const std::string &path, bool symlinkCheck, bool parentReferenceCheck)
@@ -362,9 +402,7 @@ std::string FileSystem::PathCheckAndRegularNoLog(const std::string &path, bool s
     }
 
     // 5. get the real path
-    std::error_code ec;
-    auto result = std::filesystem::weakly_canonical(path, ec);
-    return ec ? "" : result.string();
+    return NormalizePath(path);
 }
 
 std::string FileSystem::RemoveTrailingSlash(const std::string &path)
