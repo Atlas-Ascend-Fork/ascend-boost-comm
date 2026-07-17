@@ -335,7 +335,7 @@ function fn_make_tar_package()
 
 function fn_main()
 {
-    if [[ "$BUILD_OPTION_LIST" =~ "$1" ]];then
+    if [[ -z "$1" || " $BUILD_OPTION_LIST " == *" $1 "* ]];then
         if [[ -z "$1" ]];then
             arg1="dev"
         else
