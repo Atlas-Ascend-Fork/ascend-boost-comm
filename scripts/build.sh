@@ -387,6 +387,7 @@ function fn_main()
             ENABLE_COVERAGE=ON
             ;;
         --namespace=*)
+            COMPILE_OPTIONS="${COMPILE_OPTIONS} -DNAMESPACE=${arg2#*=}"
             ;;
         "--no_werror")
             COMPILE_OPTIONS="${COMPILE_OPTIONS} -DNO_WERROR=ON"
