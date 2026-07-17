@@ -26,11 +26,13 @@ DEVICE_CODE_PACK_SWITCH=ON
 USE_VERBOSE=OFF
 ENABLE_COVERAGE=OFF
 USE_ASCENDC_DUMP=OFF
+INCREMENTAL_BUILD=OFF
 USE_CXX11_ABI=""
 IS_RELEASE=False
 BUILD_OPTION_LIST="testframework release example dev debug unittest clean help"
 BUILD_CONFIGURE_LIST=("--output=.*" "--use_cxx11_abi=0" "--use_cxx11_abi=1"
-                      "--verbose" "--no_werror" "--coverage" "--namespace=.*" "--msdebug" "--ascendc_dump")
+                      "--verbose" "--no_werror" "--coverage" "--namespace=.*" "--msdebug" "--ascendc_dump"
+                      "--incremental")
 
 # install cann
 function fn_install_cann_and_kernel()
@@ -305,7 +307,9 @@ function fn_build()
 
     fn_warn_gcc_no_werror
 
-    [ -n "$CACHE_DIR" ] && rm -rf $CACHE_DIR
+    if [ "$INCREMENTAL_BUILD" != "ON" ]; then
+        [ -n "$CACHE_DIR" ] && rm -rf $CACHE_DIR
+    fi
     [[ ! -d "$CACHE_DIR" ]] && mkdir $CACHE_DIR
     [[ ! -d "$OUTPUT_DIR" ]] && mkdir -p $OUTPUT_DIR
     [[ ! -d "$THIRD_PARTY_DIR" ]] && mkdir -p $THIRD_PARTY_DIR
@@ -405,6 +409,9 @@ function fn_main()
             USE_ASCENDC_DUMP=ON
             COMPILE_OPTIONS="${COMPILE_OPTIONS} -DUSE_ASCENDC_DUMP=ON"
             ;;
+        "--incremental")
+            INCREMENTAL_BUILD=ON
+            ;;
         esac
         shift
     }
@@ -451,7 +458,7 @@ function fn_main()
         *)
             echo "build.sh testframework|release|example|dev|debug|unittest|clean"\
             "--output=<dir>|--force_clean|--use_cxx11_abi=0|--use_cxx11_abi=1"\
-            "|--no_werror|--verbose|--coverage|--namespace=<namespace>|--msdebug|--ascendc_dump"
+            "|--no_werror|--verbose|--coverage|--namespace=<namespace>|--msdebug|--ascendc_dump|--incremental"
             ;;
     esac
 }
