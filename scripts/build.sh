@@ -68,7 +68,7 @@ function fn_install_cann_and_kernel()
     echo "INSTALL CANN TOOLKIT finished"
 
     OPS_PKG_LIST=(cann-910b-ops-legacy_*.run cann-hixl_*.run cann-dvpp_*.run cann-910b-ops-math_*.run cann-910b-ops-nn_*.run cann-910b-ops-cv_*.run cann-910b-ops-transformer_*.run)
- 
+
     for ((i = 0; i < ${#OPS_PKG_LIST[@]}; i++)); do
         if ls ${OPS_PKG_LIST[i]} &> /dev/null; then
             echo "Start to install: ${OPS_PKG_LIST[i]}"
@@ -357,7 +357,7 @@ function fn_main()
         if [[ "$cfg_flag" == 1 ]];then
             arg1="dev"
         else
-            echo "argument $1 is unknown, please type 'build.sh help' for more imformation"
+            echo "argument $1 is unknown, please type 'build.sh help' for more information"
             exit 1
         fi
     fi
