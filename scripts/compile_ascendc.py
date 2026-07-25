@@ -179,6 +179,19 @@ def gen_json(args, kernels):
         json.dump(json_template, f, indent=4)
 
 
+def get_catlass_arch(soc):
+    # CATLASS >= 1.2 selects platform tile-copy / BlockMmad via CATLASS_ARCH.
+    # Keep aligned with NPU arch generations used by catlass headers.
+    catlass_arch_map = {
+        "ascend310b": "2201",
+        "ascend310p": "2201",
+        "ascend910": "2201",
+        "ascend910b": "2201",
+        "ascend950": "3510",
+    }
+    return catlass_arch_map.get(soc)
+
+
 def get_common_options(args):
     tikcpp_path = os.path.join(args.code_root, "3rdparty", "compiler", "tikcpp")
     options = ['-x', 'cce']
@@ -190,6 +203,9 @@ def get_common_options(args):
     if args.include_directories:
         for dir in args.include_directories:
             options.append("-I" + dir)
+    catlass_arch = get_catlass_arch(args.soc)
+    if catlass_arch is not None:
+        options.append(f"-DCATLASS_ARCH={catlass_arch}")
     if args.no_warning:
         options.append("-Wno-deprecated-declarations")
         options.append("-Wno-array-bounds")
