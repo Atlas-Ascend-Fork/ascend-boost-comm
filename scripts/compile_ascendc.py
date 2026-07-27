@@ -232,9 +232,9 @@ def get_catlass_arch(soc):
     # CATLASS >= 1.2 selects platform tile-copy / BlockMmad via CATLASS_ARCH.
     # Keep aligned with NPU arch generations used by catlass headers.
     catlass_arch_map = {
-        "ascend310b": "2201",
-        "ascend310p": "2201",
-        "ascend910": "2201",
+        "ascend310b": "3002",
+        "ascend310p": "2002",
+        "ascend910": "1001",
         "ascend910b": "2201",
         "ascend950": "3510",
     }
