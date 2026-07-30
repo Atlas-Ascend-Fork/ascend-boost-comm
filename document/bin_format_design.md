@@ -10,8 +10,8 @@ object1.offset = 123456
 kernelfunc.count = 3
 kernelfunc0.name = relu
 kernelfunc0.object = object0
-  
-  
+
+
 object0object1object2
 
 # fusionbin File
@@ -22,6 +22,6 @@ bin0.name = 910
 bin0.offset = 123456
 bin1.name = 310
 bin1.offset = 123456
-  
-  
+
+
 bin0bin1bin2

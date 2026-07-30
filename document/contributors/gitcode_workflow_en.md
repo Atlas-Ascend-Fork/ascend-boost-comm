@@ -12,7 +12,7 @@
 1) Visit the homepage of the project.
 2) Click the `Fork` button in the upper right corner and follow the instructions to create a **Personal** fork branch on the cloud.
 
-  ![gitcode-fork](../images/gitcode-fork.png)   
+  ![gitcode-fork](../images/gitcode-fork.png)
 
 #### 2.2 Cloning the Forked Branch
 
@@ -64,7 +64,7 @@ git config --global user.email "email@your_email.com"
   ssh -T git@gitcode.com
   ```
 
-  If you see the following success message, your SSH public key is active: 
+  If you see the following success message, your SSH public key is active:
   `Hi $user_name! You've successfully authenticated, but GITCODE.COM does not provide shell access.`
 
 4) Clone the remote repository.
@@ -74,7 +74,7 @@ git config --global user.email "email@your_email.com"
   ```
   cd $your_working_dir
   ```
-  
+
 - Clone the remote repository.
 
   - On the homepage of the remote repository you want to download, click `Clone/Download` to obtain `$remote_link`. (You need to create a token and enter it instead of a password for login.)
@@ -153,7 +153,7 @@ git push -f origin myfeature
 ### 7. Creating a Pull Request on GitCode
 
 1. Go to your repository page on `https://gitcode.com/$user/ascend-boost-comm` and click +`Pull Request`.
-   
+
    ![Creating a PR](../images/create-pr.png)
 
 2. On the page for creating a new pull request, confirm the source and target branches, and create a PR.
@@ -168,7 +168,7 @@ git push -f origin myfeature
    ![Issue list](../images/issue-list.png)
 
 2. In the `Pull Requests` section on the right of the `Issues` page, select the PR you submitted to associate it. Once associated, that issue will be automatically closed when the PR is merged.
-   
+
    ![Associating an issue with a PR](../images/issue-link-pr.png)
 
 
@@ -207,7 +207,7 @@ If you have write access to the upstream repository, do not click the `Revert` b
   ```
   # create a branch
   git checkout -b myrevert
-  
+
   # sync the branch with upstream
   git fetch upstream
   git rebase upstream/master

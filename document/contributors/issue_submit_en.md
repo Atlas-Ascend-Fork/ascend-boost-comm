@@ -11,7 +11,7 @@ The following describes basic operations on issues.
      ![](../images/issue-banner.png)
    b. Select an issue type as needed and proceed.
      ![](../images/issue_select.png)
-  
+
 2. Specify issue details.
 
    On the issue creation page, enter the issue details.

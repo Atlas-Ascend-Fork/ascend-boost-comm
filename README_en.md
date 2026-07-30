@@ -7,7 +7,7 @@ Ascend Boost Comm is a common component of domain-specific acceleration librarie
 
 ### Software Architecture
 Software architecture description
-1. Invoking relationship 
+1. Invoking relationship
 Domain-specific acceleration libraries (such as [Ascend Transformer Boost (ATB)](https://gitcode.com/cann/ascend-transformer-boost) and signal acceleration library) --> Ascend Boost Comm
 
 ### Ascend Boost Comm Repository
@@ -84,7 +84,7 @@ chmod +x Ascend-cann-toolkit_${VERSION}_linux-$(arch).run
 Configure the environment variable script `set_env.sh`. The following example uses `${HOME}/Ascend` as the installation path.
 ```
 source ${HOME}/Ascend/ascend-toolkit/set_env.sh
-```  
+```
 Install the Python third-party libraries required for service runtime (if installing as the root user, remove `--user` from the command).
 ```
 pip3 install attrs cython 'numpy>=1.19.2,<=1.24.0' decorator sympy cffi pyyaml pathlib2 psutil protobuf==3.20.0 'scipy<1.11' requests absl-py --user
@@ -164,7 +164,7 @@ This scenario is for users who want to simply test a newly written single operat
 You can refer to this document to develop custom operators: [Example of Developing a Custom Operator](document/example_of_developing_a_custom_operator .md).
 
 ## 5. Contributing
- 
+
 1.  Fork the repository.
 2.  Modify and commit code.
 3.  Create a pull request (PR).
@@ -172,5 +172,5 @@ You can refer to this document to develop custom operators: [Example of Developi
 For details, see [Contribution Guide](document/contribution_guide .md).
 
 ## 6. Reference Document
-[CANN Community Edition Documentation](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/83RC1alpha002/index/index.html) 
+[CANN Community Edition Documentation](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/83RC1alpha002/index/index.html)
 Documents in this repository: [document/](document/) (including custom operator and contribution guide)

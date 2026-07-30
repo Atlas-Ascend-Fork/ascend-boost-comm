@@ -2,7 +2,7 @@
 
 ## System Security Hardening
 
-- You can enable ASLR (level 2) during system runtime configuration to improve system security and enable system randomization protection. 
+- You can enable ASLR (level 2) during system runtime configuration to improve system security and enable system randomization protection.
 Refer to the following method for configuration:
 
   ```
@@ -34,7 +34,7 @@ Refer to the following method for configuration:
 | Program file directory                     |   550 (r-xr-x---)           |
 | Configuration File                         |  640 (rw-r-----)            |
 | Configuration file directory                     |   750 (rwxr-x---)           |
-| Log files (recorded or archived)       |  440 (r--r-----)            | 
+| Log files (recorded or archived)       |  440 (r--r-----)            |
 | Log files (being recorded)               |    640 (rw-r-----)          |
 | Log file directory                     |   750 (rwxr-x---)           |
 | Debug files                        |  640 (rw-r-----)        |

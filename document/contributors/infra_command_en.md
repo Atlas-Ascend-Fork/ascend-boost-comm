@@ -59,7 +59,7 @@ All projects in the CANN community are maintained by the Bot. This means that de
                Repository administrator
             </td>
             <td>
-                All repositories 
+                All repositories
             </td>
         </tr>
         <tr>
@@ -94,7 +94,7 @@ All projects in the CANN community are maintained by the Bot. This means that de
                 <strong>Pull Request</strong>
             </td>
             <td>
-                Adds the <strong>lgtm</strong> label to indicate that the code has been reviewed.     
+                Adds the <strong>lgtm</strong> label to indicate that the code has been reviewed.
             </td>
             <td>
               Reviewers of the SIG group to which the repository belongs
@@ -134,7 +134,7 @@ All projects in the CANN community are maintained by the Bot. This means that de
                 <strong>Pull Request</strong>
             </td>
             <td>
-                Adds the <strong>lgtm</strong> label to indicate that the committers approve the PR.     
+                Adds the <strong>lgtm</strong> label to indicate that the committers approve the PR.
             </td>
             <td>
               Committers of the SIG group to which the repository belongs
@@ -208,7 +208,7 @@ All projects in the CANN community are maintained by the Bot. This means that de
                 /kind **
             </td>
             <td style="white-space:nowrap;">
-                /kind bug, 
+                /kind bug,
                 <br>Letters, digits, hyphens (-), and underscores (_) are allowed for **.
                 <br>This setting applies to the ** in the following commands.
             </td>
@@ -336,7 +336,7 @@ All projects in the CANN community are maintained by the Bot. This means that de
                 /assign [[@]...]
             </td>
             <td style="white-space:nowrap;">
-                /assign 
+                /assign
                 <br>/assign @cann-robot
             </td>
             <td>
@@ -357,7 +357,7 @@ All projects in the CANN community are maintained by the Bot. This means that de
                 /unassign [[@]...]
             </td>
             <td style="white-space:nowrap;">
-                /unassign 
+                /unassign
                 <br>/unassign @cann-robot
             </td>
             <td>

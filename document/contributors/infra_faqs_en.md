@@ -55,7 +55,7 @@ Maintainers can push code directly to unprotected branches, but not to protected
 
 Using Git commands to directly push code to a repository bypasses necessary reviews, introducing risks. For example, when a file to upload is too large for a personal repository, you need push it directly to an unprotected branch in the repository, then merge the changes into a protected branch.
 
-The code review process using the "/lgtm" or "/approve" comment ensures that at least one maintainer other than the autor approves each code merging. Even if the author is a maintainer, another maintainer's approval is required before the code can be merged.
+The code review process using the "/lgtm" or "/approve" comment ensures that at least one maintainer other than the author approves each code merging. Even if the author is a maintainer, another maintainer's approval is required before the code can be merged.
 
 #### 6. **What commands can I use in the comments of Ascend community repositories and what are their functions?**
 
@@ -68,5 +68,5 @@ For details about the supported commands, see [Ascend Community Comment Commands
 CI build will not be triggered in the following scenarios:
 
 - Scenario 1: Due to network issues or system task scheduling issues, the webhook notification event sent from the code repository may not have reached the target service in time. In this case, you can re-trigger it by commenting `/retest` in the PR comment area.
-	
+
 - Scenario 2: The PR was submitted shortly after the code repository was created. At this point, the CI build project has not yet been created on the Jenkins server, so the CI build cannot be triggered, and commenting `/retest` will not work. In this case, please wait a moment for the system to automatically build the project.
