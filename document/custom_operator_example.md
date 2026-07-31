@@ -22,7 +22,7 @@ Add two input tensors along a specified dimension to produce one output tensor.
     └── addcustom_operation.cpp         // Shape validation
     ```
 
-- Create the `example/include/asdops/params/addcustom.h` file to define the parameter structure for the `Addcustom` operation. The content is as follows:
+- Create the `example/include/asbops/params/addcustom.h` file to define the parameter structure for the `Addcustom` operation. The content is as follows:
     ```c++
     #ifndef ATBOPS_PARAMS_ADDCUSTOM_H
     #define ATBOPS_PARAMS_ADDCUSTOM_H
@@ -50,7 +50,7 @@ Add two input tensors along a specified dimension to produce one output tensor.
     ```
 ### Modified Files
 
-- Include the new header file `example/include/asdops/params/addcustom.h` in `example/include/asdops/params/params.h`:
+- Include the new header file `example/include/asbops/params/addcustom.h` in `example/include/asbops/params/params.h`:
     ```c++
     #include "atbops/params/addcustom.h"
     ```
