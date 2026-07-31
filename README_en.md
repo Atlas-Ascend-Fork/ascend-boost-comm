@@ -161,7 +161,7 @@ This scenario is for users who want to simply test a newly written single operat
 
     Before running the code, ensure that the `source output/mki/set_env.sh` command has been executed and the CANN/NPU driver environment is available.
 
-You can refer to this document to develop custom operators: [Example of Developing a Custom Operator](document/example_of_developing_a_custom_operator .md).
+You can refer to this document to develop custom operators: [Example of Developing a Custom Operator](document/custom_operator_example.md).
 
 ## 5. Contributing
 
@@ -169,7 +169,7 @@ You can refer to this document to develop custom operators: [Example of Developi
 2.  Modify and commit code.
 3.  Create a pull request (PR).
 
-For details, see [Contribution Guide](document/contribution_guide .md).
+For details, see [Contribution Guide](document/contribution_guide.md).
 
 ## 6. Reference Document
 [CANN Community Edition Documentation](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/83RC1alpha002/index/index.html)
