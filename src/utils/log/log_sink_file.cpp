@@ -40,11 +40,9 @@ constexpr uint64_t MAX_FILE_SIZE_THRESHOLD = 1073741824;                 // 1073
 constexpr uint64_t DISK_AVAILABEL_LIMIT = 10 * MAX_FILE_SIZE_THRESHOLD;  // 磁盘剩余空间门限10G
 
 // A symlink with a trailing slash (/) is not recognized as a symlink, which is consistent with the operating system.
-static bool IsSymlink(const std::string &filePath)
+static bool IsSymlink(const std::string& filePath)
 {
-    struct stat buf
-    {
-    };
+    struct stat buf{};
     if (lstat(filePath.c_str(), &buf) != 0)
     {
         return false;
@@ -52,7 +50,7 @@ static bool IsSymlink(const std::string &filePath)
     return S_ISLNK(buf.st_mode);
 }
 
-std::string RemoveTrailingSlash(const std::string &path)
+std::string RemoveTrailingSlash(const std::string& path)
 {
     std::string res;
     size_t lastNonSlash = path.find_last_not_of("/");
@@ -71,7 +69,7 @@ std::string RemoveTrailingSlash(const std::string &path)
     return res;
 }
 
-static std::string NormalizePath(const std::string &path)
+static std::string NormalizePath(const std::string& path)
 {
     std::string normalized;
     if (path[0] != '/')
@@ -152,7 +150,7 @@ static std::string NormalizePath(const std::string &path)
     return isAbsolute ? "/" + base : base;
 }
 
-static std::string PathCheckAndRegular(const std::string &path)
+static std::string PathCheckAndRegular(const std::string& path)
 {
     if (path.empty())
     {
@@ -186,7 +184,7 @@ LogSinkFile::LogSinkFile() { Init(); }
 
 LogSinkFile::~LogSinkFile() { CloseFile(); }
 
-void LogSinkFile::Log(const char *log, uint64_t logLen)
+void LogSinkFile::Log(const char* log, uint64_t logLen)
 {
     std::lock_guard<std::mutex> guard(mutex_);
     if (currentFileSize_ + logLen >= MAX_FILE_SIZE_THRESHOLD)
@@ -215,7 +213,7 @@ void LogSinkFile::Log(const char *log, uint64_t logLen)
     currentFileSize_ += writeSize;
 }
 
-static bool IsValidFileName(const std::string &name)
+static bool IsValidFileName(const std::string& name)
 {
     // 1. check the name not empty
     if (name.empty())
@@ -244,7 +242,7 @@ void LogSinkFile::Init()
     boostType_ = "atb";
 
     std::string logRootDir = GetHomeDir();
-    char *rawEnv = nullptr;
+    char* rawEnv = nullptr;
     std::string env = "";
     rawEnv = std::getenv("HOME");
     env = std::string(rawEnv != nullptr ? rawEnv : "");
@@ -269,7 +267,7 @@ void LogSinkFile::Init()
     isFlush_ = env.size() > 0 && env.size() <= MAX_ENV_STRING_LEN - 1 ? env == "1" : false;
 }
 
-bool LogSinkFile::IsFileNameMatched(const std::string &fileName, std::string &createTime)
+bool LogSinkFile::IsFileNameMatched(const std::string& fileName, std::string& createTime)
 {
     std::string prefix = boostType_ + '_';
     bool match = StartsWith(fileName, prefix);
@@ -290,7 +288,7 @@ bool LogSinkFile::IsFileNameMatched(const std::string &fileName, std::string &cr
     {  // 2: time & pid
         return false;
     }
-    for (auto &str : splitResult)
+    for (auto& str : splitResult)
     {
         if (str.empty() || !std::all_of(str.begin(), str.end(), ::isdigit))
         {
@@ -304,12 +302,12 @@ bool LogSinkFile::IsFileNameMatched(const std::string &fileName, std::string &cr
 void LogSinkFile::DeleteOldestFile()
 {
     std::vector<std::pair<std::string, std::string>> logFiles;
-    DIR *dir = opendir(logDir_.c_str());
+    DIR* dir = opendir(logDir_.c_str());
     if (!dir)
     {
         return;
     }
-    struct dirent *ptr = nullptr;
+    struct dirent* ptr = nullptr;
     while ((ptr = readdir(dir)) != nullptr)
     {
         if (ptr->d_name[0] != '.')
@@ -325,7 +323,7 @@ void LogSinkFile::DeleteOldestFile()
     closedir(dir);
 
     std::sort(logFiles.begin(), logFiles.end(),
-              [](std::pair<std::string, std::string> &a, std::pair<std::string, std::string> &b)
+              [](std::pair<std::string, std::string>& a, std::pair<std::string, std::string>& b)
               { return a.second < b.second; });
 
     if (logFiles.size() > MAX_LOG_FILE_COUNT)
@@ -361,7 +359,7 @@ void LogSinkFile::OpenFile()
 std::string LogSinkFile::GetNewLogFilePath()
 {
     std::time_t tmpTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    struct tm *nowTime = std::localtime(&tmpTime);
+    struct tm* nowTime = std::localtime(&tmpTime);
 
     std::stringstream filePath;
     filePath << logDir_ << "/" << boostType_ << "_" << std::to_string(syscall(SYS_getpid)) << "_"
@@ -402,7 +400,7 @@ void LogSinkFile::MakeLogDir()
     uint32_t pathLen = logDir_.size();
     do
     {
-        const char *str = strchr(logDir_.c_str() + offset, '/');
+        const char* str = strchr(logDir_.c_str() + offset, '/');
         offset = (str == nullptr) ? pathLen : str - logDir_.c_str() + 1;
         std::string childDir = logDir_.substr(0, offset);
         if (stat(childDir.c_str(), &st) < 0)
@@ -437,7 +435,7 @@ std::string LogSinkFile::GetHomeDir()
 
     char buffer[bufsize] = {0};
     struct passwd pwd;
-    struct passwd *result = nullptr;
+    struct passwd* result = nullptr;
     if (getpwuid_r(getuid(), &pwd, buffer, bufsize, &result) != 0 || !result)
     {
         return "";
