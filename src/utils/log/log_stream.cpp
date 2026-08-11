@@ -67,7 +67,7 @@ void LogStream::Format(const char *format, ...)
 
     int ret = memcpy_s(logBuffer, logBufferSize, logHead.c_str(), logHead.size());
     if (ret != 0) {
-        std::cout << "mki_log memcpy_s fail, error:" << ret << std::endl;
+        std::cerr << "mki_log memcpy_s fail, error:" << ret << std::endl;
         return;
     }
 
@@ -76,7 +76,7 @@ void LogStream::Format(const char *format, ...)
     int logLen = vsnprintf_s(logBuffer + logHead.size(), logContentSize + 1, logContentSize, format, args);
     va_end(args);
     if (logLen < 0) {
-        std::cout << "mki_log vsnprintf_s fail" << std::endl;
+        std::cerr << "mki_log vsnprintf_s fail" << std::endl;
         return;
     }
 
