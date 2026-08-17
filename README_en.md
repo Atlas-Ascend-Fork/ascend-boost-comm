@@ -1,5 +1,7 @@
 # Ascend Boost Comm
 
+English | [简体中文](./README.md)
+
 🔥 [2025/09] Ascend Boost Comm project was first launched.
 ## 1. What Is Ascend Boost Comm?
 ### Introduction to Ascend Boost Comm

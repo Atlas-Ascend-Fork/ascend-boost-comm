@@ -1,13 +1,15 @@
 # Ascend Boost Comm
 
+简体中文 | [English](./README_en.md)
+
 🔥 [2025/09] Ascend Boost Comm项目首次上线。
 ## 一、什么是Ascend Boost Comm
 ### Ascend Boost Comm介绍
-领域加速库公共组件，Ascend Boost Comm。它统一定义了算子调用的L0级接口。南向对接不同组织开发的算子库，北向支撑不同加速库应用，实现M x N算子能力复用。 
+领域加速库公共组件，Ascend Boost Comm。它统一定义了算子调用的L0级接口。南向对接不同组织开发的算子库，北向支撑不同加速库应用，实现M x N算子能力复用。
 
 ### 软件架构
 软件架构说明
-1. 调用关系  
+1. 调用关系
 领域加速库（[Ascend Transformer Boost加速库(ATB)](https://gitcode.com/cann/ascend-transformer-boost)、信号加速库等） --> Ascend Boost Comm
 
 ### Ascend Boost Comm仓介绍
@@ -84,13 +86,13 @@ chmod +x Ascend-cann-toolkit_${VERSION}_linux-$(arch).run
 配置环境变量脚本set_env.sh，当前安装路径以${HOME}/Ascend为例。
 ```
 source ${HOME}/Ascend/ascend-toolkit/set_env.sh
-```  
+```
 安装业务运行时依赖的Python第三方库（如果使用root用户安装，请将命令中的--user删除）。
 ```
 pip3 install attrs cython 'numpy>=1.19.2,<=1.24.0' decorator sympy cffi pyyaml pathlib2 psutil protobuf==3.20.0 'scipy<1.11' requests absl-py --user
 ```
 
-### CANN详细安装指南 
+### CANN详细安装指南
 开发者可访问[昇腾文档-昇腾社区](https://www.hiascend.com/document)->CANN社区版->软件安装，查看CANN软件安装引导，根据机器环境、操作系统和业务场景选择后阅读详细安装步骤。
 
 ### 基础工具版本要求与安装
@@ -102,7 +104,7 @@ pip3 install attrs cython 'numpy>=1.19.2,<=1.24.0' decorator sympy cffi pyyaml p
 
 ## 四、快速上手
 ### 安装教程
-无需安装， 直接与算子包一起编译。见[编译说明](#编译说明)以及[使用说明](#使用说明)。  
+无需安装， 直接与算子包一起编译。见[编译说明](#编译说明)以及[使用说明](#使用说明)。
 
 ### 编译说明
 
@@ -153,7 +155,7 @@ bash scripts/build.sh example --no_werror
     source output/mki/set_env.sh
     ```
 
-3. 测试算子 
+3. 测试算子
 
     ```shell
     python example/tests/pythontest/optest/test_addcustom.py
@@ -164,7 +166,7 @@ bash scripts/build.sh example --no_werror
 您可参考该文档进行自定义算子开发：[自定义算子开发示例](document/自定义算子开发示例.md)
 
 ## 五、参与贡献
- 
+
 1.  fork仓库
 2.  修改并提交代码
 3.  新建 Pull-Request
@@ -172,5 +174,5 @@ bash scripts/build.sh example --no_werror
 详细步骤可参考[贡献指南](document/贡献指南.md)
 
 ## 六、参考文档
-**[CANN社区版文档](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/83RC1alpha002/index/index.html)**  
+**[CANN社区版文档](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/83RC1alpha002/index/index.html)**
 **本仓文档**：[document/](document/)（含自定义算子、贡献指南等）
