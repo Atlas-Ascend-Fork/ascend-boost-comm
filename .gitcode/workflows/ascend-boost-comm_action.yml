@@ -38,7 +38,7 @@ stages:
             identifier: revise_image
             uses: cann/.gitcode/actions/revise-img@master
             with:
-              repo_name: "ops-nn"
+              repo_name: "ascend-boost-comm"
               target_branch: ${{ env.TARGET_BRANCH }}
               repo_url: ${{ vars.CI_PATH }}
           -
@@ -135,7 +135,7 @@ stages:
         name: UT_Test
         uses: .gitcode/workflows/llt_action.yml
         with:
-          image_version: ${{ jobs.JOB_image.outputs.UT_Test }}
+          image_version: ${{ jobs.JOB_image.outputs.UT }}
       JOB_staticcheck_markdown:
         name: staticcheck_markdown
         uses: .gitcode/workflows/staticcheck_action.yml
