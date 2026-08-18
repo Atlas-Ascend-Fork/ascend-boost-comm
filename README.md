@@ -1,4 +1,4 @@
-# Ascend Boost Comm
+# Ascend Boost Comm test
 
 简体中文 | [English](./README_en.md)
 
