@@ -84,11 +84,11 @@ def compile_aicpu_kernels(args, output_dir):
     if not os.path.exists(intermediate_dir):
         os.makedirs(intermediate_dir)
 
-    target_so = input_args.dst.split("/")[-1]
+    target_so = args.dst.split("/")[-1]
 
     # Compiling
     for src in args.srcs:
-        dst = f"{os.path.join(intermediate_dir, src.split("/")[-1])}.o"
+        dst = f"{os.path.join(intermediate_dir, src.split('/')[-1])}.o"
         compile_cmd = ' '.join(gen_compile_cmd(args, src, dst, options))
         if(exe_cmd(compile_cmd)) != 0:
             return -1
