@@ -156,26 +156,26 @@ static std::string PathCheckAndRegular(const std::string &path)
 {
     if (path.empty())
     {
-        std::cout << "path string is NULL";
+        std::cerr << "path string is NULL";
         return "";
     }
 
     if (path.size() >= PATH_MAX)
     {
-        std::cout << "file path " << path.c_str() << " is too long!";
+        std::cerr << "file path " << path.c_str() << " is too long!";
         return "";
     }
 
     if (path.find("..") != std::string::npos)
     {
-        std::cout << "file path " << path.c_str() << " contains parent directory reference!";
+        std::cerr << "file path " << path.c_str() << " contains parent directory reference!";
         return "";
     }
 
     std::string regularPath = RemoveTrailingSlash(path);
     if (IsSymlink(regularPath))
     {
-        std::cout << "The 'filepath' " << path.c_str() << " is symbolic link";
+        std::cerr << "The 'filepath' " << path.c_str() << " is symbolic link";
         return "";
     }
 
@@ -207,7 +207,7 @@ void LogSinkFile::Log(const char *log, uint64_t logLen)
     ssize_t writeSize = write(currentFd_, log, logLen);
     if (writeSize != static_cast<ssize_t>(logLen))
     {
-        std::cout << "mki_log write file fail, want to write size: " << logLen << ", success write size:" << writeSize;
+        std::cerr << "mki_log write file fail, want to write size: " << logLen << ", success write size:" << writeSize;
         CloseFile();
         return;
     }
@@ -333,7 +333,7 @@ void LogSinkFile::DeleteOldestFile()
         size_t deleteCount = logFiles.size() - MAX_LOG_FILE_COUNT;
         for (size_t i = 0; i < deleteCount; ++i)
         {
-            std::cout << "mki_log delete old file:" << logFiles[i].first << std::endl;
+            std::cerr << "mki_log delete old file:" << logFiles[i].first << std::endl;
             remove(logFiles[i].first.c_str());
         }
     }
@@ -354,7 +354,7 @@ void LogSinkFile::OpenFile()
     currentFd_ = open(logFilePath.c_str(), O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP);
     if (currentFd_ < 0)
     {
-        std::cout << "mki_log open " << logFilePath << " fail" << std::endl;
+        std::cerr << "mki_log open " << logFilePath << " fail" << std::endl;
     }
 }
 
@@ -374,14 +374,14 @@ bool LogSinkFile::IsDiskAvailable()
     struct statvfs vfs;
     if (statvfs(logDir_.c_str(), &vfs) == -1)
     {
-        std::cout << "mki_log get current disk stats fail" << std::endl;
+        std::cerr << "mki_log get current disk stats fail" << std::endl;
         return false;
     }
 
     uint64_t availableSize = vfs.f_bsize * vfs.f_bfree;
     if (availableSize <= DISK_AVAILABEL_LIMIT)
     {
-        std::cout << "mki_log disk available space it too low, available size:" << availableSize
+        std::cerr << "mki_log disk available space it too low, available size:" << availableSize
                   << ", limit size:" << DISK_AVAILABEL_LIMIT << std::endl;
         return false;
     }
@@ -407,7 +407,7 @@ void LogSinkFile::MakeLogDir()
         std::string childDir = logDir_.substr(0, offset);
         if (stat(childDir.c_str(), &st) < 0)
         {
-            std::cout << "mki_log mkdir " << childDir << std::endl;
+            std::cerr << "mki_log mkdir " << childDir << std::endl;
             if (mkdir(childDir.c_str(), mode) < 0)
             {
                 return;
