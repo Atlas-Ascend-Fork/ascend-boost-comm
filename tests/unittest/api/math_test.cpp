@@ -7,12 +7,16 @@
  * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
  * See LICENSE in the root of the software repository for the full text of the License.
  */
-#include <gtest/gtest.h>
-#include <limits>
 #include "mki/utils/math/math.h"
 
-namespace Mki {
-TEST(MathTest, DividendIsZero) {
+#include <gtest/gtest.h>
+
+#include <limits>
+
+namespace Mki
+{
+TEST(MathTest, DividendIsZero)
+{
     int64_t dividend = 2147483648;
     int64_t divisor = 2147483648;
     int64_t divisor1 = 1;
@@ -22,12 +26,11 @@ TEST(MathTest, DividendIsZero) {
     EXPECT_EQ(Mki::Utils::CeilDiv(dividend, divisor2), 0);
 }
 
-TEST(MathTest, CeilDivDoesNotOverflowAtIntegerLimits) {
-    EXPECT_EQ(Mki::Utils::CeilDiv<uint64_t>(std::numeric_limits<uint64_t>::max(), 2),
-              9223372036854775808ULL);
-    EXPECT_EQ(Mki::Utils::CeilDiv<int64_t>(std::numeric_limits<int64_t>::max(), 2),
-              4611686018427387904LL);
+TEST(MathTest, CeilDivDoesNotOverflowAtIntegerLimits)
+{
+    EXPECT_EQ(Mki::Utils::CeilDiv<uint64_t>(std::numeric_limits<uint64_t>::max(), 2), 9223372036854775808ULL);
+    EXPECT_EQ(Mki::Utils::CeilDiv<int64_t>(std::numeric_limits<int64_t>::max(), 2), 4611686018427387904LL);
     EXPECT_EQ(Mki::Utils::CeilDiv<int64_t>(std::numeric_limits<int64_t>::min(), -1),
               std::numeric_limits<int64_t>::max());
 }
-} // namespace Mki
+}  // namespace Mki
