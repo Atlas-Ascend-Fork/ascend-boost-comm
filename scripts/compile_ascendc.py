@@ -9,6 +9,7 @@
 # See LICENSE in the root of the software repository for the full text of the License.
 
 import argparse
+import concurrent.futures
 import json
 import os
 import re
@@ -297,12 +298,94 @@ def exe_cmd(cmd):
     return 0
 
 
+def _compile_one_tiling_key(args, key, arch, options, mssanitizer_path):
+    """Compile a single tiling key and return (key_index, dsts_list, success)."""
+    key_dsts = []
+    if args.soc in ("ascend310p", "ascend910"):
+        dst = os.path.splitext(args.dst)[0] + f"_{key}.o"
+        opt = options + [f'-D{args.kernel}={args.kernel}_{key}', f'-DTILING_KEY_VAR={key}']
+        compile_cmd = ' '.join(gen_compile_cmd(args, dst, arch, opt))
+        if os.system(compile_cmd) != 0:  # nosec B605
+            logging.error("execute command failed: %s", compile_cmd)
+            return (key, key_dsts, False)
+        key_dsts.append(dst)
+        if args.use_mssanitizer == "ON" and args.soc == "ascend310p":
+            key_dsts.append("--dependent-libraries")
+            key_dsts.append(os.path.join(mssanitizer_path, "libsanitizer_stub_dav-m200.a"))
+    elif args.soc == "ascend910b":
+        if args.channel != "mix":
+            dst = os.path.splitext(args.dst)[0] + f"_{key}.o"
+            opt = options + [f'-D{args.kernel}={args.kernel}_{key}', f'-DTILING_KEY_VAR={key}']
+            compile_cmd = ' '.join(gen_compile_cmd_v220(args, dst, arch, opt))
+            if os.system(compile_cmd) != 0:  # nosec B605
+                logging.error("execute command failed: %s", compile_cmd)
+                return (key, key_dsts, False)
+            key_dsts.append(dst)
+            if args.use_mssanitizer == "ON":
+                key_dsts.append("--dependent-libraries")
+                key_dsts.append(os.path.join(mssanitizer_path, "libsanitizer_stub_dav-c220-cube.a"))
+                key_dsts.append(os.path.join(mssanitizer_path, "libsanitizer_stub_dav-c220-vec.a"))
+        else:
+            dst = os.path.splitext(args.dst)[0] + f"_mix_aic_{key}.o"
+            aic_opt = options + [f'-D{args.kernel}={args.kernel}_{key}_mix_aic', f'-DTILING_KEY_VAR={key}']
+            compile_cmd = ' '.join(gen_compile_cmd_v220(args, dst, "dav-c220-cube", aic_opt))
+            if os.system(compile_cmd) != 0:  # nosec B605
+                logging.error("execute command failed: %s", compile_cmd)
+                return (key, key_dsts, False)
+            key_dsts.append(dst)
+            if args.use_mssanitizer == "ON":
+                key_dsts.append("--dependent-libraries")
+                key_dsts.append(os.path.join(mssanitizer_path, "libsanitizer_stub_dav-c220-cube.a"))
+            dst = os.path.splitext(args.dst)[0] + f"_mix_aiv_{key}.o"
+            aiv_opt = options + [f'-D{args.kernel}={args.kernel}_{key}_mix_aiv', f'-DTILING_KEY_VAR={key}']
+            compile_cmd = ' '.join(gen_compile_cmd_v220(args, dst, "dav-c220-vec", aiv_opt))
+            if os.system(compile_cmd) != 0:  # nosec B605
+                logging.error("execute command failed: %s", compile_cmd)
+                return (key, key_dsts, False)
+            key_dsts.append(dst)
+            if args.use_mssanitizer == "ON":
+                key_dsts.append("--dependent-libraries")
+                key_dsts.append(os.path.join(mssanitizer_path, "libsanitizer_stub_dav-c220-vec.a"))
+    elif args.soc == "ascend310b":
+        dst = os.path.splitext(args.dst)[0] + f"_{key}.o"
+        opt = options + [f'-D{args.kernel}={args.kernel}_{key}', f'-DTILING_KEY_VAR={key}']
+        compile_cmd = ' '.join(gen_compile_cmd_v300(args, dst, arch, opt))
+        if os.system(compile_cmd) != 0:  # nosec B605
+            logging.error("execute command failed: %s", compile_cmd)
+            return (key, key_dsts, False)
+        key_dsts.append(dst)
+    elif args.soc == "ascend950":
+        if args.channel != "mix":
+            dst = os.path.splitext(args.dst)[0] + f"_{key}.o"
+            opt = options + [f'-D{args.kernel}={args.kernel}_{key}', f'-DTILING_KEY_VAR={key}']
+            compile_cmd = ' '.join(gen_compile_cmd_c310(args, dst, arch, opt))
+            if os.system(compile_cmd) != 0:  # nosec B605
+                logging.error("execute command failed: %s", compile_cmd)
+                return (key, key_dsts, False)
+            key_dsts.append(dst)
+        else:
+            dst = os.path.splitext(args.dst)[0] + f"_mix_aic_{key}.o"
+            aic_opt = options + [f'-D{args.kernel}={args.kernel}_{key}_mix_aic', f'-DTILING_KEY_VAR={key}']
+            compile_cmd = ' '.join(gen_compile_cmd_c310(args, dst, "dav-c310", aic_opt))
+            if os.system(compile_cmd) != 0:  # nosec B605
+                logging.error("execute command failed: %s", compile_cmd)
+                return (key, key_dsts, False)
+            key_dsts.append(dst)
+            dst = os.path.splitext(args.dst)[0] + f"_mix_aiv_{key}.o"
+            aiv_opt = options + [f'-D{args.kernel}={args.kernel}_{key}_mix_aiv', f'-DTILING_KEY_VAR={key}']
+            compile_cmd = ' '.join(gen_compile_cmd_c310(args, dst, "dav-c310", aiv_opt))
+            if os.system(compile_cmd) != 0:  # nosec B605
+                logging.error("execute command failed: %s", compile_cmd)
+                return (key, key_dsts, False)
+            key_dsts.append(dst)
+    return (key, key_dsts, True)
+
+
 def compile_ascendc_operation(args):
     dsts = []
     kernels = []
     options = get_common_options(args)
     arch = get_arch(args.soc, args.channel)
-    compile_cmd = ""
     link_cmd = ""
     ascend_home_path = os.getenv("ASCEND_HOME_PATH", "ASCEND_HOME_PATH does not exist.")
     mssanitizer_path = os.path.join(ascend_home_path, "tools", "mssanitizer", "lib64")
@@ -311,79 +394,23 @@ def compile_ascendc_operation(args):
         return -1
     tiling_key_ids = get_tiling_key_ids(args.srcs)
     logging.debug("tiling_key_ids: %s", tiling_key_ids)
+    # Compile all tiling keys in parallel using ThreadPoolExecutor
+    max_workers = min(8, len(tiling_key_ids)) if len(tiling_key_ids) > 1 else 1
+    results = {}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {}
+        for key in tiling_key_ids:
+            future = executor.submit(_compile_one_tiling_key, args, key, arch, options, mssanitizer_path)
+            futures[future] = key
+        for future in concurrent.futures.as_completed(futures):
+            key, key_dsts, success = future.result()
+            if not success:
+                return -1
+            results[key] = key_dsts
+
+    # Collect results in original tiling key order
     for key in tiling_key_ids:
-        if args.soc in ("ascend310p", "ascend910"):
-            dst = os.path.splitext(args.dst)[0] + f"_{key}.o"
-            opt = options + [f'-D{args.kernel}={args.kernel}_{key}', f'-DTILING_KEY_VAR={key}']
-            compile_cmd = ' '.join(gen_compile_cmd(args, dst, arch, opt))
-            if (exe_cmd(compile_cmd)) != 0:
-                return -1
-            dsts.append(dst)
-            if args.use_mssanitizer == "ON" and args.soc == "ascend310p":
-                dsts.append("--dependent-libraries")
-                dsts.append(os.path.join(mssanitizer_path, "libsanitizer_stub_dav-m200.a"))
-        elif args.soc == "ascend910b":
-            if args.channel != "mix":
-                dst = os.path.splitext(args.dst)[0] + f"_{key}.o"
-                opt = options + [f'-D{args.kernel}={args.kernel}_{key}', f'-DTILING_KEY_VAR={key}']
-                compile_cmd = ' '.join(gen_compile_cmd_v220(args, dst, arch, opt))
-                if (exe_cmd(compile_cmd)) != 0:
-                    return -1
-                dsts.append(dst)
-                if args.use_mssanitizer == "ON":
-                    dsts.append("--dependent-libraries")
-                    dsts.append(os.path.join(mssanitizer_path, "libsanitizer_stub_dav-c220-cube.a"))
-                    dsts.append(os.path.join(mssanitizer_path, "libsanitizer_stub_dav-c220-vec.a"))
-            else:
-                dst = os.path.splitext(args.dst)[0] + f"_mix_aic_{key}.o"
-                aic_opt = options + [f'-D{args.kernel}={args.kernel}_{key}_mix_aic', f'-DTILING_KEY_VAR={key}']
-                compile_cmd = ' '.join(gen_compile_cmd_v220(args, dst, "dav-c220-cube", aic_opt))
-                if (exe_cmd(compile_cmd)) != 0:
-                    return -1
-                dsts.append(dst)
-                if args.use_mssanitizer == "ON":
-                    dsts.append("--dependent-libraries")
-                    dsts.append(os.path.join(mssanitizer_path, "libsanitizer_stub_dav-c220-cube.a"))
-                dst = os.path.splitext(args.dst)[0] + f"_mix_aiv_{key}.o"
-                aiv_opt = options + [f'-D{args.kernel}={args.kernel}_{key}_mix_aiv', f'-DTILING_KEY_VAR={key}']
-                compile_cmd = ' '.join(gen_compile_cmd_v220(args, dst, "dav-c220-vec", aiv_opt))
-                if (exe_cmd(compile_cmd)) != 0:
-                    return -1
-                dsts.append(dst)
-                if args.use_mssanitizer == "ON":
-                    dsts.append("--dependent-libraries")
-                    dsts.append(os.path.join(mssanitizer_path, "libsanitizer_stub_dav-c220-vec.a"))
-        elif args.soc == "ascend310b":
-            dst = os.path.splitext(args.dst)[0] + f"_{key}.o"
-            opt = options + [f'-D{args.kernel}={args.kernel}_{key}', f'-DTILING_KEY_VAR={key}']
-            compile_cmd = ' '.join(gen_compile_cmd_v300(args, dst, arch, opt))
-            if (exe_cmd(compile_cmd)) != 0:
-                return -1
-            dsts.append(dst)
-        elif args.soc == "ascend950":
-            if args.channel != "mix":
-                dst = os.path.splitext(args.dst)[0] + f"_{key}.o"
-                opt = options + [f'-D{args.kernel}={args.kernel}_{key}', f'-DTILING_KEY_VAR={key}']
-                compile_cmd = ' '.join(gen_compile_cmd_c310(args, dst, arch, opt))
-                if (exe_cmd(compile_cmd)) != 0:
-                    return -1
-                dsts.append(dst)
-            else:
-                dst = os.path.splitext(args.dst)[0] + f"_mix_aic_{key}.o"
-                aic_opt = options + [f'-D{args.kernel}={args.kernel}_{key}_mix_aic', f'-DTILING_KEY_VAR={key}']
-                compile_cmd = ' '.join(gen_compile_cmd_c310(args, dst, "dav-c310", aic_opt))
-                if (exe_cmd(compile_cmd)) != 0:
-                    return -1
-                dsts.append(dst)
-                dst = os.path.splitext(args.dst)[0] + f"_mix_aiv_{key}.o"
-                aiv_opt = options + [f'-D{args.kernel}={args.kernel}_{key}_mix_aiv', f'-DTILING_KEY_VAR={key}']
-                compile_cmd = ' '.join(gen_compile_cmd_c310(args, dst, "dav-c310", aiv_opt))
-                if (exe_cmd(compile_cmd)) != 0:
-                    return -1
-                dsts.append(dst)
-        else:
-            logging.error("soc version %s is not supported", args.soc)
-            sys.exit(1)
+        dsts.extend(results[key])
         kernels.append(f'{args.kernel}_{key}')
 
     link_cmd = ' '.join(gen_fatbin_cmd(args, dsts, args.dst))
