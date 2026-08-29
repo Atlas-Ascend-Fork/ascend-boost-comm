@@ -305,7 +305,7 @@ def _compile_one_tiling_key(args, key, arch, options, mssanitizer_path):
         dst = os.path.splitext(args.dst)[0] + f"_{key}.o"
         opt = options + [f'-D{args.kernel}={args.kernel}_{key}', f'-DTILING_KEY_VAR={key}']
         compile_cmd = ' '.join(gen_compile_cmd(args, dst, arch, opt))
-        if os.system(compile_cmd) != 0:
+        if os.system(compile_cmd) != 0:  # nosec B605
             logging.error("execute command failed: %s", compile_cmd)
             return (key, key_dsts, False)
         key_dsts.append(dst)
@@ -317,7 +317,7 @@ def _compile_one_tiling_key(args, key, arch, options, mssanitizer_path):
             dst = os.path.splitext(args.dst)[0] + f"_{key}.o"
             opt = options + [f'-D{args.kernel}={args.kernel}_{key}', f'-DTILING_KEY_VAR={key}']
             compile_cmd = ' '.join(gen_compile_cmd_v220(args, dst, arch, opt))
-            if os.system(compile_cmd) != 0:
+            if os.system(compile_cmd) != 0:  # nosec B605
                 logging.error("execute command failed: %s", compile_cmd)
                 return (key, key_dsts, False)
             key_dsts.append(dst)
@@ -329,7 +329,7 @@ def _compile_one_tiling_key(args, key, arch, options, mssanitizer_path):
             dst = os.path.splitext(args.dst)[0] + f"_mix_aic_{key}.o"
             aic_opt = options + [f'-D{args.kernel}={args.kernel}_{key}_mix_aic', f'-DTILING_KEY_VAR={key}']
             compile_cmd = ' '.join(gen_compile_cmd_v220(args, dst, "dav-c220-cube", aic_opt))
-            if os.system(compile_cmd) != 0:
+            if os.system(compile_cmd) != 0:  # nosec B605
                 logging.error("execute command failed: %s", compile_cmd)
                 return (key, key_dsts, False)
             key_dsts.append(dst)
@@ -339,7 +339,7 @@ def _compile_one_tiling_key(args, key, arch, options, mssanitizer_path):
             dst = os.path.splitext(args.dst)[0] + f"_mix_aiv_{key}.o"
             aiv_opt = options + [f'-D{args.kernel}={args.kernel}_{key}_mix_aiv', f'-DTILING_KEY_VAR={key}']
             compile_cmd = ' '.join(gen_compile_cmd_v220(args, dst, "dav-c220-vec", aiv_opt))
-            if os.system(compile_cmd) != 0:
+            if os.system(compile_cmd) != 0:  # nosec B605
                 logging.error("execute command failed: %s", compile_cmd)
                 return (key, key_dsts, False)
             key_dsts.append(dst)
@@ -350,7 +350,7 @@ def _compile_one_tiling_key(args, key, arch, options, mssanitizer_path):
         dst = os.path.splitext(args.dst)[0] + f"_{key}.o"
         opt = options + [f'-D{args.kernel}={args.kernel}_{key}', f'-DTILING_KEY_VAR={key}']
         compile_cmd = ' '.join(gen_compile_cmd_v300(args, dst, arch, opt))
-        if os.system(compile_cmd) != 0:
+        if os.system(compile_cmd) != 0:  # nosec B605
             logging.error("execute command failed: %s", compile_cmd)
             return (key, key_dsts, False)
         key_dsts.append(dst)
@@ -359,7 +359,7 @@ def _compile_one_tiling_key(args, key, arch, options, mssanitizer_path):
             dst = os.path.splitext(args.dst)[0] + f"_{key}.o"
             opt = options + [f'-D{args.kernel}={args.kernel}_{key}', f'-DTILING_KEY_VAR={key}']
             compile_cmd = ' '.join(gen_compile_cmd_c310(args, dst, arch, opt))
-            if os.system(compile_cmd) != 0:
+            if os.system(compile_cmd) != 0:  # nosec B605
                 logging.error("execute command failed: %s", compile_cmd)
                 return (key, key_dsts, False)
             key_dsts.append(dst)
@@ -367,14 +367,14 @@ def _compile_one_tiling_key(args, key, arch, options, mssanitizer_path):
             dst = os.path.splitext(args.dst)[0] + f"_mix_aic_{key}.o"
             aic_opt = options + [f'-D{args.kernel}={args.kernel}_{key}_mix_aic', f'-DTILING_KEY_VAR={key}']
             compile_cmd = ' '.join(gen_compile_cmd_c310(args, dst, "dav-c310", aic_opt))
-            if os.system(compile_cmd) != 0:
+            if os.system(compile_cmd) != 0:  # nosec B605
                 logging.error("execute command failed: %s", compile_cmd)
                 return (key, key_dsts, False)
             key_dsts.append(dst)
             dst = os.path.splitext(args.dst)[0] + f"_mix_aiv_{key}.o"
             aiv_opt = options + [f'-D{args.kernel}={args.kernel}_{key}_mix_aiv', f'-DTILING_KEY_VAR={key}']
             compile_cmd = ' '.join(gen_compile_cmd_c310(args, dst, "dav-c310", aiv_opt))
-            if os.system(compile_cmd) != 0:
+            if os.system(compile_cmd) != 0:  # nosec B605
                 logging.error("execute command failed: %s", compile_cmd)
                 return (key, key_dsts, False)
             key_dsts.append(dst)
@@ -386,7 +386,6 @@ def compile_ascendc_operation(args):
     kernels = []
     options = get_common_options(args)
     arch = get_arch(args.soc, args.channel)
-    compile_cmd = ""
     link_cmd = ""
     ascend_home_path = os.getenv("ASCEND_HOME_PATH", "ASCEND_HOME_PATH does not exist.")
     mssanitizer_path = os.path.join(ascend_home_path, "tools", "mssanitizer", "lib64")
