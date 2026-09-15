@@ -48,6 +48,6 @@ jobs:
             BuildAccelerate bash x86_compile.sh
           AC_SERVER_IP: ${{ vars.AC_SERVER_IP }}
     if: "${{ default() }}"
-    runs-on: [self_hosted, arch=x64, spec=large]
+    runs-on: [self-hosted, arch=x64, spec=large]
     container:
       image: swr.cn-north-4.myhuaweicloud.com/hw-ascend/atb_version_build_x86:latest
