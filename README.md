@@ -176,3 +176,4 @@ bash scripts/build.sh example --no_werror
 ## 六、参考文档
 **[CANN社区版文档](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/83RC1alpha002/index/index.html)**
 **本仓文档**：[document/](document/)（含自定义算子、贡献指南等）
+1
