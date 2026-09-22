@@ -44,7 +44,7 @@ jobs:
             export WORKSPACE=${{ steps.process_checkout.outputs.path }}
             cd ${{ steps.process_checkout.outputs.path }}
             export task_name=${{ inputs.task_name }}
-            export GIT_TARGET_BRANCH=${{ env.target_branch }}
+            export GIT_TARGET_BRANCH=${{ env.TARGET_BRANCH }}
             BuildAccelerate bash x86_compile.sh
           AC_SERVER_IP: ${{ vars.AC_SERVER_IP }}
     if: "${{ default() }}"

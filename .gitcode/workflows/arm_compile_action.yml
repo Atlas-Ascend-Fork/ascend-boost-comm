@@ -49,7 +49,7 @@ jobs:
             export WORKSPACE=${{ steps.process_checkout.outputs.path }}
             cd ${{ steps.process_checkout.outputs.path }}
             export task_name=${{ inputs.task_name }}
-            export target_branch=${{ env.target_branch }}
+            export target_branch=${{ env.TARGET_BRANCH }}
             BuildAccelerate bash arm_compile.sh
           AC_SERVER_IP: ${{ vars.AC_SERVER_IP }}
     if: "${{ default() }}"
