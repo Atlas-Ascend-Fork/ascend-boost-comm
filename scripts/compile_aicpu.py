@@ -15,6 +15,7 @@ import os
 import re
 import stat
 import logging
+import subprocess
 
 ascend_home_path = os.getenv("ASCEND_HOME_PATH")
 if not ascend_home_path:
