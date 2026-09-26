@@ -68,6 +68,46 @@ TEST_F(LaunchParamTest, AddInputAclTensor)
     aclDestroyTensor(tensor2);
 }
 
+TEST_F(LaunchParamTest, AddAclTensorPreservesViewLayout)
+{
+    int64_t viewDims[2] = {2, 2};
+    int64_t strides[2] = {3, 1};
+    int64_t storageDims[2] = {2, 3};
+    aclTensor *tensor = aclCreateTensor(viewDims, 2, ACL_FLOAT16, strides, 1, ACL_FORMAT_ND,
+                                        storageDims, 2, nullptr);
+    ASSERT_NE(tensor, nullptr);
+
+    launchParam.AddInTensor(tensor);
+    ASSERT_EQ(launchParam.GetInTensorCount(), 1);
+    const Mki::Tensor &converted = launchParam.GetInTensor(0);
+    ASSERT_EQ(converted.desc.dims.size(), 2);
+    EXPECT_EQ(converted.desc.dims[0], 2);
+    EXPECT_EQ(converted.desc.dims[1], 2);
+    ASSERT_EQ(converted.desc.strides.size(), 2);
+    EXPECT_EQ(converted.desc.strides[0], 3);
+    EXPECT_EQ(converted.desc.strides[1], 1);
+    EXPECT_EQ(converted.desc.offset, 1);
+    EXPECT_FALSE(converted.IsContiguous());
+    EXPECT_EQ(converted.data, tensor->GetStorageAddr());
+    EXPECT_EQ(converted.hostData, tensor->GetData());
+
+    launchParam.AddOutTensor(tensor);
+    ASSERT_EQ(launchParam.GetOutTensorCount(), 1);
+    const Mki::Tensor &convertedOut = launchParam.GetOutTensor(0);
+    ASSERT_EQ(convertedOut.desc.dims.size(), 2);
+    EXPECT_EQ(convertedOut.desc.dims[0], 2);
+    EXPECT_EQ(convertedOut.desc.dims[1], 2);
+    ASSERT_EQ(convertedOut.desc.strides.size(), 2);
+    EXPECT_EQ(convertedOut.desc.strides[0], 3);
+    EXPECT_EQ(convertedOut.desc.strides[1], 1);
+    EXPECT_EQ(convertedOut.desc.offset, 1);
+    EXPECT_FALSE(convertedOut.IsContiguous());
+    EXPECT_EQ(convertedOut.data, tensor->GetStorageAddr());
+    EXPECT_EQ(convertedOut.hostData, tensor->GetData());
+
+    aclDestroyTensor(tensor);
+}
+
 TEST_F(LaunchParamTest, AddInputAclTensorFail)
 {
     aclTensor *tensor = nullptr;

@@ -24,11 +24,17 @@ bool ConvertAclTensorToMkiTensor(const aclTensor *srcTensor, Tensor &dstTensor)
     dstTensor.data = srcTensor->GetStorageAddr();
     dstTensor.desc.format = static_cast<Mki::TensorFormat>(srcTensor->GetStorageFormat());
     dstTensor.desc.dtype = static_cast<Mki::TensorDType>(srcTensor->GetDataType());
-    auto const &shape = srcTensor->GetStorageShape();
+    auto const &shape = srcTensor->GetViewShape();
     dstTensor.desc.dims.resize(shape.GetDimNum());
     for (size_t i = 0; i < shape.GetDimNum(); i++) {
         dstTensor.desc.dims.at(i) = shape.GetDim(i);
     }
+    auto const &strides = srcTensor->GetViewStrides();
+    dstTensor.desc.strides.resize(strides.size());
+    for (size_t i = 0; i < strides.size(); i++) {
+        dstTensor.desc.strides.at(i) = strides.at(i);
+    }
+    dstTensor.desc.offset = srcTensor->GetViewOffset();
     return true;
 }
 }
