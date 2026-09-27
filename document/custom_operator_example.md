@@ -8,7 +8,7 @@ Add two input tensors along a specified dimension to produce one output tensor.
 ![AddcustomOperation](images/AddcustomOperation.png)
 ### New Files
 
-- Create the `addcustom` directory under `examples/ops`. This directory primarily stores the operator implementation code. See the following sections for the specific file contents. The directory structure is as follows:
+- Create the `addcustom` directory under `example/ops`. This directory primarily stores the operator implementation code. See the following sections for the specific file contents. The directory structure is as follows:
     ```
     addcustom
     ├── op_kernel                       // Device-side implementation files (including kernel entry and implementation files)
@@ -22,7 +22,7 @@ Add two input tensors along a specified dimension to produce one output tensor.
     └── addcustom_operation.cpp         // Shape validation
     ```
 
-- Create the `example/include/asbops/params/addcustom.h` file to define the parameter structure for the `Addcustom` operation. The content is as follows:
+- Create the `example/include/atbops/params/addcustom.h` file to define the parameter structure for the `Addcustom` operation. The content is as follows:
     ```c++
     #ifndef ATBOPS_PARAMS_ADDCUSTOM_H
     #define ATBOPS_PARAMS_ADDCUSTOM_H
@@ -50,7 +50,7 @@ Add two input tensors along a specified dimension to produce one output tensor.
     ```
 ### Modified Files
 
-- Include the new header file `example/include/asbops/params/addcustom.h` in `example/include/asbops/params/params.h`:
+- Include the new header file `example/include/atbops/params/addcustom.h` in `example/include/atbops/params/params.h`:
     ```c++
     #include "atbops/params/addcustom.h"
     ```
