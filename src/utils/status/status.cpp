@@ -14,6 +14,7 @@
 
 namespace Mki {
 constexpr int MAX_LOG_STRING_SIZE = 1024;
+constexpr int MAX_STATUS_REP_SIZE = MAX_LOG_STRING_SIZE + static_cast<int>(sizeof(int) * 2) + 1;
 Status::Status() noexcept : rep_(nullptr){};
 
 Status::~Status()
@@ -29,7 +30,8 @@ Status::Status(const Status &other)
     }
 
     int len = other.GetLen();
-    if (len > MAX_LOG_STRING_SIZE) {
+    if (len > MAX_STATUS_REP_SIZE)
+    {
         return;
     }
     rep_ = new (std::nothrow) uint8_t[len];
@@ -47,7 +49,8 @@ Status &Status::operator=(const Status &other)
     RemoveMsg();
     if (other.rep_ != nullptr) {
         int len = other.GetLen();
-        if (len > MAX_LOG_STRING_SIZE) {
+        if (len > MAX_STATUS_REP_SIZE)
+        {
             return *this;
         }
         rep_ = new (std::nothrow) uint8_t[len];
