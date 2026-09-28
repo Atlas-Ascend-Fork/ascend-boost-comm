@@ -71,7 +71,8 @@ int RtBackend::DeviceGetPairDevicesInfo(uint32_t devId, uint32_t otherDevId, int
 
 int RtBackend::StreamCreate(MkiRtStream *stream, int32_t priority)
 {
-    CHECK_STATUS_WITH_DESC_RETURN(aclrtCreateStream(stream), "aclrt Create Stream");
+    CHECK_STATUS_WITH_DESC_RETURN(aclrtCreateStreamWithConfig(stream, static_cast<uint32_t>(priority), 0U),
+                                  "aclrt Create Stream");
 }
 
 int RtBackend::StreamDestroy(MkiRtStream stream)
