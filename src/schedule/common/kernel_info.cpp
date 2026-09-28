@@ -352,9 +352,11 @@ std::string KernelInfo::ToString() const
     return ss.str();
 }
 
-void KernelInfo::FreeTilingHost() {
-    if (tilingExtInfo_.hostTilingAddr != nullptr) {
-        free(tilingExtInfo_.hostTilingAddr);
+void KernelInfo::FreeTilingHost()
+{
+    if (tilingExtInfo_.hostTilingAddr != nullptr)
+    {
+        delete[] tilingExtInfo_.hostTilingAddr;
         tilingExtInfo_.hostTilingAddr = nullptr;
         tilingExtInfo_.hostTilingSize = 0;
     }
