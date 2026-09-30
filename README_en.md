@@ -50,14 +50,14 @@ The following table lists the Ascend hardware architectures supported by this re
 | Component| Version Requirement| Description|
 |---|---|---|
 | Python | 3.10.x or 3.11.x| Dependency for running Python scripts during compilation|
-| cmake | ≥ 3.20 | |
+| cmake | ≥ 3.20 | Build system generation tool |
 | gcc/g++ | Recommended: 7.3.1-11.x| If GCC ≥ 12, add `--no_werror` to the compilation command. (See [Compilation Description](#compilation-description).)|
 
 **Runtime example / test dependencies (install only when compiling and running the test framework or examples):**
 
 | Component| Version Requirement| Description|
 |---|---|---|
-| PyTorch | >= 2.1.0 | |
+| PyTorch | >= 2.1.0 | Deep learning framework; required for running examples/tests |
 | torch_npu (Ascend Extension for PyTorch)| See the official document.| Must be compatible with CANN and torch versions. For details, see the following instruction.|
 
 > **Note**: The Ascend Boost Comm library (compilation and build) does not depend on PyTorch, torch_npu, or NumPy. The preceding components need to be installed only when you run the examples and test cases in the `example/` and `tests/` directories.
