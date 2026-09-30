@@ -50,14 +50,14 @@ ascend-boost-comm
 | 组件 | 版本要求 | 说明 |
 |---|---|---|
 | Python | 3.10.x 或 3.11.x | 构建时python脚本运行依赖 |
-| cmake | ≥ 3.20 | |
+| cmake | ≥ 3.20 | 构建系统生成工具 |
 | gcc/g++ | 推荐 7.3.1–11.x | **GCC ≥ 12** 时编译需加 `--no_werror`（见[编译说明](#编译说明)） |
 
 **运行示例 / 测试依赖（仅当需要编译运行 测试框架 或 Examples 时安装）**：
 
 | 组件 | 版本要求 | 说明 |
 |---|---|---|
-| PyTorch | >= 2.1.0 | |
+| PyTorch | >= 2.1.0 | 深度学习框架，运行示例/测试时需要 |
 | torch_npu（Ascend Extension for PyTorch） | 见官方文档 | 须与 CANN、torch 版本配套，见下 |
 
 > **说明**：Ascend Boost Comm 库本身（编译构建）不依赖 PyTorch、torch_npu 或 numpy。上述组件仅在运行 `example/`、`tests/` 目录下的示例和测试用例时才需要安装。
