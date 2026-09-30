@@ -40,9 +40,9 @@ TEST(StatusTest, Code)
     EXPECT_EQ(st.Code(), 3);
 }
 
-TEST(StatusTest, CopyAndAssignmentPreserveLongErrorMessages)
+TEST(StatusTest, CopyAndAssignmentPreserveEmptyAndLongErrorMessages)
 {
-    for (const size_t length : {1015, 1016, 1024})
+    for (const size_t length : {0, 1015, 1016, 1024})
     {
         const std::string message(length, 'x');
         const Mki::Status original = Mki::Status::FailStatus(7, message);
@@ -62,5 +62,26 @@ TEST(StatusTest, CopyAndAssignmentPreserveLongErrorMessages)
         EXPECT_EQ(assigned.Code(), 7);
         EXPECT_EQ(assigned.Message(), message);
     }
+}
+
+TEST(StatusTest, OversizedErrorMessageKeepsExistingContract)
+{
+    const std::string message(1025, 'x');
+    const Mki::Status original = Mki::Status::FailStatus(7, message);
+
+    EXPECT_TRUE(original.Ok());
+    EXPECT_EQ(original.Code(), 0);
+    EXPECT_EQ(original.Message(), "");
+
+    const Mki::Status copied(original);
+    EXPECT_TRUE(copied.Ok());
+    EXPECT_EQ(copied.Code(), 0);
+    EXPECT_EQ(copied.Message(), "");
+
+    Mki::Status assigned = Mki::Status::FailStatus(8, "seed");
+    assigned = original;
+    EXPECT_TRUE(assigned.Ok());
+    EXPECT_EQ(assigned.Code(), 0);
+    EXPECT_EQ(assigned.Message(), "");
 }
 } // namespace Mki
