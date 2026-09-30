@@ -1,4 +1,4 @@
-﻿# GitCode Workflow
+# GitCode Workflow
 
 ### 1. Preparations
 

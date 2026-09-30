@@ -1,4 +1,4 @@
-﻿# Single Operator Example Using the Ascend Boost Comm Library
+# Single Operator Example Using the Ascend Boost Comm Library
 
 This tutorial uses the add operator as an example to provide a guide for writing operators that run on Ascend Boost Comm.
 
