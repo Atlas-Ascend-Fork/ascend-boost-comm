@@ -167,6 +167,14 @@ bool Loader::LoadAicpuKernelBinarys()
     ret = Mki::MkiRtStreamCreate(&stream, 0);
     MKI_CHECK(ret == MKIRT_SUCCESS && stream != nullptr,
                 "MkiRtStreamCreate for LoadOpFromBuf fail, errCode:" << ret, return false);
+    auto destroyStream = [&stream]() -> int {
+        if (stream == nullptr) {
+            return MKIRT_SUCCESS;
+        }
+        int destroyRet = Mki::MkiRtStreamDestroy(stream);
+        stream = nullptr;
+        return destroyRet;
+    };
 
     RtArgsExT argsInfo = {};
     argsInfo.args = &opArgs;
@@ -183,11 +191,23 @@ bool Loader::LoadAicpuKernelBinarys()
     kernelParam.argsEx = &argsInfo;
 
     ret = Mki::MkiRtAicpuFunctionLaunchWithFlag(&launchName, &kernelParam, stream);
-    MKI_CHECK(ret == MKIRT_SUCCESS, "MkiRtAicpuFunctionLaunchWithFlag for LoadOpFromBuf fail, errCode:" << ret,
-                return false);
+    if (ret != MKIRT_SUCCESS) {
+        int destroyRet = destroyStream();
+        MKI_LOG_IF(destroyRet != MKIRT_SUCCESS, ERROR)
+            << "MkiRtStreamDestroy after LoadOpFromBuf launch failure, errCode:" << destroyRet;
+        MKI_LOG(ERROR) << "MkiRtAicpuFunctionLaunchWithFlag for LoadOpFromBuf fail, errCode:" << ret;
+        return false;
+    }
     ret = Mki::MkiRtStreamSynchronize(stream);
-    MKI_CHECK(ret == MKIRT_SUCCESS, "MkiRtStreamSynchronize for LoadOpFromBuf fail, errCode:" << ret, return false);
-    Mki::MkiRtStreamDestroy(stream);
+    if (ret != MKIRT_SUCCESS) {
+        int destroyRet = destroyStream();
+        MKI_LOG_IF(destroyRet != MKIRT_SUCCESS, ERROR)
+            << "MkiRtStreamDestroy after LoadOpFromBuf synchronize failure, errCode:" << destroyRet;
+        MKI_LOG(ERROR) << "MkiRtStreamSynchronize for LoadOpFromBuf fail, errCode:" << ret;
+        return false;
+    }
+    ret = destroyStream();
+    MKI_CHECK(ret == MKIRT_SUCCESS, "MkiRtStreamDestroy for LoadOpFromBuf fail, errCode:" << ret, return false);
 
     return true;
 }
