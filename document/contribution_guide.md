@@ -70,7 +70,7 @@ All discovered issues or new ideas you wish to contribute can be discussed and t
 
 1. CANN Development Environment Setup
 
-   If you want to contribute code, you need to set up the CANN development environment. For details, see [Environment Setup](../README_en.md#3-environment-setup).
+   If you want to contribute code, you need to set up the CANN development environment. For details, see [Environment Setup](../README_en.md#environment-setup).
 
 2. Ascend Boost Comm Development Precautions
 
