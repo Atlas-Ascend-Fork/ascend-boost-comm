@@ -1,20 +1,20 @@
 # Gitcode 工作流说明
 
-### 1. 开展工作流前的准备
+### 开展工作流前的准备
 
 - 安装Git：请先确保您的电脑上已经安装了Git软件。如您需了解GIt，可以在Google、baidu或其他搜索引擎上求助相关内容。
 - 在开展Gitcode的工作流之前，您需要先在Ascend的代码托管平台上找到[Ascend Boost Comm](https://gitcode.com/cann/ascend-boost-comm)仓库。
 
-### 2. 准备本地代码
+### 准备本地代码
 
-#### 2.1 Fork个人分支
+#### Fork个人分支
 
 1)  找到并打开对应的开放项目的首页
 2)  点击右上角的 `Fork` 按钮，按照指引，建立一个属于"**个人**"的云上fork分支。
 
   ![gitcode-fork](../images/gitcode-fork.png)   
 
-#### 2.2 把fork分支克隆到本地
+#### 把fork分支克隆到本地
 
 请按照以下的复制过程将repository内的代码下载到您的计算机上。
 
@@ -91,7 +91,7 @@ git config --global user.email "email@your_email.com"
     ```
 
 
-#### 2.3 拉分支
+#### 拉分支
 
 更新您的本地分支
 
@@ -111,13 +111,13 @@ git checkout -b myfeature
 
 
 
-### 3. 本地构建和验证
+### 本地构建和验证
 
 本地构建和验证参见[使用说明](../../README.md#使用说明)。
 
 
 
-### 4. 保持您的分支和master的同步
+### 保持您的分支和master的同步
 
 ```
 # While on your myfeature branch
@@ -129,7 +129,7 @@ git rebase upstream/master
 
 
 
-### 5. 在本地工作目录提交变更
+### 在本地工作目录提交变更
 
 提交您的变更
 
@@ -142,7 +142,7 @@ git commit -m "提交内容描述"
 
 
 
-### 6. 将变更推送到您的远端目录
+### 将变更推送到您的远端目录
 
 准备进行审查（或只是建立工作的异地备份）时，将分支推到您在`gitcode.com`的fork分支:
 
@@ -150,7 +150,7 @@ git commit -m "提交内容描述"
 git push -f origin myfeature
 ```
 
-### 7. 在Gitcode上创建一个 pull request
+### 在Gitcode上创建一个 pull request
 
 1. 访问您在 `https://gitcode.com/$user/ascend-boost-comm` 的页面，单击 `+Pull Request`。
    
@@ -161,7 +161,7 @@ git push -f origin myfeature
    提交 PR 是对项目主分支的一次合并，为保证合并的质量，请谨慎操作。
 
 
-### 8. 将pull request与处理的Issue进行关联
+### 将pull request与处理的Issue进行关联
 
 1. 访问仓库的`Issue`列表，进入您本次pull request所处理的对应Issue页面。
 
@@ -172,7 +172,7 @@ git push -f origin myfeature
    ![Issue关联PR](../images/issue-link-pr.png)
 
 
-### 9. 查看门禁状态以及代码检视意见
+### 查看门禁状态以及代码检视意见
 
 - 查看门禁状态
 

@@ -1,20 +1,20 @@
 ﻿# GitCode Workflow
 
-### 1. Preparations
+### Preparations
 
 - Ensure that Git has been installed. You can search for more information about Git on Google, Baidu, or other search engines.
 - Before starting the GitCode workflow, you need to find the [Ascend Boost Comm](https://gitcode.com/cann/ascend-boost-comm) repository on the Ascend code hosting platform.
 
-### 2. Preparing Local Code
+### Preparing Local Code
 
-#### 2.1 Forking to Personal Branch
+#### Forking to Personal Branch
 
 1) Visit the homepage of the project.
 2) Click the `Fork` button in the upper right corner and follow the instructions to create a **Personal** fork branch on the cloud.
 
   ![gitcode-fork](../images/gitcode-fork.png)
 
-#### 2.2 Cloning the Forked Branch
+#### Cloning the Forked Branch
 
 Perform the following steps to download the code in the repository.
 
@@ -91,7 +91,7 @@ git config --global user.email "email@your_email.com"
     ```
 
 
-#### 2.3 Pulling a Branch
+#### Pulling a Branch
 
 Update your local branch.
 
@@ -111,13 +111,13 @@ git checkout -b myfeature
 
 
 
-### 3. Completing Local Build and Validation
+### Completing Local Build and Validation
 
 For details about local build and verification, see [Usage Instructions](../../README_en.md#usage-instructions).
 
 
 
-### 4. Syncing Branch with Master
+### Syncing Branch with Master
 
 ```
 # While on your myfeature branch
@@ -129,7 +129,7 @@ When merging branches, do not use `git pull` to replace the `fetch` and `rebase`
 
 
 
-### 5. Committing Changes in the Local Working Directory
+### Committing Changes in the Local Working Directory
 
 Commit your changes.
 
@@ -142,7 +142,7 @@ You may continue editing, building, and testing more based on previous commits. 
 
 
 
-### 6. Pushing Changes to Your Remote Repository
+### Pushing Changes to Your Remote Repository
 
 When your changes are ready for review (or you want to create a remote backup of your work), push the branch to your forked repository on GitCode.
 
@@ -150,7 +150,7 @@ When your changes are ready for review (or you want to create a remote backup of
 git push -f origin myfeature
 ```
 
-### 7. Creating a Pull Request on GitCode
+### Creating a Pull Request on GitCode
 
 1. Go to your repository page on `https://gitcode.com/$user/ascend-boost-comm` and click +`Pull Request`.
 
@@ -161,7 +161,7 @@ git push -f origin myfeature
    Submitting a PR merges changes into the project's master branch. To ensure merge quality, please proceed with caution.
 
 
-### 8. Associating the PR with the Issue It Addresses
+### Associating the PR with the Issue It Addresses
 
 1. Access the issue list of the repository and go to the page of the issue addressed by your pull request.
 
@@ -172,7 +172,7 @@ git push -f origin myfeature
    ![Associating an issue with a PR](../images/issue-link-pr.png)
 
 
-### 9. Checking CI Status and Code Review Comments
+### Checking CI Status and Code Review Comments
 
 - Check the CI status.
 

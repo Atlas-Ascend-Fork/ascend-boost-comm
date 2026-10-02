@@ -3,7 +3,7 @@
 English | [简体中文](./README.md)
 
 🔥 [2025/09] Ascend Boost Comm project was first launched.
-## 1. What Is Ascend Boost Comm?
+## What Is Ascend Boost Comm?
 ### Introduction to Ascend Boost Comm
 Ascend Boost Comm is a common component of domain-specific acceleration libraries. It defines the L0-level APIs for operator calling in a unified manner. It interconnects with operator libraries developed by different organizations and supports different acceleration library applications for M x N operator capability reuse.
 
@@ -32,7 +32,7 @@ ascend-boost-comm
 ├── tests                 # Test code
 ```
 
-## 2. Product Support
+## Product Support
 
 The following table lists the Ascend hardware architectures supported by this repository.
 
@@ -42,7 +42,7 @@ The following table lists the Ascend hardware architectures supported by this re
 | Atlas A3 training products/Atlas A3 inference products| √ | — |
 | Atlas inference products| √ | — |
 
-## 3. Environment Setup
+## Environment Setup
 ### Basic Environment Dependencies
 
 **Compilation dependencies (mandatory for the project):**
@@ -102,7 +102,7 @@ After installing CANN, you can install some tools to facilitate subsequent devel
 * [CANN Dependencies](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/83RC1alpha002/softwareinst/instg/instg_0045.html?Mode=PmIns&InstallType=local&OS=Debian&Software=cannToolKit)
 * [Post-Installation Operations for CANN](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/83RC1alpha002/softwareinst/instg/instg_0094.html?Mode=PmIns&InstallType=local&OS=Debian&Software=cannToolKit)
 
-## 4. Getting Started
+## Getting Started
 ### Installation
 No installation is required. It is compiled with the operator package. For details, see [Compilation Description](#compilation) and [Usage Description](#usage-instructions).
 
@@ -165,7 +165,7 @@ This scenario is for users who want to simply test a newly written single operat
 
 You can refer to this document to develop custom operators: [Example of Developing a Custom Operator](document/custom_operator_example.md).
 
-## 5. Contributing
+## Contributing
 
 1.  Fork the repository.
 2.  Modify and commit code.
@@ -173,6 +173,6 @@ You can refer to this document to develop custom operators: [Example of Developi
 
 For details, see [Contribution Guide](document/contribution_guide.md).
 
-## 6. Reference Document
+## Reference Document
 [CANN Community Edition Documentation](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/83RC1alpha002/index/index.html)
 Documents in this repository: [document/](document/) (including custom operator and contribution guide)
