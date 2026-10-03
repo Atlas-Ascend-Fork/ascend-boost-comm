@@ -8,15 +8,20 @@
  * See LICENSE in the root of the software repository for the full text of the License.
  */
 #include "mki/launch_param.h"
+
+#include <aclnn/opdev/common_types.h>
+
 #include <functional>
 #include <map>
-#include <aclnn/opdev/common_types.h>
-#include "mki/utils/log/log.h"
+
 #include "mki/utils/assert/assert.h"
+#include "mki/utils/log/log.h"
 #include "mki/utils/stringify/stringify.h"
 
-namespace Mki {
-namespace {
+namespace Mki
+{
+namespace
+{
 bool ConvertAclTensorToMkiTensor(const aclTensor *srcTensor, Tensor &dstTensor)
 {
     MKI_CHECK(srcTensor != nullptr, "src aclTensor is nullptr", return false);
@@ -26,18 +31,20 @@ bool ConvertAclTensorToMkiTensor(const aclTensor *srcTensor, Tensor &dstTensor)
     dstTensor.desc.dtype = static_cast<Mki::TensorDType>(srcTensor->GetDataType());
     auto const &shape = srcTensor->GetViewShape();
     dstTensor.desc.dims.resize(shape.GetDimNum());
-    for (size_t i = 0; i < shape.GetDimNum(); i++) {
+    for (size_t i = 0; i < shape.GetDimNum(); i++)
+    {
         dstTensor.desc.dims.at(i) = shape.GetDim(i);
     }
     auto const &strides = srcTensor->GetViewStrides();
     dstTensor.desc.strides.resize(strides.size());
-    for (size_t i = 0; i < strides.size(); i++) {
+    for (size_t i = 0; i < strides.size(); i++)
+    {
         dstTensor.desc.strides.at(i) = strides.at(i);
     }
     dstTensor.desc.offset = srcTensor->GetViewOffset();
     return true;
 }
-}
+}  // namespace
 
 using ToStringFunc = std::function<std::string(const Any &)>;
 
@@ -47,12 +54,14 @@ LaunchParam &LaunchParam::operator=(const LaunchParam &other)
 {
     specificParam_ = other.specificParam_;
     inTensors_.resize(other.inTensors_.size());
-    for (size_t i = 0; i < other.inTensors_.size(); ++i) {
+    for (size_t i = 0; i < other.inTensors_.size(); ++i)
+    {
         inTensors_[i] = other.inTensors_[i];
     }
 
     outTensors_.resize(other.outTensors_.size());
-    for (size_t i = 0; i < other.outTensors_.size(); ++i) {
+    for (size_t i = 0; i < other.outTensors_.size(); ++i)
+    {
         outTensors_[i] = other.outTensors_[i];
     }
 
@@ -75,7 +84,8 @@ void LaunchParam::AddInTensor(const Tensor &tensor) { inTensors_.push_back(tenso
 void LaunchParam::AddInTensor(const aclTensor *tensor)
 {
     Tensor inTensor;
-    if (ConvertAclTensorToMkiTensor(tensor, inTensor)) {
+    if (ConvertAclTensorToMkiTensor(tensor, inTensor))
+    {
         inTensors_.push_back(inTensor);
     }
 }
@@ -95,7 +105,8 @@ void LaunchParam::AddOutTensor(const Tensor &tensor) { outTensors_.push_back(ten
 void LaunchParam::AddOutTensor(const aclTensor *tensor)
 {
     Tensor outTensor;
-    if (ConvertAclTensorToMkiTensor(tensor, outTensor)) {
+    if (ConvertAclTensorToMkiTensor(tensor, outTensor))
+    {
         outTensors_.push_back(outTensor);
     }
 }
@@ -114,10 +125,12 @@ std::string LaunchParam::ToString() const
 {
     std::stringstream ss;
     ss << "specificParam: " << Stringify::ToString(specificParam_) << std::endl;
-    for (size_t i = 0; i < inTensors_.size(); ++i) {
+    for (size_t i = 0; i < inTensors_.size(); ++i)
+    {
         ss << "intensors[" << i << "]: " << inTensors_.at(i).ToString() << std::endl;
     }
-    for (size_t i = 0; i < outTensors_.size(); ++i) {
+    for (size_t i = 0; i < outTensors_.size(); ++i)
+    {
         ss << "outtensors[" << i << "]: " << outTensors_.at(i).ToString() << std::endl;
     }
     ss << std::endl;
@@ -129,4 +142,4 @@ void *GetStorageAddr(const aclTensor *tensor)
     MKI_CHECK(tensor != nullptr, "input aclTensor is nullptr", return nullptr);
     return tensor->GetStorageAddr();
 }
-} // namespace Mki
+}  // namespace Mki
