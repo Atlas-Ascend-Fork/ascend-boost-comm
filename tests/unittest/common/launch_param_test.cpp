@@ -7,27 +7,33 @@
  * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
  * See LICENSE in the root of the software repository for the full text of the License.
  */
-#include <gtest/gtest.h>
-#include <acl_meta.h>
 #include "mki/launch_param.h"
 
-namespace {
-class LaunchParamTest : public ::testing::Test {
-protected:
+#include <acl_meta.h>
+#include <aclnn/opdev/common_types.h>
+#include <gtest/gtest.h>
+
+#include <vector>
+
+namespace
+{
+class LaunchParamTest : public ::testing::Test
+{
+   protected:
     Mki::LaunchParam launchParam;
     Mki::Tensor tensor1, tensor2;
 
     void SetUp() override
     {
         tensor1.desc = Mki::TensorDesc{};
-        tensor1.data = malloc(128); // Allocate 128 bytes for tensor1.data
-        tensor1.dataSize = 128; // Set tensor1.dataSize to 128
-        tensor1.hostData = malloc(128); // Allocate 128 bytes for tensor1.hostData
+        tensor1.data = malloc(128);      // Allocate 128 bytes for tensor1.data
+        tensor1.dataSize = 128;          // Set tensor1.dataSize to 128
+        tensor1.hostData = malloc(128);  // Allocate 128 bytes for tensor1.hostData
 
-        tensor2.desc = Mki::TensorDesc{}; // Initialize tensor2.desc
-        tensor2.data = malloc(256); // Allocate 256 bytes for tensor2.data
-        tensor2.dataSize = 256; // Set tensor2.dataSize to 256
-        tensor2.hostData = malloc(256); // Allocate 256 bytes for tensor2.hostData
+        tensor2.desc = Mki::TensorDesc{};  // Initialize tensor2.desc
+        tensor2.data = malloc(256);        // Allocate 256 bytes for tensor2.data
+        tensor2.dataSize = 256;            // Set tensor2.dataSize to 256
+        tensor2.hostData = malloc(256);    // Allocate 256 bytes for tensor2.hostData
     }
 
     void TearDown() override
@@ -41,31 +47,89 @@ protected:
 
 TEST_F(LaunchParamTest, AddInputTensor)
 {
-    EXPECT_EQ(launchParam.GetInTensorCount(), 0); // 验证添加的输入张量数量是否为0
+    EXPECT_EQ(launchParam.GetInTensorCount(), 0);  // 验证添加的输入张量数量是否为0
     launchParam.AddInTensor(tensor1);
-    EXPECT_EQ(launchParam.GetInTensorCount(), 1); // 验证添加的输入张量数量是否为1
+    EXPECT_EQ(launchParam.GetInTensorCount(), 1);  // 验证添加的输入张量数量是否为1
     launchParam.AddInTensor(tensor2);
-    EXPECT_EQ(launchParam.GetInTensorCount(), 2); // 验证添加的输入张量数量是否为2
+    EXPECT_EQ(launchParam.GetInTensorCount(), 2);  // 验证添加的输入张量数量是否为2
 }
 
 TEST_F(LaunchParamTest, AddInputAclTensor)
 {
-    EXPECT_EQ(launchParam.GetInTensorCount(), 0); // 验证添加的输入张量数量是否为0
+    EXPECT_EQ(launchParam.GetInTensorCount(), 0);  // 验证添加的输入张量数量是否为0
     int64_t viewDims[2] = {2, 4};
     int64_t strides[2] = {1, 4};
     int64_t storageDims[2] = {2, 4};
     aclTensor *tensor1 = aclCreateTensor(viewDims, 2, ACL_FLOAT16, strides, 0, ACL_FORMAT_ND, storageDims, 2, nullptr);
     aclTensor *tensor2 = aclCreateTensor(viewDims, 2, ACL_FLOAT16, strides, 0, ACL_FORMAT_ND, storageDims, 2, nullptr);
     launchParam.AddInTensor(tensor1);
-    EXPECT_EQ(launchParam.GetInTensorCount(), 1); // 验证添加的输入张量数量是否为1
-    EXPECT_EQ(launchParam.GetInTensor(0).desc.dims[0], 2); // 2 验证第一维为2
-    EXPECT_EQ(launchParam.GetInTensor(0).desc.dims[1], 4); // 4 验证第一维为4
+    EXPECT_EQ(launchParam.GetInTensorCount(), 1);           // 验证添加的输入张量数量是否为1
+    EXPECT_EQ(launchParam.GetInTensor(0).desc.dims[0], 2);  // 2 验证第一维为2
+    EXPECT_EQ(launchParam.GetInTensor(0).desc.dims[1], 4);  // 4 验证第一维为4
     EXPECT_EQ(launchParam.GetInTensor(0).desc.dtype, Mki::TENSOR_DTYPE_FLOAT16);
     EXPECT_EQ(launchParam.GetInTensor(0).desc.format, Mki::TENSOR_FORMAT_ND);
     launchParam.AddInTensor(tensor2);
-    EXPECT_EQ(launchParam.GetInTensorCount(), 2); // 验证添加的输入张量数量是否为2
+    EXPECT_EQ(launchParam.GetInTensorCount(), 2);  // 验证添加的输入张量数量是否为2
     aclDestroyTensor(tensor1);
     aclDestroyTensor(tensor2);
+}
+
+TEST_F(LaunchParamTest, AddAclTensorPreservesViewLayout)
+{
+    int64_t viewDims[2] = {2, 2};
+    int64_t strides[2] = {3, 1};
+    int64_t storageDims[2] = {2, 3};
+    float storage[6] = {0, 1, 2, 3, 4, 5};
+    aclTensor *tensor = aclCreateTensor(viewDims, 2, ACL_FLOAT, strides, 1, ACL_FORMAT_ND, storageDims, 2, storage);
+    ASSERT_NE(tensor, nullptr);
+
+    auto ConsumeView = [](const Mki::Tensor &converted)
+    {
+        std::vector<float> values;
+        const auto *base = static_cast<const float *>(converted.data);
+        for (int64_t row = 0; row < converted.desc.dims[0]; ++row)
+        {
+            for (int64_t column = 0; column < converted.desc.dims[1]; ++column)
+            {
+                const auto offset =
+                    converted.desc.offset + row * converted.desc.strides[0] + column * converted.desc.strides[1];
+                values.push_back(base[offset]);
+            }
+        }
+        return values;
+    };
+
+    launchParam.AddInTensor(tensor);
+    ASSERT_EQ(launchParam.GetInTensorCount(), 1);
+    const Mki::Tensor &converted = launchParam.GetInTensor(0);
+    ASSERT_EQ(converted.desc.dims.size(), 2);
+    EXPECT_EQ(converted.desc.dims[0], 2);
+    EXPECT_EQ(converted.desc.dims[1], 2);
+    ASSERT_EQ(converted.desc.strides.size(), 2);
+    EXPECT_EQ(converted.desc.strides[0], 3);
+    EXPECT_EQ(converted.desc.strides[1], 1);
+    EXPECT_EQ(converted.desc.offset, 1);
+    EXPECT_FALSE(converted.IsContiguous());
+    EXPECT_EQ(converted.data, tensor->GetStorageAddr());
+    EXPECT_EQ(converted.hostData, tensor->GetData());
+    EXPECT_EQ(ConsumeView(converted), (std::vector<float>{1, 2, 4, 5}));
+
+    launchParam.AddOutTensor(tensor);
+    ASSERT_EQ(launchParam.GetOutTensorCount(), 1);
+    const Mki::Tensor &convertedOut = launchParam.GetOutTensor(0);
+    ASSERT_EQ(convertedOut.desc.dims.size(), 2);
+    EXPECT_EQ(convertedOut.desc.dims[0], 2);
+    EXPECT_EQ(convertedOut.desc.dims[1], 2);
+    ASSERT_EQ(convertedOut.desc.strides.size(), 2);
+    EXPECT_EQ(convertedOut.desc.strides[0], 3);
+    EXPECT_EQ(convertedOut.desc.strides[1], 1);
+    EXPECT_EQ(convertedOut.desc.offset, 1);
+    EXPECT_FALSE(convertedOut.IsContiguous());
+    EXPECT_EQ(convertedOut.data, tensor->GetStorageAddr());
+    EXPECT_EQ(convertedOut.hostData, tensor->GetData());
+    EXPECT_EQ(ConsumeView(convertedOut), (std::vector<float>{1, 2, 4, 5}));
+
+    aclDestroyTensor(tensor);
 }
 
 TEST_F(LaunchParamTest, AddInputAclTensorFail)
@@ -85,29 +149,29 @@ TEST_F(LaunchParamTest, GetInputTensor)
 
 TEST_F(LaunchParamTest, AddOutputTensor)
 {
-    EXPECT_EQ(launchParam.GetOutTensorCount(), 0); // 验证输出张量数量是否为0
+    EXPECT_EQ(launchParam.GetOutTensorCount(), 0);  // 验证输出张量数量是否为0
     launchParam.AddOutTensor(tensor1);
-    EXPECT_EQ(launchParam.GetOutTensorCount(), 1); // 验证输出张量数量是否为1
+    EXPECT_EQ(launchParam.GetOutTensorCount(), 1);  // 验证输出张量数量是否为1
     launchParam.AddOutTensor(tensor2);
-    EXPECT_EQ(launchParam.GetOutTensorCount(), 2); // 验证输出张量数量是否为2
+    EXPECT_EQ(launchParam.GetOutTensorCount(), 2);  // 验证输出张量数量是否为2
 }
 
 TEST_F(LaunchParamTest, AddOutputAclTensor)
 {
-    EXPECT_EQ(launchParam.GetOutTensorCount(), 0); // 验证添加的输入张量数量是否为0
+    EXPECT_EQ(launchParam.GetOutTensorCount(), 0);  // 验证添加的输入张量数量是否为0
     int64_t viewDims[2] = {2, 4};
     int64_t strides[2] = {1, 4};
     int64_t storageDims[2] = {2, 4};
     aclTensor *tensor1 = aclCreateTensor(viewDims, 2, ACL_FLOAT16, strides, 0, ACL_FORMAT_ND, storageDims, 2, nullptr);
     aclTensor *tensor2 = aclCreateTensor(viewDims, 2, ACL_FLOAT16, strides, 0, ACL_FORMAT_ND, storageDims, 2, nullptr);
     launchParam.AddOutTensor(tensor1);
-    EXPECT_EQ(launchParam.GetOutTensorCount(), 1); // 验证添加的输入张量数量是否为1
-    EXPECT_EQ(launchParam.GetOutTensor(0).desc.dims[0], 2); // 2 验证第一维为2
-    EXPECT_EQ(launchParam.GetOutTensor(0).desc.dims[1], 4); // 4 验证第一维为4
+    EXPECT_EQ(launchParam.GetOutTensorCount(), 1);           // 验证添加的输入张量数量是否为1
+    EXPECT_EQ(launchParam.GetOutTensor(0).desc.dims[0], 2);  // 2 验证第一维为2
+    EXPECT_EQ(launchParam.GetOutTensor(0).desc.dims[1], 4);  // 4 验证第一维为4
     EXPECT_EQ(launchParam.GetOutTensor(0).desc.dtype, Mki::TENSOR_DTYPE_FLOAT16);
     EXPECT_EQ(launchParam.GetOutTensor(0).desc.format, Mki::TENSOR_FORMAT_ND);
     launchParam.AddOutTensor(tensor2);
-    EXPECT_EQ(launchParam.GetOutTensorCount(), 2); // 验证添加的输入张量数量是否为2
+    EXPECT_EQ(launchParam.GetOutTensorCount(), 2);  // 验证添加的输入张量数量是否为2
     aclDestroyTensor(tensor1);
     aclDestroyTensor(tensor2);
 }
@@ -131,11 +195,11 @@ TEST_F(LaunchParamTest, Reset)
 {
     launchParam.AddInTensor(tensor1);
     launchParam.AddOutTensor(tensor2);
-    EXPECT_EQ(launchParam.GetInTensorCount(), 1); // 输入张量数量设置为1
-    EXPECT_EQ(launchParam.GetOutTensorCount(), 1); // 输出张量数量设置为1
+    EXPECT_EQ(launchParam.GetInTensorCount(), 1);   // 输入张量数量设置为1
+    EXPECT_EQ(launchParam.GetOutTensorCount(), 1);  // 输出张量数量设置为1
     launchParam.Reset();
-    EXPECT_EQ(launchParam.GetInTensorCount(), 0); // 验证输入张量数量是否为0
-    EXPECT_EQ(launchParam.GetOutTensorCount(), 0); // 验证输出张量数量是否为0
+    EXPECT_EQ(launchParam.GetInTensorCount(), 0);   // 验证输入张量数量是否为0
+    EXPECT_EQ(launchParam.GetOutTensorCount(), 0);  // 验证输出张量数量是否为0
 }
 
 TEST_F(LaunchParamTest, AssignmentOperator)
@@ -144,8 +208,8 @@ TEST_F(LaunchParamTest, AssignmentOperator)
     launchParam.AddInTensor(tensor1);
     launchParam.AddOutTensor(tensor2);
     launchParam2 = launchParam;
-    EXPECT_EQ(launchParam2.GetInTensorCount(), 1); // 验证输入张量数量是否为1
-    EXPECT_EQ(launchParam2.GetOutTensorCount(), 1); // 验证输出张量数量是否为1
+    EXPECT_EQ(launchParam2.GetInTensorCount(), 1);   // 验证输入张量数量是否为1
+    EXPECT_EQ(launchParam2.GetOutTensorCount(), 1);  // 验证输出张量数量是否为1
     EXPECT_EQ(launchParam2.GetInTensor(0).dataSize, tensor1.dataSize);
     EXPECT_EQ(launchParam2.GetOutTensor(0).dataSize, tensor2.dataSize);
 }
@@ -159,4 +223,4 @@ TEST_F(LaunchParamTest, ToString)
     EXPECT_NE(result.find("intensors[0]"), std::string::npos);
     EXPECT_NE(result.find("outtensors[0]"), std::string::npos);
 }
-} // namespace
+}  // namespace
