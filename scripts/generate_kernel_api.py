@@ -9,9 +9,10 @@
 # See LICENSE in the root of the software repository for the full text of the License.
 import os
 import argparse
+import re
 
 # 核函数标志符
-KERNEL_FUNCTION_KEY = "extern \"C\" __global__ __aicore__ void"
+KERNEL_FUNCTION_PATTERN = re.compile(r'extern\s+"C"\s+__global__\s+__aicore__\s+void\b')
 DUMP_WORKSPACE_CPP = " GM_ADDR dumpWorkspace"
 DUMP_WORKSPACE_CCE = " __gm__ uint8_t *__restrict__ dumpWorkspace"
 INITDUMP_CONTENT = "    AscendC::InitDump(false, dumpWorkspace, 75 * 1024 * 1024);\n"
@@ -85,14 +86,10 @@ def decorate_kernel_file(kernel_path):
             src_content = add_include_file_in_kernel_file(src_content)
         # 获取核函数, 核函数可能有多个
         kernel_func_idxs = []
-        content_start_idx = 0
-        while True:
-            kernel_func_start_idx = src_content.find(KERNEL_FUNCTION_KEY, content_start_idx)
-            if kernel_func_start_idx == -1:
-                break
+        for match in KERNEL_FUNCTION_PATTERN.finditer(src_content):
+            kernel_func_start_idx = match.start()
             kernel_func_end_idx = src_content.find('}', kernel_func_start_idx) + 1
             kernel_func_idxs.append((kernel_func_start_idx, kernel_func_end_idx))
-            content_start_idx = kernel_func_start_idx + 1
         content_start_idx = 0
         for start_idx, end_idx in kernel_func_idxs:
             kernel_func = src_content[start_idx:end_idx]
