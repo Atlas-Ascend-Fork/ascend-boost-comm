@@ -72,49 +72,42 @@ def generate_new_kernel_function(kernel_func, file_type):
 def decorate_kernel_file(kernel_path):
     file_type = "CPP"
     new_src_content = ""
-    try:
-        with open(kernel_path, 'r', encoding='utf-8') as file:
-            src_content = file.read()
-        # 判断是否是memset.cc
-        file_name = os.path.basename(input_args.srcs)
-        if file_name == "memset.cc":
-            return src_content
-        # 判断算子代码是AscendC还是CCE
-        if (kernel_path.endswith(".cce")):
-            file_type = "CCE"
-            src_content = add_include_file_in_kernel_file(src_content)
-        # 获取核函数, 核函数可能有多个
-        kernel_func_idxs = []
-        content_start_idx = 0
-        while True:
-            kernel_func_start_idx = src_content.find(KERNEL_FUNCTION_KEY, content_start_idx)
-            if kernel_func_start_idx == -1:
-                break
-            kernel_func_end_idx = src_content.find('}', kernel_func_start_idx) + 1
-            kernel_func_idxs.append((kernel_func_start_idx, kernel_func_end_idx))
-            content_start_idx = kernel_func_start_idx + 1
-        content_start_idx = 0
-        for start_idx, end_idx in kernel_func_idxs:
-            kernel_func = src_content[start_idx:end_idx]
-            new_kernel_func = generate_new_kernel_function(kernel_func, file_type)
-            new_src_content += (src_content[content_start_idx:start_idx] + new_kernel_func)
-            content_start_idx = end_idx
-        new_src_content += src_content[content_start_idx:]
-
-    except Exception as e:
-        print(f"decorate cpp kernel function fail, kernel path: {kernel_path}, and error: {str(e)}")
+    with open(kernel_path, 'r', encoding='utf-8') as file:
+        src_content = file.read()
+    # 判断是否是memset.cc
+    file_name = os.path.basename(kernel_path)
+    if file_name == "memset.cc":
+        return src_content
+    # 判断算子代码是AscendC还是CCE
+    if kernel_path.endswith(".cce"):
+        file_type = "CCE"
+        src_content = add_include_file_in_kernel_file(src_content)
+    # 获取核函数, 核函数可能有多个
+    kernel_func_idxs = []
+    content_start_idx = 0
+    while True:
+        kernel_func_start_idx = src_content.find(KERNEL_FUNCTION_KEY, content_start_idx)
+        if kernel_func_start_idx == -1:
+            break
+        kernel_func_end_idx = src_content.find('}', kernel_func_start_idx) + 1
+        kernel_func_idxs.append((kernel_func_start_idx, kernel_func_end_idx))
+        content_start_idx = kernel_func_start_idx + 1
+    content_start_idx = 0
+    for start_idx, end_idx in kernel_func_idxs:
+        kernel_func = src_content[start_idx:end_idx]
+        new_kernel_func = generate_new_kernel_function(kernel_func, file_type)
+        new_src_content += (src_content[content_start_idx:start_idx] + new_kernel_func)
+        content_start_idx = end_idx
+    new_src_content += src_content[content_start_idx:]
     return new_src_content
 
 
 # 使用生成的内容替换原先的算子内容，然后将原算子内容储存起来，编译完成之后从新复原原算子内容
 def save_to_file(dist_path, new_src_content):
-    try:
-        if os.path.dirname(dist_path):
-            os.makedirs(os.path.dirname(dist_path), exist_ok=True)
-        with open(dist_path, 'w', encoding='utf-8') as file:
-            file.write(new_src_content)
-    except Exception as e:
-        print(f"write file fail, write file path: {dist_path}, and error: {str(e)}")
+    if os.path.dirname(dist_path):
+        os.makedirs(os.path.dirname(dist_path), exist_ok=True)
+    with open(dist_path, 'w', encoding='utf-8') as file:
+        file.write(new_src_content)
 
 
 if __name__ == "__main__":
