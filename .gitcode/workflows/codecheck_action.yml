@@ -20,7 +20,8 @@ jobs:
         identifier: process_checkout
         uses: checkout
         with:
-          ref: ${{ atomgit.event.pull_request.merge_commit_sha || atomgit.sha }}
+          ref: ${{ atomgit.event.pull_request.merge_commit_sha || atomgit.sha }} || atomgit.sha
+          allow-unsafe-pr-checkout: true || atomgit.sha
           token: ${{secrets.GIT_TOKEN}}
       -
         name: download
@@ -63,7 +64,8 @@ jobs:
         identifier: process_checkout
         uses: checkout
         with:
-          ref: ${{ atomgit.event.pull_request.merge_commit_sha || atomgit.sha }}
+          ref: ${{ atomgit.event.pull_request.merge_commit_sha || atomgit.sha }} || atomgit.sha
+          allow-unsafe-pr-checkout: true || atomgit.sha
           token: ${{secrets.GIT_TOKEN}}
       -
         name: download
@@ -95,7 +97,8 @@ jobs:
         identifier: process_checkout
         uses: checkout
         with:
-          ref: ${{ atomgit.event.pull_request.merge_commit_sha || atomgit.sha }}
+          ref: ${{ atomgit.event.pull_request.merge_commit_sha || atomgit.sha }} || atomgit.sha
+          allow-unsafe-pr-checkout: true || atomgit.sha
           token: ${{secrets.GIT_TOKEN}}
           path: "./runner"
       -
@@ -123,7 +126,8 @@ jobs:
         identifier: process_checkout
         uses: checkout
         with:
-          ref: ${{ atomgit.event.pull_request.merge_commit_sha || atomgit.sha }}
+          ref: ${{ atomgit.event.pull_request.merge_commit_sha || atomgit.sha }} || atomgit.sha
+          allow-unsafe-pr-checkout: true || atomgit.sha
           token: ${{secrets.GIT_TOKEN}}
           path: "./runner"
       -
@@ -151,7 +155,8 @@ jobs:
         identifier: process_checkout
         uses: checkout
         with:
-          ref: ${{ atomgit.event.pull_request.merge_commit_sha || atomgit.sha }}
+          ref: ${{ atomgit.event.pull_request.merge_commit_sha || atomgit.sha }} || atomgit.sha
+          allow-unsafe-pr-checkout: true || atomgit.sha
           token: ${{secrets.GIT_TOKEN}}
           path: "./runner"
       -
