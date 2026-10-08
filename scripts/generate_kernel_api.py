@@ -9,9 +9,10 @@
 # See LICENSE in the root of the software repository for the full text of the License.
 import os
 import argparse
+import re
 
 # 核函数标志符
-KERNEL_FUNCTION_KEY = "extern \"C\" __global__ __aicore__ void"
+KERNEL_FUNCTION_PATTERN = re.compile(r'extern\s+"C"\s+__global__\s+__aicore__\s+void\b')
 DUMP_WORKSPACE_CPP = " GM_ADDR dumpWorkspace"
 DUMP_WORKSPACE_CCE = " __gm__ uint8_t *__restrict__ dumpWorkspace"
 INITDUMP_CONTENT = "    AscendC::InitDump(false, dumpWorkspace, 75 * 1024 * 1024);\n"
@@ -34,7 +35,9 @@ def add_param_in_kernel_function_definition(kernel_func_def, file_type):
     param_parts = kernel_func_def[param_start_idx:param_end_idx].strip().split(',')
     # 找到函数定义中最后一个逗号，在此逗号后面添加DUMP_WORKSPACE_CCE或者DUMP_WORKSPACE_CPP
     if not param_parts:
-        print(f"the kernel function has no param, please check the kernel function, kernel function definiton: {kernel_func_def}")
+        print(
+            f"the kernel function has no param, please check the kernel function, kernel function definiton: {kernel_func_def}"
+        )
     else:
         # 这里一个正常的kernel核函数其param个数一定大于等于2(intensor、tiling)
         if file_type == "CCE":
@@ -44,7 +47,9 @@ def add_param_in_kernel_function_definition(kernel_func_def, file_type):
                 param_parts.insert(-1, DUMP_WORKSPACE_CCE)
         else:
             param_parts.insert(-1, DUMP_WORKSPACE_CPP)
-        new_kernel_func_def = kernel_func_def[:param_start_idx] + ','.join(param_parts) + kernel_func_def[param_end_idx:]
+        new_kernel_func_def = (
+            kernel_func_def[:param_start_idx] + ','.join(param_parts) + kernel_func_def[param_end_idx:]
+        )
     return new_kernel_func_def
 
 
@@ -52,7 +57,11 @@ def add_param_in_kernel_function_definition(kernel_func_def, file_type):
 def add_initDump_in_kernel_function(kernel_func_content):
     new_kernel_func_content = ""
     new_kernel_func_content_start_idx = kernel_func_content.find('{') + 2
-    new_kernel_func_content = kernel_func_content[:new_kernel_func_content_start_idx] + INITDUMP_CONTENT + kernel_func_content[new_kernel_func_content_start_idx:]
+    new_kernel_func_content = (
+        kernel_func_content[:new_kernel_func_content_start_idx]
+        + INITDUMP_CONTENT
+        + kernel_func_content[new_kernel_func_content_start_idx:]
+    )
     return new_kernel_func_content
 
 
@@ -76,28 +85,24 @@ def decorate_kernel_file(kernel_path):
         with open(kernel_path, 'r', encoding='utf-8') as file:
             src_content = file.read()
         # 判断是否是memset.cc
-        file_name = os.path.basename(input_args.srcs)
+        file_name = os.path.basename(kernel_path)
         if file_name == "memset.cc":
             return src_content
         # 判断算子代码是AscendC还是CCE
-        if (kernel_path.endswith(".cce")):
+        if kernel_path.endswith(".cce"):
             file_type = "CCE"
             src_content = add_include_file_in_kernel_file(src_content)
         # 获取核函数, 核函数可能有多个
         kernel_func_idxs = []
-        content_start_idx = 0
-        while True:
-            kernel_func_start_idx = src_content.find(KERNEL_FUNCTION_KEY, content_start_idx)
-            if kernel_func_start_idx == -1:
-                break
+        for match in KERNEL_FUNCTION_PATTERN.finditer(src_content):
+            kernel_func_start_idx = match.start()
             kernel_func_end_idx = src_content.find('}', kernel_func_start_idx) + 1
             kernel_func_idxs.append((kernel_func_start_idx, kernel_func_end_idx))
-            content_start_idx = kernel_func_start_idx + 1
         content_start_idx = 0
         for start_idx, end_idx in kernel_func_idxs:
             kernel_func = src_content[start_idx:end_idx]
             new_kernel_func = generate_new_kernel_function(kernel_func, file_type)
-            new_src_content += (src_content[content_start_idx:start_idx] + new_kernel_func)
+            new_src_content += src_content[content_start_idx:start_idx] + new_kernel_func
             content_start_idx = end_idx
         new_src_content += src_content[content_start_idx:]
 
@@ -123,6 +128,5 @@ if __name__ == "__main__":
     parser.add_argument('--dst', type=str, required=True)
     input_args = parser.parse_args()
 
-    new_src_content = ""
-    new_src_content = decorate_kernel_file(input_args.srcs)
-    save_to_file(input_args.dst, new_src_content)
+    decorated_src_content = decorate_kernel_file(input_args.srcs)
+    save_to_file(input_args.dst, decorated_src_content)
