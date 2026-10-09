@@ -7,10 +7,12 @@
  * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
  * See LICENSE in the root of the software repository for the full text of the License.
  */
-#include <gtest/gtest.h>
 #include "mki/utils/status/status.h"
 
-namespace Mki {
+#include <gtest/gtest.h>
+
+namespace Mki
+{
 TEST(StatusTest, Base)
 {
     Mki::Status st = Mki::Status::FailStatus(3, "dd");
@@ -84,4 +86,4 @@ TEST(StatusTest, OversizedErrorMessageKeepsExistingContract)
     EXPECT_EQ(assigned.Code(), 0);
     EXPECT_EQ(assigned.Message(), "");
 }
-} // namespace Mki
+}  // namespace Mki
