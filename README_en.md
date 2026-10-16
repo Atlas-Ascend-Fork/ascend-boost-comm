@@ -85,9 +85,9 @@ See [CANN Quick Installation](https://hiascend.com/cann/download?versionId=794&i
 #### Installing Basic Dependencies
 The basic dependencies of this project are as follows. Pay attention to the version requirements.
 
-* python >= 3.7.0 (recommended: <= 3.10)
-* gcc >= 7.3.0
-* cmake >= 3.16.0
+* python 3.10.x or 3.11.x
+* gcc recommend 7.3.1 - 11.x
+* cmake >= 3.20
 * pigz (optional; improves packaging speed after installation, recommended version: >= 2.4)
 * dos2unix
 * make
