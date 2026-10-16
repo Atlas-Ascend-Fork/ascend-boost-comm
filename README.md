@@ -76,17 +76,7 @@ ascend-boost-comm
 在线安装和离线安装时，需确保已具备Python环境及pip3，当前CANN支持Python3.7.x至3.11.4版本。
 离线安装时，请单击[获取链接](https://www.hiascend.com/developer/download/community/result?module=cann)下载与当前环境匹配的 CANN Toolkit 软件包。
 
-安装 CANN 前，请先执行 `npu-smi info` 确认本机 NPU 芯片型号，并据此选择配套的 **CANN Ops（kernels）软件包**（详见[芯片识别与 SoC 代号映射](#芯片识别与-soc-代号映射)）。
-
-#### 芯片识别与 SoC 代号映射
-
-部分驱动版本（如 25.7.rc1.7）的 `npu-smi info` 输出中，芯片名称显示为产品代号（如 `Ascend950PR`），无法直接读出 `910C`。该芯片型号为 **Ascend 910C**，SoC 代号 **A3**（Atlas A3 训练/推理系列）：
-
-| `npu-smi info` 芯片名称 | 芯片型号 | SoC 代号 | 产品系列 |
-|---|---|---|---|
-| `Ascend950PR`（部分驱动版本） | Ascend 910C | **A3** | Atlas A3 训练/推理系列 |
-
-> 安装 CANN Ops 软件包时，请按 **910C 即 SoC 代号 A3** 在下载页中选择对应软件包（见下文[安装CANN](#安装cann)）。
+安装 CANN 前，请先执行 `npu-smi info` 确认本机 NPU 芯片型号，并据此选择配套的 **CANN Ops（kernels）软件包**。
 
 #### 安装CANN
 ```shell
