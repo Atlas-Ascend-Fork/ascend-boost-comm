@@ -76,12 +76,33 @@ ascend-boost-comm
 在线安装和离线安装时，需确保已具备Python环境及pip3，当前CANN支持Python3.7.x至3.11.4版本。
 离线安装时，请单击[获取链接](https://www.hiascend.com/developer/download/community/result?module=cann)下载与当前环境匹配的 CANN Toolkit 软件包。
 
+安装 CANN 前，请先执行 `npu-smi info` 确认本机 NPU 芯片型号，并据此选择配套的 **CANN Ops（kernels）软件包**（详见[芯片识别与 SoC 代号映射](#芯片识别与-soc-代号映射)）。
+
+#### 芯片识别与 SoC 代号映射
+
+部分驱动版本（如 25.7.rc1.7）的 `npu-smi info` 输出中，芯片名称显示为产品代号（如 `Ascend950PR`），无法直接读出 `910C`。芯片型号、SoC 代号与 CANN Ops 软件包（kernels）的对应关系如下：
+
+| `npu-smi info` 芯片名称 | 芯片型号 | SoC 代号 | 产品系列 | CANN Ops 软件包名前缀 |
+|---|---|---|---|---|
+| `Ascend950PR`（部分驱动版本） | Ascend 910C | **A3** | Atlas A3 训练/推理系列 | `Ascend-cann-950-ops` |
+
+> 映射自证方法：已安装的 CANN Ops 包可通过 `/usr/local/Ascend/cann/<arch>-linux/ascend_ops_install.info` 中的 `package_name` 确认（如 `Ascend-cann-950-ops`）；算子配置文件目录名（如 `.../op_impl/ai_core/tbe/config/ascend950`）与 SoC 代号一一对应（`ascend950` ↔ SoC **A3** ↔ `Ascend-cann-950-ops`）。
+
 #### 安装CANN
 ```shell
 # ${VERSION} 为下载页实际包名中的版本号，例如 8.2.RC1、8.5.0 等，请以官网为准
 chmod +x Ascend-cann-toolkit_${VERSION}_linux-$(arch).run
 ./Ascend-cann-toolkit_${VERSION}_linux-$(arch).run --install
 ```
+
+**CANN Ops（kernels）软件包**：须与 CANN Toolkit 配套安装且版本一致。请在下载页按「产品系列 + SoC 代号」选择对应软件包，910C（Atlas A3）对应 SoC 代号 **A3**、包名 `Ascend-cann-950-ops`：
+
+```shell
+chmod +x Ascend-cann-950-ops_${VERSION}_linux-$(arch).run
+./Ascend-cann-950-ops_${VERSION}_linux-$(arch).run --install
+```
+
+> 仅安装 Toolkit 而未安装配套 Ops 软件包是常见缺项：此时 CANN 目录下存在 `ascend_toolkit_install.info` 但没有 `ascend_ops_install.info`（见下文[安装后验证](#安装后验证)），算子无法加载。体验分支能力或基于 CANN 稳定版本开发时，请使用稳定版本（≥ 8.5.0），安装步骤参考 [ops-nn 安装指南（方式3 手动安装→安装软件→场景2）](https://gitcode.com/cann/ops-nn/blob/master/docs/zh/install/quick_install.md)。
 #### 安装后配置
 配置环境变量脚本set_env.sh，当前安装路径以${HOME}/Ascend为例。
 ```
@@ -91,6 +112,17 @@ source ${HOME}/Ascend/ascend-toolkit/set_env.sh
 ```
 pip3 install attrs cython 'numpy>=1.19.2,<=1.24.0' decorator sympy cffi pyyaml pathlib2 psutil protobuf==3.20.0 'scipy<1.11' requests absl-py --user
 ```
+
+#### 安装后验证
+
+确认 CANN Toolkit 与 Ops 软件包均已安装（以下路径以默认安装路径 `/usr/local/Ascend/` 为例，请按实际安装路径调整）：
+
+```shell
+cat /usr/local/Ascend/cann/$(arch)-linux/ascend_toolkit_install.info
+cat /usr/local/Ascend/cann/$(arch)-linux/ascend_ops_install.info
+```
+
+`ascend_toolkit_install.info` 记录 Toolkit 版本；`ascend_ops_install.info` 记录 Ops 软件包版本（含 `package_name=Ascend-cann-950-ops`）。若后者缺失，说明仅安装了 Toolkit，需按上文补装与芯片 SoC 代号匹配的 CANN Ops 软件包。
 
 ### CANN详细安装指南
 开发者可访问[昇腾文档-昇腾社区](https://www.hiascend.com/document)->CANN社区版->软件安装，查看CANN软件安装引导，根据机器环境、操作系统和业务场景选择后阅读详细安装步骤。
