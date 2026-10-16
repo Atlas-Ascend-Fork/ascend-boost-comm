@@ -85,7 +85,7 @@ chmod +x Ascend-cann-toolkit_${VERSION}_linux-$(arch).run
 ./Ascend-cann-toolkit_${VERSION}_linux-$(arch).run --install
 ```
 
-**CANN Ops（kernels）软件包**：须与 CANN Toolkit 配套安装且版本一致。请参考《[CANN快速安装](https://www.hiascend.com/cann/download?versionId=793&ids=d803%2Ch0501%2Ch0601%2Ch0702&currentTab=0)》，选择稳定版本（仅支持CANN 8.5.0及后续版本），并根据产品系列、CPU架构、操作系统等下载对应包，最后参考页面提供的命令完成安装。本机芯片为 910C（SoC 代号 **A3**，Atlas A3 系列），请在下载页中自行找到 910C 对应的 CANN Ops 软件包安装。
+**CANN Ops（kernels）软件包**：须与 CANN Toolkit 配套安装且版本一致。请参考《[CANN快速安装](https://www.hiascend.com/cann/download?versionId=793&ids=d803%2Ch0501%2Ch0601%2Ch0702&currentTab=0)》，选择稳定版本（仅支持CANN 8.5.0及后续版本），并根据产品系列、CPU架构、操作系统等下载对应包，最后参考页面提供的命令完成安装。
 
 > 仅安装 Toolkit 而未安装配套 Ops 软件包是常见缺项：此时 CANN 目录下存在 `ascend_toolkit_install.info` 但没有 `ascend_ops_install.info`（见下文[安装后验证](#安装后验证)），算子无法加载。
 #### 安装后配置
@@ -107,7 +107,7 @@ cat /usr/local/Ascend/cann/$(arch)-linux/ascend_toolkit_install.info
 cat /usr/local/Ascend/cann/$(arch)-linux/ascend_ops_install.info
 ```
 
-`ascend_toolkit_install.info` 记录 Toolkit 版本；`ascend_ops_install.info` 记录 Ops 软件包版本（含 `package_name`）。若后者缺失，说明仅安装了 Toolkit，需按上文《CANN快速安装》补装与芯片（910C / SoC 代号 A3）匹配的 CANN Ops 软件包。
+`ascend_toolkit_install.info` 记录 Toolkit 版本；`ascend_ops_install.info` 记录 Ops 软件包版本（含 `package_name`）。若后者缺失，说明仅安装了 Toolkit，需按上文《CANN快速安装》补装与芯片匹配的 CANN Ops 软件包。
 
 ### CANN详细安装指南
 开发者可访问[昇腾文档-昇腾社区](https://www.hiascend.com/document)->CANN社区版->软件安装，查看CANN软件安装引导，根据机器环境、操作系统和业务场景选择后阅读详细安装步骤。
