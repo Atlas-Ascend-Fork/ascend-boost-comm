@@ -76,12 +76,18 @@ ascend-boost-comm
 在线安装和离线安装时，需确保已具备Python环境及pip3，当前CANN支持Python3.7.x至3.11.4版本。
 离线安装时，请单击[获取链接](https://www.hiascend.com/developer/download/community/result?module=cann)下载与当前环境匹配的 CANN Toolkit 软件包。
 
+安装 CANN 前，请先执行 `npu-smi info` 确认本机 NPU 芯片型号，并据此选择配套的 **CANN Ops（kernels）软件包**。
+
 #### 安装CANN
 ```shell
 # ${VERSION} 为下载页实际包名中的版本号，例如 8.2.RC1、8.5.0 等，请以官网为准
 chmod +x Ascend-cann-toolkit_${VERSION}_linux-$(arch).run
 ./Ascend-cann-toolkit_${VERSION}_linux-$(arch).run --install
 ```
+
+**CANN Ops（kernels）软件包**：须与 CANN Toolkit 配套安装且版本一致。请参考《[CANN快速安装](https://www.hiascend.com/cann/download?versionId=793&ids=d803%2Ch0501%2Ch0601%2Ch0702&currentTab=0)》，选择稳定版本（仅支持CANN 8.5.0及后续版本），并根据产品系列、CPU架构、操作系统等下载对应包，最后参考页面提供的命令完成安装。
+
+> 仅安装 Toolkit 而未安装配套 Ops 软件包是常见缺项：此时 CANN 目录下存在 `ascend_toolkit_install.info` 但没有 `ascend_ops_install.info`（见下文[安装后验证](#安装后验证)），算子无法加载。
 #### 安装后配置
 配置环境变量脚本set_env.sh，当前安装路径以${HOME}/Ascend为例。
 ```
@@ -91,6 +97,17 @@ source ${HOME}/Ascend/ascend-toolkit/set_env.sh
 ```
 pip3 install attrs cython 'numpy>=1.19.2,<=1.24.0' decorator sympy cffi pyyaml pathlib2 psutil protobuf==3.20.0 'scipy<1.11' requests absl-py --user
 ```
+
+#### 安装后验证
+
+确认 CANN Toolkit 与 Ops 软件包均已安装（以下路径以默认安装路径 `/usr/local/Ascend/` 为例，请按实际安装路径调整）：
+
+```shell
+cat /usr/local/Ascend/cann/$(arch)-linux/ascend_toolkit_install.info
+cat /usr/local/Ascend/cann/$(arch)-linux/ascend_ops_install.info
+```
+
+`ascend_toolkit_install.info` 记录 Toolkit 版本；`ascend_ops_install.info` 记录 Ops 软件包版本（含 `package_name`）。若后者缺失，说明仅安装了 Toolkit，需按上文《CANN快速安装》补装与芯片匹配的 CANN Ops 软件包。
 
 ### CANN详细安装指南
 开发者可访问[昇腾文档-昇腾社区](https://www.hiascend.com/document)->CANN社区版->软件安装，查看CANN软件安装引导，根据机器环境、操作系统和业务场景选择后阅读详细安装步骤。
