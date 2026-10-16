@@ -125,7 +125,7 @@ git fetch upstream
 git rebase upstream/master
 ```
 
-执行merge的时候，请不要使用 `git pull` 替代上面的 `fetch` / `rebase`. `git pull` 。因为这种方式会使提交历史变得混乱，并使代码更难被理解。您也可以通过更改文件来达到目的， `.git/config` 文件通过 `git config branch.autoSetupRebase always` 去改变 `git pull`的行为。
+执行merge的时候，请不要使用 `git pull` 替代上面的 `fetch` / `rebase`. `git pull`。因为这种方式会使提交历史变得混乱，并使代码更难被理解。您也可以通过更改文件来达到目的， `.git/config` 文件通过 `git config branch.autoSetupRebase always` 去改变 `git pull`的行为。
 
 
 
