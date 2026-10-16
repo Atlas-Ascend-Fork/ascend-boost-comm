@@ -70,26 +70,95 @@ PyTorch/torch_npu installation and version: Install the CANN Toolkit first, then
 > ```
 
 ### Quick Installation of CANN Software
-This section provides example commands for quickly installing the CANN software. For more installation steps, see the [Detailed Installation Guide](#detailed-cann-installation-guide).
+#### Manual Installation
+For developers with Ascend devices who want to manually set up the Ascend environment, perform the following steps.
 
-#### Installation preparation
-For both online and offline installation, ensure that the Python environment and pip3 are available. Currently, CANN supports Python 3.7.x to 3.11.4.
-For offline installation, go to [this website](https://www.hiascend.com/developer/download/community/result?module=cann) to download the CANN Toolkit software package that matches the current environment.
+#### Installing the Software
+**Scenario 1: Experience the latest master capabilities or develop based on the CANN weekly version**
 
-#### Installing CANN
+See [CANN Quick Installation](https://hiascend.com/cann/download?versionId=794&ids=d803,h0501,h0601,h0703&currentTab=1), select the Weekly version, and download the corresponding package based on the product series, CPU architecture, and operating system. Then complete the installation by following the commands provided on the page.
+
+**Scenario 2: Experience branch capabilities or develop based on the CANN stable version**
+
+See [CANN Quick Installation](https://hiascend.com/cann/download?versionId=794&ids=d803,h0501,h0601,h0703&currentTab=1), select the stable version (only CANN 8.5.0 and later versions are supported), and download the corresponding package based on the product series, CPU architecture, and operating system. Then complete the installation by following the commands provided on the page.
+
+#### Installing Basic Dependencies
+The basic dependencies of this project are as follows. Pay attention to the version requirements.
+
+* python >= 3.7.0 (recommended: <= 3.10)
+* gcc >= 7.3.0
+* cmake >= 3.16.0
+* pigz (optional; improves packaging speed after installation, recommended version: >= 2.4)
+* dos2unix
+* make
+* patch
+* googletest (required only for running UT; recommended version: [release-1.11.0](https://github.com/google/googletest/releases/tag/release-1.11.0))
+
+The preceding dependencies can be installed with one click using the project script. Perform the following steps:
+
+**1. Download the source code**
+
+Download the branch source code matching the CANN version. Run the following command and replace ${tag_version} with the branch tag name.
+
 ```shell
-# ${VERSION} indicates the version number in the actual package name on the download page, for example, 8.2.RC1 or 8.5.0. For details, see the official website.
-chmod +x Ascend-cann-toolkit_${VERSION}_linux-$(arch).run
-./Ascend-cann-toolkit_${VERSION}_linux-$(arch).run --install
+git clone -b ${tag_version} https://gitcode.com/cann/ops-nn.git
 ```
-#### Post-installation Configuration
-Configure the environment variable script `set_env.sh`. The following example uses `${HOME}/Ascend` as the installation path.
+
+**2. Install dependencies**
+
+First, use install_deps.sh in the project root directory to install the preceding dependencies with one click. If an unsupported system is encountered, adapt the script by referring to this file.
+
+```shell
+bash install_deps.sh
 ```
-source ${HOME}/Ascend/ascend-toolkit/set_env.sh
+
+Then install the Python third-party library dependencies based on the usage scenario:
+
+* If you only compile the project, install the dependencies in requirements.txt in the project root directory.
+  ```shell
+  pip3 install -r requirements.txt
+  ```
+* If you run UT test cases, install the dependencies in tests/requirements.txt. This file already contains the dependency constraints of requirements.txt in the project root directory, so there is no need to run the preceding command again.
+  ```shell
+  pip3 install -r tests/requirements.txt
+  ```
+
+#### Environment Verification
+After installing the CANN package, verify that the environment and driver are working properly.
+
+**Check the NPU device**
+
+```shell
+# Run npu-smi. If device information is displayed properly, the driver is working properly.
+npu-smi info
 ```
-Install the Python third-party libraries required for service runtime (if installing as the root user, remove `--user` from the command).
+
+**Check the CANN version**
+
+```shell
+# Check the CANN toolkit package version information (default installation path)
+# Docker and manual installation scenarios:
+cat /usr/local/Ascend/cann/${arch}-linux/ascend_toolkit_install.info
+# CANNLab scenario:
+cat /home/developer/Ascend/cann/${arch}-linux/ascend_toolkit_install.info
+
+# Check the CANN ops package version information (default installation path)
+# Docker and manual installation scenarios:
+cat /usr/local/Ascend/cann/${arch}-linux/ascend_ops_install.info
+# CANNLab scenario:
+cat /home/developer/Ascend/cann/${arch}-linux/ascend_ops_install.info
 ```
-pip3 install attrs cython 'numpy>=1.19.2,<=1.24.0' decorator sympy cffi pyyaml pathlib2 psutil protobuf==3.20.0 'scipy<1.11' requests absl-py --user
+
+${arch} can be obtained by running uname -m to query the current architecture, for example, aarch64 or x86_64.
+
+#### Environment Variable Configuration
+Select the appropriate command to make the environment variables take effect as needed.
+
+```shell
+# Default installation path, using the root user as an example (for non-root users, replace /usr/local with ${HOME})
+source /usr/local/Ascend/cann/set_env.sh
+# Specified installation path
+# source ${install_path}/cann/set_env.sh
 ```
 
 ### Detailed CANN Installation Guide
