@@ -7,29 +7,32 @@
  * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
  * See LICENSE in the root of the software repository for the full text of the License.
  */
-#include <securec.h>
-#include "mki/utils/assert/assert.h"
-#include "mki/utils/log/log.h"
 #include "mki/utils/status/status.h"
 
-namespace Mki {
-constexpr int MAX_LOG_STRING_SIZE = 1024;
-Status::Status() noexcept : rep_(nullptr){};
+#include <securec.h>
 
-Status::~Status()
+#include "mki/utils/assert/assert.h"
+#include "mki/utils/log/log.h"
+
+namespace Mki
 {
-    RemoveMsg();
-};
+constexpr int MAX_LOG_STRING_SIZE = 1024;
+constexpr int MAX_STATUS_REP_SIZE = MAX_LOG_STRING_SIZE + static_cast<int>(sizeof(int) * 2) + 1;
+Status::Status() noexcept : rep_(nullptr) {};
+
+Status::~Status() { RemoveMsg(); };
 
 Status::Status(const Status &other)
 {
-    if (other.rep_ == nullptr) {
+    if (other.rep_ == nullptr)
+    {
         rep_ = nullptr;
         return;
     }
 
     int len = other.GetLen();
-    if (len > MAX_LOG_STRING_SIZE) {
+    if (len > MAX_STATUS_REP_SIZE)
+    {
         return;
     }
     rep_ = new (std::nothrow) uint8_t[len];
@@ -40,14 +43,17 @@ Status::Status(const Status &other)
 
 Status &Status::operator=(const Status &other)
 {
-    if (this == &other) {
+    if (this == &other)
+    {
         return *this;
     }
 
     RemoveMsg();
-    if (other.rep_ != nullptr) {
+    if (other.rep_ != nullptr)
+    {
         int len = other.GetLen();
-        if (len > MAX_LOG_STRING_SIZE) {
+        if (len > MAX_STATUS_REP_SIZE)
+        {
             return *this;
         }
         rep_ = new (std::nothrow) uint8_t[len];
@@ -75,7 +81,8 @@ bool Status::Ok() const { return rep_ == nullptr; }
 
 std::string Status::ToString() const
 {
-    if (rep_ == nullptr) {
+    if (rep_ == nullptr)
+    {
         return "ok";
     }
 
@@ -84,7 +91,8 @@ std::string Status::ToString() const
 
 int Status::Code() const
 {
-    if (rep_ == nullptr) {
+    if (rep_ == nullptr)
+    {
         return 0;
     }
     return GetCode();
@@ -92,7 +100,8 @@ int Status::Code() const
 
 std::string Status::Message() const
 {
-    if (rep_ == nullptr) {
+    if (rep_ == nullptr)
+    {
         return "";
     }
     return GetMsg();
@@ -100,7 +109,8 @@ std::string Status::Message() const
 
 Status::Status(int code, const std::string &msg)
 {
-    if (msg.size() > MAX_LOG_STRING_SIZE) {
+    if (msg.size() > MAX_LOG_STRING_SIZE)
+    {
         return;
     }
     int len = static_cast<int>(sizeof(int) + sizeof(int) + msg.size() + 1);
@@ -148,9 +158,10 @@ const char *Status::GetMsg() const
 
 void Status::RemoveMsg()
 {
-    if (rep_ != nullptr) {
+    if (rep_ != nullptr)
+    {
         delete[] rep_;
         rep_ = nullptr;
     }
 }
-} // namespace Mki
+}  // namespace Mki
