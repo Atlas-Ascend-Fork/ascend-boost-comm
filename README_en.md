@@ -51,7 +51,7 @@ The following table lists the Ascend hardware architectures supported by this re
 |---|---|---|
 | Python | 3.10.x or 3.11.x| Dependency for running Python scripts during compilation|
 | cmake | ≥ 3.20 | |
-| gcc/g++ | Recommended: 7.3.1-11.x| If GCC ≥ 12, add `--no_werror` to the compilation command. (See [Compilation Description](#compilation-description).)|
+| gcc/g++ | Recommended: 7.3.1-11.x| If GCC ≥ 12, add `--no_werror` to the compilation command. (See [Compilation Description](#compilation).)|
 
 **Runtime example / test dependencies (install only when compiling and running the test framework or examples):**
 
@@ -70,26 +70,58 @@ PyTorch/torch_npu installation and version: Install the CANN Toolkit first, then
 > ```
 
 ### Quick Installation of CANN Software
-This section provides example commands for quickly installing the CANN software. For more installation steps, see the [Detailed Installation Guide](#detailed-cann-installation-guide).
 
-#### Installation preparation
-For both online and offline installation, ensure that the Python environment and pip3 are available. Currently, CANN supports Python 3.7.x to 3.11.4.
-For offline installation, go to [this website](https://www.hiascend.com/developer/download/community/result?module=cann) to download the CANN Toolkit software package that matches the current environment.
+For developers with Ascend devices who want to manually set up the Ascend environment, perform the following steps.
 
-#### Installing CANN
+#### Installing the Software
+
+**Scenario 1: Experience the latest master capabilities or develop based on the CANN weekly version**
+
+See [CANN Quick Installation](https://hiascend.com/cann/download?versionId=802&ids=d806%2Ch0501%2Ch0601%2Ch0703&currentTab=1), select the Weekly version, and download the corresponding package based on the product series, CPU architecture, and operating system. Then complete the installation by following the commands provided on the page.
+
+**Scenario 2: Experience branch capabilities or develop based on the CANN stable version**
+
+See [CANN Quick Installation](https://hiascend.com/cann/download?versionId=810&ids=d806%2Ch0501%2Ch0601%2Ch0702&currentTab=0), select the stable version (only CANN 8.5.0 and later versions are supported), and download the corresponding package based on the product series, CPU architecture, and operating system. Then complete the installation by following the commands provided on the page.
+
+
+#### Environment Verification
+
+After installing the CANN package, verify that the environment and driver are working properly.
+
+**Check the NPU device**
+
 ```shell
-# ${VERSION} indicates the version number in the actual package name on the download page, for example, 8.2.RC1 or 8.5.0. For details, see the official website.
-chmod +x Ascend-cann-toolkit_${VERSION}_linux-$(arch).run
-./Ascend-cann-toolkit_${VERSION}_linux-$(arch).run --install
+# Run npu-smi. If device information is displayed properly, the driver is working properly.
+npu-smi info
 ```
-#### Post-installation Configuration
-Configure the environment variable script `set_env.sh`. The following example uses `${HOME}/Ascend` as the installation path.
+
+**Check the CANN version**
+
+```shell
+# Check the CANN toolkit package version information (default installation path)
+# Docker and manual installation scenarios:
+cat /usr/local/Ascend/cann/${arch}-linux/ascend_toolkit_install.info
+# CANNLab scenario:
+cat /home/developer/Ascend/cann/${arch}-linux/ascend_toolkit_install.info
+
+# Check the CANN ops package version information (default installation path)
+# Docker and manual installation scenarios:
+cat /usr/local/Ascend/cann/${arch}-linux/ascend_ops_install.info
+# CANNLab scenario:
+cat /home/developer/Ascend/cann/${arch}-linux/ascend_ops_install.info
 ```
-source ${HOME}/Ascend/ascend-toolkit/set_env.sh
-```
-Install the Python third-party libraries required for service runtime (if installing as the root user, remove `--user` from the command).
-```
-pip3 install attrs cython 'numpy>=1.19.2,<=1.24.0' decorator sympy cffi pyyaml pathlib2 psutil protobuf==3.20.0 'scipy<1.11' requests absl-py --user
+
+`${arch}` can be obtained by running `uname -m` to query the current architecture, for example, aarch64 or x86_64.
+
+#### Environment Variable Configuration
+
+Select the appropriate command to make the environment variables take effect as needed.
+
+```shell
+# Default installation path, using the root user as an example (for non-root users, replace /usr/local with ${HOME})
+source /usr/local/Ascend/cann/set_env.sh
+# Specified installation path
+# source ${install_path}/cann/set_env.sh
 ```
 
 ### Detailed CANN Installation Guide
