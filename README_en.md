@@ -51,7 +51,7 @@ The following table lists the Ascend hardware architectures supported by this re
 |---|---|---|
 | Python | 3.10.x or 3.11.x| Dependency for running Python scripts during compilation|
 | cmake | ≥ 3.20 | |
-| gcc/g++ | Recommended: 7.3.1-11.x| If GCC ≥ 12, add `--no_werror` to the compilation command. (See [Compilation Description](#compilation-description).)|
+| gcc/g++ | Recommended: 7.3.1-11.x| If GCC ≥ 12, add `--no_werror` to the compilation command. (See [Compilation Description](#compilation).)|
 
 **Runtime example / test dependencies (install only when compiling and running the test framework or examples):**
 

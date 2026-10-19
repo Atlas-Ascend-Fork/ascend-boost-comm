@@ -8,14 +8,14 @@ CANN开放项目使用Gitcode提供的Issue跟踪和管理系统用于记录每�
 
    Gitcode每一个源码仓都有Issue板块，在该板块中单击“新建Issue”，即可进入Issue类型选择界面。
    a. 单击“新建issue”。
-     ![](../images/issue-banner.png)
+     ![issue_banner](../images/issue_banner.png)
    b. 根据自身诉求，选择Issue类型，并单击“立即开始”。
-     ![](../images/issue_select.png)
-  
+     ![issue_select](../images/issue_select.png)
+
 2. 填写Issue。
 
    在Issue填写界面中按照提示填写Issue相关信息，如下图所示：
-   ![](../images/issue-details.png)
+   ![issue_details](../images/issue_details.png)
 
    a. 填写Issue标题。
 

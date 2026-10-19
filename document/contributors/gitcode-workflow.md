@@ -12,7 +12,7 @@
 1)  找到并打开对应的开放项目的首页
 2)  点击右上角的 `Fork` 按钮，按照指引，建立一个属于"**个人**"的云上fork分支。
 
-  ![gitcode-fork](../images/gitcode-fork.png)   
+  ![gitcode_fork](../images/gitcode_fork.png)
 
 #### 2.2 把fork分支克隆到本地
 
@@ -56,7 +56,7 @@ git config --global user.email "email@your_email.com"
 
   请在Gitcode网页点击右上角的“个人头像”进入个人Gitcode账户，并点击个人头像下的“个人设置”，进入个人设置页面。在“个人设置->安全设置”下，点击“SSH公钥”，在“添加公钥”内把cat命令获取到的ssh公钥添加进去。
 
-  ![gitcode-ssh](../images/gitcode-ssh.png)
+  ![gitcode_ssh](../images/gitcode_ssh.png)
 
   在个人电脑上完成gitcode在SSH上的注册
 
@@ -64,7 +64,7 @@ git config --global user.email "email@your_email.com"
   ssh -T git@gitcode.com
   ```
 
-  如果获得如下“成功”提示，则表示 SSH 公钥已经生效：  
+  如果获得如下“成功”提示，则表示 SSH 公钥已经生效：
   `Hi $user_name! You've successfully authenticated, but GITCODE.COM does not provide shell access.`
 
 4）**复制远程仓库到本地**
@@ -74,12 +74,12 @@ git config --global user.email "email@your_email.com"
   ```
   cd $your_working_dir
   ```
-  
+
 - ② **复制远程仓库到本地**
 
   - 您可以在需要下载的远程仓库首页，单击“克隆/下载”，得到`$remote_link`（您需要创建令牌并输入以替代密码登录）：
 
-    ![gitcode-clone](../images/gitcode-clone.png)
+    ![gitcode_clone](../images/gitcode_clone.png)
 
   - 在本地电脑执行如下命令：
 
@@ -153,8 +153,8 @@ git push -f origin myfeature
 ### 7. 在Gitcode上创建一个 pull request
 
 1. 访问您在 `https://gitcode.com/$user/ascend-boost-comm` 的页面，单击 `+Pull Request`。
-   
-   ![新建PR](../images/create-pr.png)
+
+   ![新建PR](../images/create_pr.png)
 
 2. 在创建新 PR 的界面，确认源分支和目标分支，选择创建。
 
@@ -165,11 +165,11 @@ git push -f origin myfeature
 
 1. 访问仓库的`Issue`列表，进入您本次pull request所处理的对应Issue页面。
 
-   ![Issue列表](../images/issue-list.png)
+   ![Issue列表](../images/issue_list.png)
 
 2. 在Issue右侧的`Pull Requests`中选择您提交的 PR 进行关联。完成关联后，当PR被合并时，关联的Issue将被自动关闭。
-   
-   ![Issue关联PR](../images/issue-link-pr.png)
+
+   ![Issue关联PR](../images/issue_link_pr.png)
 
 
 ### 9. 查看门禁状态以及代码检视意见
@@ -180,7 +180,7 @@ git push -f origin myfeature
 
   当页面显示“CI任务执行 成功”，且右上角标签显示`ci-pipeline-passed`时，既表示门禁检查通过。
 
-  ![门禁状态](../images/access-control.png)
+  ![门禁状态](../images/access_control.png)
 
   如果门禁检查任务中有任务失败，可以点击对应的`日志详情`中的`点击跳转`查看日志中的失败原因对代码进行调整。
 
@@ -190,7 +190,7 @@ git push -f origin myfeature
 
    您可以在PR列表内找到您提交的PR，并看到对该PR的评论和评审意见。
 
-   ![](../images/pr-list.png)
+   ![pr_list](../images/pr_list.png)
 
 
 
@@ -207,7 +207,7 @@ git push -f origin myfeature
   ```
   # create a branch
   git checkout -b myrevert
-  
+
   # sync the branch with upstream
   git fetch upstream
   git rebase upstream/master
@@ -243,7 +243,7 @@ git push ${your_remote_name} myrevert
 
 如果您发现提交的PR带有以下的标记，说明您提交的PR和您本地存在冲突，您需要处理冲突。
 
-![](../images/gitcode-conflict.png)
+![gitcode_conflict](../images/gitcode_conflict.png)
 
 1. 先将分支切换到master上，并完成master的rebase
 
