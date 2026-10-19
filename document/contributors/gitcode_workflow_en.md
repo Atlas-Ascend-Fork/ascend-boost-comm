@@ -12,7 +12,7 @@
 1) Visit the homepage of the project.
 2) Click the `Fork` button in the upper right corner and follow the instructions to create a **Personal** fork branch on the cloud.
 
-  ![gitcode-fork](../images/gitcode-fork.png)
+  ![gitcode_fork](../images/gitcode_fork.png)
 
 #### 2.2 Cloning the Forked Branch
 
@@ -56,7 +56,7 @@ git config --global user.email "email@your_email.com"
 
   On the GitCode page, click your avatar in the upper right corner and choose **Settings** below your avatar. Under **Security Settings**, click **SSH Keys**. In the **Add Key** area, add the SSH public key obtained by running the `cat` command.
 
-  ![gitcode-ssh](../images/gitcode-ssh.png)
+  ![gitcode_ssh](../images/gitcode_ssh.png)
 
   Authenticate your local SSH client with GitCode.
 
@@ -79,7 +79,7 @@ git config --global user.email "email@your_email.com"
 
   - On the homepage of the remote repository you want to download, click `Clone/Download` to obtain `$remote_link`. (You need to create a token and enter it instead of a password for login.)
 
-    ![gitcode-clone](../images/gitcode-clone.png)
+    ![gitcode_clone](../images/gitcode_clone.png)
 
   - Run the following commands on your local computer:
 
@@ -154,7 +154,7 @@ git push -f origin myfeature
 
 1. Go to your repository page on `https://gitcode.com/$user/ascend-boost-comm` and click +`Pull Request`.
 
-   ![Creating a PR](../images/create-pr.png)
+   ![Creating a PR](../images/create_pr.png)
 
 2. On the page for creating a new pull request, confirm the source and target branches, and create a PR.
 
@@ -165,11 +165,11 @@ git push -f origin myfeature
 
 1. Access the issue list of the repository and go to the page of the issue addressed by your pull request.
 
-   ![Issue list](../images/issue-list.png)
+   ![Issue list](../images/issue_list.png)
 
 2. In the `Pull Requests` section on the right of the `Issues` page, select the PR you submitted to associate it. Once associated, that issue will be automatically closed when the PR is merged.
 
-   ![Associating an issue with a PR](../images/issue-link-pr.png)
+   ![Associating an issue with a PR](../images/issue_link_pr.png)
 
 
 ### 9. Checking CI Status and Code Review Comments
@@ -180,7 +180,7 @@ git push -f origin myfeature
 
   If the message indicating that the CI task has been executed is displayed and the label in the upper right corner shows `ci-pipeline-passed`, the CI check has passed.
 
-  ![CI status](../images/access-control.png)
+  ![CI status](../images/access_control.png)
 
   If any CI task fails, click `Jump` under the corresponding `Log Details` to view the failure reason in the log and adjust your code accordingly.
 
@@ -190,7 +190,7 @@ git push -f origin myfeature
 
    You can find your PR in the PR list and view the review comments on the PR.
 
-   ![](../images/pr-list.png)
+   ![pr_list](../images/pr_list.png)
 
 
 
@@ -243,7 +243,7 @@ git push ${your_remote_name} myrevert
 
 The following mark indicates that the your PR conflicts with the main repository. You need to handle the conflict.
 
-![](../images/gitcode-conflict.png)
+![gitcode_conflict](../images/gitcode_conflict.png)
 
 1. Switch to the master branch and rebase it.
 

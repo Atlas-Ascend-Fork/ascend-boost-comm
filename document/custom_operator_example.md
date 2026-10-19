@@ -5,7 +5,7 @@ This tutorial uses the add operator as an example to provide a guide for writing
 ### Operator Function
 
 Add two input tensors along a specified dimension to produce one output tensor.
-![AddcustomOperation](images/AddcustomOperation.png)
+![addcustom_operation](images/addcustom_operation.png)
 ### New Files
 
 - Create the `addcustom` directory under `examples/ops`. This directory primarily stores the operator implementation code. See the following sections for the specific file contents. The directory structure is as follows:
