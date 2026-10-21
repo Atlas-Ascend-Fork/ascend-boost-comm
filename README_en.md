@@ -3,7 +3,7 @@
 English | [简体中文](./README.md)
 
 🔥 [2025/09] Ascend Boost Comm project was first launched.
-## 1. What Is Ascend Boost Comm?
+## What Is Ascend Boost Comm?
 ### Introduction to Ascend Boost Comm
 Ascend Boost Comm is a common component of domain-specific acceleration libraries. It defines the L0-level APIs for operator calling in a unified manner. It interconnects with operator libraries developed by different organizations and supports different acceleration library applications for M x N operator capability reuse.
 
@@ -32,9 +32,9 @@ ascend-boost-comm
 ├── tests                 # Test code
 ```
 
-## 2. Product Support
+## Product Support
 
-The following table lists the Ascend hardware architectures supported by this repository.
+The following table lists the Huawei Ascend hardware architectures supported by this repository.
 
 | Hardware Model| Supported| Description|
 |---|---|---|
@@ -42,7 +42,7 @@ The following table lists the Ascend hardware architectures supported by this re
 | Atlas A3 training products/Atlas A3 inference products| √ | — |
 | Atlas inference products| √ | — |
 
-## 3. Environment Setup
+## Environment Setup
 ### Basic Environment Dependencies
 
 **Compilation dependencies (mandatory for the project):**
@@ -50,14 +50,14 @@ The following table lists the Ascend hardware architectures supported by this re
 | Component| Version Requirement| Description|
 |---|---|---|
 | Python | 3.10.x or 3.11.x| Dependency for running Python scripts during compilation|
-| cmake | ≥ 3.20 | |
+| cmake | ≥ 3.20 | Build system dependency |
 | gcc/g++ | Recommended: 7.3.1-11.x| If GCC ≥ 12, add `--no_werror` to the compilation command. (See [Compilation Description](#compilation-description).)|
 
 **Runtime example / test dependencies (install only when compiling and running the test framework or examples):**
 
 | Component| Version Requirement| Description|
 |---|---|---|
-| PyTorch | >= 2.1.0 | |
+| PyTorch | >= 2.1.0 | Must match the CANN and torch_npu versions (see the note below) |
 | torch_npu (Ascend Extension for PyTorch)| See the official document.| Must be compatible with CANN and torch versions. For details, see the following instruction.|
 
 > **Note**: The Ascend Boost Comm library (compilation and build) does not depend on PyTorch, torch_npu, or NumPy. The preceding components need to be installed only when you run the examples and test cases in the `example/` and `tests/` directories.
@@ -93,7 +93,7 @@ pip3 install attrs cython 'numpy>=1.19.2,<=1.24.0' decorator sympy cffi pyyaml p
 ```
 
 ### Detailed CANN Installation Guide
-You can refer to the [Ascend documentation](https://www.hiascend.com/document) > CANN Community Edition > Software Installation to view the CANN software installation guide. Select according to the machine, operating system, and use case, and then read the detailed installation steps.
+You can refer to the [Huawei Ascend documentation](https://www.hiascend.com/document) > CANN Community Edition > Software Installation to view the CANN software installation guide. Select according to the machine, operating system, and use case, and then read the detailed installation steps.
 
 ### Tool Version Requirements and Installation
 
@@ -102,7 +102,7 @@ After installing CANN, you can install some tools to facilitate subsequent devel
 * [CANN Dependencies](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/83RC1alpha002/softwareinst/instg/instg_0045.html?Mode=PmIns&InstallType=local&OS=Debian&Software=cannToolKit)
 * [Post-Installation Operations for CANN](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/83RC1alpha002/softwareinst/instg/instg_0094.html?Mode=PmIns&InstallType=local&OS=Debian&Software=cannToolKit)
 
-## 4. Getting Started
+## Getting Started
 ### Installation
 No installation is required. It is compiled with the operator package. For details, see [Compilation Description](#compilation) and [Usage Description](#usage-instructions).
 
@@ -165,7 +165,7 @@ This scenario is for users who want to simply test a newly written single operat
 
 You can refer to this document to develop custom operators: [Example of Developing a Custom Operator](document/custom_operator_example.md).
 
-## 5. Contributing
+## Contributing
 
 1.  Fork the repository.
 2.  Modify and commit code.
@@ -173,6 +173,6 @@ You can refer to this document to develop custom operators: [Example of Developi
 
 For details, see [Contribution Guide](document/contribution_guide.md).
 
-## 6. Reference Document
+## Reference Document
 [CANN Community Edition Documentation](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/83RC1alpha002/index/index.html)
 Documents in this repository: [document/](document/) (including custom operator and contribution guide)

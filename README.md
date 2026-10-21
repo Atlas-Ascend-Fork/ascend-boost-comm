@@ -3,7 +3,7 @@
 简体中文 | [English](./README_en.md)
 
 🔥 [2025/09] Ascend Boost Comm项目首次上线。
-## 一、什么是Ascend Boost Comm
+## 什么是Ascend Boost Comm
 ### Ascend Boost Comm介绍
 领域加速库公共组件，Ascend Boost Comm。它统一定义了算子调用的L0级接口。南向对接不同组织开发的算子库，北向支撑不同加速库应用，实现M x N算子能力复用。
 
@@ -32,7 +32,7 @@ ascend-boost-comm
 └── tests                 // 测试代码
 ```
 
-## 二、产品支持情况
+## 产品支持情况
 
 本仓支持的昇腾硬件架构如下表所示。
 
@@ -42,7 +42,7 @@ ascend-boost-comm
 | Atlas A3系列产品 | √ | — |
 | Atlas推理系列产品 | √ | — |
 
-## 三、环境构建
+## 环境构建
 ### 基础环境依赖
 
 **编译构建依赖（项目本身必需）**：
@@ -50,14 +50,14 @@ ascend-boost-comm
 | 组件 | 版本要求 | 说明 |
 |---|---|---|
 | Python | 3.10.x 或 3.11.x | 构建时python脚本运行依赖 |
-| cmake | ≥ 3.20 | |
+| cmake | ≥ 3.20 | 构建系统依赖 |
 | gcc/g++ | 推荐 7.3.1–11.x | **GCC ≥ 12** 时编译需加 `--no_werror`（见[编译说明](#编译说明)） |
 
 **运行示例 / 测试依赖（仅当需要编译运行 测试框架 或 Examples 时安装）**：
 
 | 组件 | 版本要求 | 说明 |
 |---|---|---|
-| PyTorch | >= 2.1.0 | |
+| PyTorch | >= 2.1.0 | 须与 CANN 及 torch_npu 版本配套（见下方说明） |
 | torch_npu（Ascend Extension for PyTorch） | 见官方文档 | 须与 CANN、torch 版本配套，见下 |
 
 > **说明**：Ascend Boost Comm 库本身（编译构建）不依赖 PyTorch、torch_npu 或 numpy。上述组件仅在运行 `example/`、`tests/` 目录下的示例和测试用例时才需要安装。
@@ -102,7 +102,7 @@ pip3 install attrs cython 'numpy>=1.19.2,<=1.24.0' decorator sympy cffi pyyaml p
 * [CANN依赖列表](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/83RC1alpha002/softwareinst/instg/instg_0045.html?Mode=PmIns&InstallType=local&OS=Debian&Software=cannToolKit)
 * [CANN安装后操作](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/83RC1alpha002/softwareinst/instg/instg_0094.html?Mode=PmIns&InstallType=local&OS=Debian&Software=cannToolKit)
 
-## 四、快速上手
+## 快速上手
 ### 安装教程
 无需安装， 直接与算子包一起编译。见[编译说明](#编译说明)以及[使用说明](#使用说明)。
 
@@ -165,7 +165,7 @@ bash scripts/build.sh example --no_werror
 
 您可参考该文档进行自定义算子开发：[自定义算子开发示例](document/自定义算子开发示例.md)
 
-## 五、参与贡献
+## 参与贡献
 
 1.  fork仓库
 2.  修改并提交代码
@@ -173,6 +173,6 @@ bash scripts/build.sh example --no_werror
 
 详细步骤可参考[贡献指南](document/贡献指南.md)
 
-## 六、参考文档
+## 参考文档
 **[CANN社区版文档](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/83RC1alpha002/index/index.html)**
 **本仓文档**：[document/](document/)（含自定义算子、贡献指南等）

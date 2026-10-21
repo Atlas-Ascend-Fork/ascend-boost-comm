@@ -1,4 +1,4 @@
-﻿# Single Operator Example Using the Ascend Boost Comm Library
+# Single Operator Example Using the Ascend Boost Comm Library
 
 This tutorial uses the add operator as an example to provide a guide for writing operators that run on Ascend Boost Comm.
 
@@ -56,7 +56,7 @@ Add two input tensors along a specified dimension to produce one output tensor.
     ```
 ## Environment Preparation
 
-Refer to [Environment Preparation](../README_en.md#3-environment-setup) to set up the build and test environment. Once the environment is ready, you can begin developing the operator.
+Refer to [Environment Preparation](../README_en.md#environment-setup) to set up the build and test environment. Once the environment is ready, you can begin developing the operator.
 ## Operator Implementation
 
 Operator implementation mainly includes device-side operator implementation and host-side tiling implementation.
