@@ -70,26 +70,58 @@ ascend-boost-comm
 > ```
 
 ### 快速安装CANN软件
-本节提供快速安装CANN软件的示例命令，更多安装步骤请参考[详细安装指南](#cann详细安装指南)。
 
-#### 安装前准备
-在线安装和离线安装时，需确保已具备Python环境及pip3，当前CANN支持Python3.7.x至3.11.4版本。
-离线安装时，请单击[获取链接](https://www.hiascend.com/developer/download/community/result?module=cann)下载与当前环境匹配的 CANN Toolkit 软件包。
+对于有昇腾设备的开发者，若您想手动搭建昇腾环境，请参考下述步骤。
 
-#### 安装CANN
+#### 安装软件
+
+**场景1：基于CANN weekly版本体验最新master能力或开发**
+
+请参考[CANN快速安装](https://hiascend.com/cann/download?versionId=802&ids=d806%2Ch0501%2Ch0601%2Ch0703&currentTab=1)，选择Weekly版本，并根据产品系列、CPU架构、操作系统等下载对应包，最后参考页面提供的命令完成安装。
+
+**场景2：基于CANN稳定版本体验分支能力或开发**
+
+请参考[CANN快速安装](https://hiascend.com/cann/download?versionId=810&ids=d806%2Ch0501%2Ch0601%2Ch0702&currentTab=0)，选择稳定版本（仅支持CANN 8.5.0及后续版本），并根据产品系列、CPU架构、操作系统等下载对应包，最后参考页面提供的命令完成安装。
+
+
+#### 环境验证
+
+安装完CANN包后，需验证环境和驱动是否正常。
+
+**检查NPU设备**
+
 ```shell
-# ${VERSION} 为下载页实际包名中的版本号，例如 8.2.RC1、8.5.0 等，请以官网为准
-chmod +x Ascend-cann-toolkit_${VERSION}_linux-$(arch).run
-./Ascend-cann-toolkit_${VERSION}_linux-$(arch).run --install
+# 运行npu-smi，若能正常显示设备信息，则驱动正常
+npu-smi info
 ```
-#### 安装后配置
-配置环境变量脚本set_env.sh，当前安装路径以${HOME}/Ascend为例。
+
+**检查CANN版本**
+
+```shell
+# 查看CANN toolkit包版本信息（默认路径安装）
+# docker和手动安装场景：
+cat /usr/local/Ascend/cann/${arch}-linux/ascend_toolkit_install.info
+# CANNLab场景：
+cat /home/developer/Ascend/cann/${arch}-linux/ascend_toolkit_install.info
+
+# 查看CANN ops包版本信息（默认路径安装）
+# docker和手动安装场景：
+cat /usr/local/Ascend/cann/${arch}-linux/ascend_ops_install.info
+# CANNLab场景：
+cat /home/developer/Ascend/cann/${arch}-linux/ascend_ops_install.info
 ```
-source ${HOME}/Ascend/ascend-toolkit/set_env.sh
-```
-安装业务运行时依赖的Python第三方库（如果使用root用户安装，请将命令中的--user删除）。
-```
-pip3 install attrs cython 'numpy>=1.19.2,<=1.24.0' decorator sympy cffi pyyaml pathlib2 psutil protobuf==3.20.0 'scipy<1.11' requests absl-py --user
+
+其中`${arch}`可通过`uname -m`查询当前架构，如aarch64、x86_64。
+
+#### 环境变量配置
+
+按需选择合适的命令使环境变量生效。
+
+```shell
+# 默认路径安装，以root用户为例（非root用户，将/usr/local替换为${HOME}）
+source /usr/local/Ascend/cann/set_env.sh
+# 指定路径安装
+# source ${install_path}/cann/set_env.sh
 ```
 
 ### CANN详细安装指南
