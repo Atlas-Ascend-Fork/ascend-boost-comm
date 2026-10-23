@@ -20,7 +20,7 @@ Ascend Boost Comm库的目录结构如下
 ascend-boost-comm
 ├── cmake                 // 编译和链接相关配置文件
 ├── configs               // 构建相关配置文件
-├── document              // 文档文件存放目录
+├── docs                  // 文档文件存放目录
 ├── example               // 算子调用示例代码
 ├── scripts               // 脚本文件存放目录
 ├── src                   // 主体源代码目录
@@ -195,7 +195,7 @@ bash scripts/build.sh example --no_werror
 
     运行前请确认已执行 `source output/mki/set_env.sh`，且 CANN / NPU 驱动环境可用。
 
-您可参考该文档进行自定义算子开发：[自定义算子开发示例](document/自定义算子开发示例.md)
+您可参考该文档进行自定义算子开发：[自定义算子开发示例](docs/自定义算子开发示例.md)
 
 ## 参与贡献
 
@@ -203,8 +203,8 @@ bash scripts/build.sh example --no_werror
 2.  修改并提交代码
 3.  新建 Pull-Request
 
-详细步骤可参考[贡献指南](document/贡献指南.md)
+详细步骤可参考[贡献指南](docs/贡献指南.md)
 
 ## 参考文档
 **[CANN社区版文档](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/83RC1alpha002/index/index.html)**
-**本仓文档**：[document/](document/)（含自定义算子、贡献指南等）
+**本仓文档**：[docs/](docs/)（含自定义算子、贡献指南等）

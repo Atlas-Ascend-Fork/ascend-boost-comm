@@ -20,7 +20,7 @@ The directory structure of the Ascend Boost Comm library is as follows:
 ascend-boost-comm
 ├── cmake                 // Compilation and link artifacts
 ├── configs               // Build artifacts
-├── document              // Script file directory
+├── docs                  // Script file directory
 ├── example               // Example code for operator calling
 ├── scripts             // Script file directory
 ├── src                 // Main source code directory
@@ -195,7 +195,7 @@ This scenario is for users who want to simply test a newly written single operat
 
     Before running the code, ensure that the `source output/mki/set_env.sh` command has been executed and the CANN/NPU driver environment is available.
 
-You can refer to this document to develop custom operators: [Example of Developing a Custom Operator](document/custom_operator_example.md).
+You can refer to this document to develop custom operators: [Example of Developing a Custom Operator](docs/custom_operator_example.md).
 
 ## Contributing
 
@@ -203,8 +203,8 @@ You can refer to this document to develop custom operators: [Example of Developi
 2.  Modify and commit code.
 3.  Create a pull request (PR).
 
-For details, see [Contribution Guide](document/contribution_guide.md).
+For details, see [Contribution Guide](docs/contribution_guide.md).
 
 ## Reference Document
 [CANN Community Edition Documentation](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/83RC1alpha002/index/index.html)
-Documents in this repository: [document/](document/) (including custom operator and contribution guide)
+Documents in this repository: [docs/](docs/) (including custom operator and contribution guide)

@@ -8,14 +8,14 @@ The following describes basic operations on issues.
 
    Each GitCode repository has an issue section. Click the button to create an issue on the repository page and select an issue type.
    a. Click the button to create an issue.
-     ![](../images/issue-banner.png)
+     ![](../images/issue_banner.png)
    b. Select an issue type as needed and proceed.
      ![](../images/issue_select.png)
 
 2. Specify issue details.
 
    On the issue creation page, enter the issue details.
-   ![](../images/issue-details.png)
+   ![](../images/issue_details.png)
 
    a. Enter the issue title.
 
