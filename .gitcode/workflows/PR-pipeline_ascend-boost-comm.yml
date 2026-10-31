@@ -1,4 +1,4 @@
-name: ascend-boost-comm_action
+name: PR-pipeline_ascend-boost-comm
 
 concurrency:
   max: 5
