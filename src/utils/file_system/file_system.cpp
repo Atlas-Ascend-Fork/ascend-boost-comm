@@ -162,6 +162,11 @@ bool FileSystem::ReadFile(const std::string &filePath, uint8_t *buffer, uint64_t
         return false;
     }
     fd.read(reinterpret_cast<char *>(buffer), bufferSize);
+    if (!fd)
+    {
+        MKI_LOG(ERROR) << "read file failed: " << realPath;
+        return false;
+    }
     return true;
 }
 
