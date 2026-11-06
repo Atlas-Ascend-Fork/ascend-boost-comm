@@ -56,9 +56,10 @@ def add_param_in_kernel_function_definition(kernel_func_def, file_type):
 # 在算子核函数中，添加InitDump函数
 def add_initDump_in_kernel_function(kernel_func_content):
     new_kernel_func_content = ""
-    new_kernel_func_content_start_idx = kernel_func_content.find('{') + 2
+    new_kernel_func_content_start_idx = kernel_func_content.find('{') + 1
     new_kernel_func_content = (
         kernel_func_content[:new_kernel_func_content_start_idx]
+        + "\n"
         + INITDUMP_CONTENT
         + kernel_func_content[new_kernel_func_content_start_idx:]
     )
