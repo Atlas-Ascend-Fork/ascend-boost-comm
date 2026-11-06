@@ -277,7 +277,7 @@ def get_tiling_key_ids(src_file):
         s = f.read()
         patt = r"TILING_KEY_IS\((\d+)\)"
         pattern = re.compile(patt)
-        tiling_key_list = pattern.findall(s)
+        tiling_key_list = list(dict.fromkeys(pattern.findall(s)))
         if tiling_key_list:
             return tiling_key_list
         else:
