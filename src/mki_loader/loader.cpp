@@ -8,9 +8,12 @@
  * See LICENSE in the root of the software repository for the full text of the License.
  */
 #include "loader.h"
+
 #include <fstream>
-#include "mki/base/operation_base.h"
+
+#include "loader_stream_cleanup.h"
 #include "mki/base/kernel_base.h"
+#include "mki/base/operation_base.h"
 #include "mki/bin_handle.h"
 #include "mki/utils/assert/assert.h"
 #include "mki/utils/env/env.h"
@@ -20,6 +23,7 @@
 #include "mki/utils/rt/rt.h"
 #include "mki_loader/op_register.h"
 
+// clang-format off
 namespace {
 void DevPtrDeleter(uint8_t* ptr)
 {
@@ -137,8 +141,10 @@ bool Loader::GetAicpuDeviceKernelSo(uint32_t &fileSize)
     return true;
 }
 
+// clang-format on
 bool Loader::LoadAicpuKernelBinarys()
 {
+    // clang-format off
     uint32_t fileSize = 0;
     MKI_CHECK(GetAicpuDeviceKernelSo(fileSize), "Failed to get aicpu kernels binary", return false);
 
@@ -161,12 +167,23 @@ bool Loader::LoadAicpuKernelBinarys()
     opArgs.kernelSoName = aicpuSoNameHandle_.get();
     opArgs.kernelSoNameLen = soNameLen;
     uint32_t argsSize = sizeof(RtLoadOpFromBufArgs);
+    // clang-format on
 
     // launch to reg
     MkiRtStream stream = nullptr;
     ret = Mki::MkiRtStreamCreate(&stream, 0);
-    MKI_CHECK(ret == MKIRT_SUCCESS && stream != nullptr,
-                "MkiRtStreamCreate for LoadOpFromBuf fail, errCode:" << ret, return false);
+    if (ret != MKIRT_SUCCESS || stream == nullptr)
+    {
+        int createRet = ret;
+        int destroyRet =
+            LoaderDetail::CleanupStreamAfterCreateFailure(createRet, stream, MKIRT_SUCCESS, Mki::MkiRtStreamDestroy);
+        MKI_LOG_IF(destroyRet != MKIRT_SUCCESS, ERROR)
+            << "MkiRtStreamDestroy after LoadOpFromBuf stream creation failure, errCode:" << destroyRet;
+        MKI_LOG(ERROR) << "MkiRtStreamCreate for LoadOpFromBuf fail, errCode:" << createRet;
+        return false;
+    }
+    auto destroyStream = [&stream]() -> int
+    { return LoaderDetail::DestroyStreamIfPresent(stream, MKIRT_SUCCESS, Mki::MkiRtStreamDestroy); };
 
     RtArgsExT argsInfo = {};
     argsInfo.args = &opArgs;
@@ -183,15 +200,30 @@ bool Loader::LoadAicpuKernelBinarys()
     kernelParam.argsEx = &argsInfo;
 
     ret = Mki::MkiRtAicpuFunctionLaunchWithFlag(&launchName, &kernelParam, stream);
-    MKI_CHECK(ret == MKIRT_SUCCESS, "MkiRtAicpuFunctionLaunchWithFlag for LoadOpFromBuf fail, errCode:" << ret,
-                return false);
+    if (ret != MKIRT_SUCCESS)
+    {
+        int destroyRet = destroyStream();
+        MKI_LOG_IF(destroyRet != MKIRT_SUCCESS, ERROR)
+            << "MkiRtStreamDestroy after LoadOpFromBuf launch failure, errCode:" << destroyRet;
+        MKI_LOG(ERROR) << "MkiRtAicpuFunctionLaunchWithFlag for LoadOpFromBuf fail, errCode:" << ret;
+        return false;
+    }
     ret = Mki::MkiRtStreamSynchronize(stream);
-    MKI_CHECK(ret == MKIRT_SUCCESS, "MkiRtStreamSynchronize for LoadOpFromBuf fail, errCode:" << ret, return false);
-    Mki::MkiRtStreamDestroy(stream);
+    if (ret != MKIRT_SUCCESS)
+    {
+        int destroyRet = destroyStream();
+        MKI_LOG_IF(destroyRet != MKIRT_SUCCESS, ERROR)
+            << "MkiRtStreamDestroy after LoadOpFromBuf synchronize failure, errCode:" << destroyRet;
+        MKI_LOG(ERROR) << "MkiRtStreamSynchronize for LoadOpFromBuf fail, errCode:" << ret;
+        return false;
+    }
+    ret = destroyStream();
+    MKI_CHECK(ret == MKIRT_SUCCESS, "MkiRtStreamDestroy for LoadOpFromBuf fail, errCode:" << ret, return false);
 
     return true;
 }
 
+// clang-format off
 bool Loader::CreateAicpuKernels()
 {
     for (const auto &creatorInfo : aicpuKernelCreators_) {
@@ -271,3 +303,4 @@ void Loader::ReLoad()
     Load();
 }
 } // namespace Mki
+// clang-format on
