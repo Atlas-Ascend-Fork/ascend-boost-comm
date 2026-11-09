@@ -418,7 +418,7 @@ void LogSinkFile::MakeLogDir()
 
 void LogSinkFile::CloseFile()
 {
-    if (currentFd_ > 0)
+    if (currentFd_ >= 0)
     {
         (void)fchmod(currentFd_, S_IRUSR | S_IRGRP);
         close(currentFd_);
