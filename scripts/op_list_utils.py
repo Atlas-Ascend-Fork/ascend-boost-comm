@@ -13,6 +13,7 @@ import re
 import logging
 import argparse
 import configparser
+import sys
 import build_util
 
 pattern_operation = r"add_operation\(.+?\)"
@@ -20,19 +21,17 @@ pattern_kernel = r"add_kernel\(.+?\)"
 
 
 def parse_operation(add_operation_text):
-    param_list = add_operation_text.split('(')[1].strip(')').split(' ')
+    param_list = add_operation_text.split('(')[1].strip(')').split()
     return param_list[0]
 
 
 def parse_kernel(add_kernel_text):
-    param_list = add_kernel_text.split('(')[1].strip(')').split(' ')
-    param_list = [x for x in param_list if x]
+    param_list = add_kernel_text.split('(')[1].strip(')').split()
     return param_list[4], param_list[1]
 
 
 def build_op_list(ops_src_root_dir, dst_yaml_path):
-    logging.basicConfig(level=logging.INFO,
-                        format='%(filename)s [line:%(lineno)d] - %(levelname)s: %(message)s')
+    logging.basicConfig(level=logging.INFO, format='%(filename)s [line:%(lineno)d] - %(levelname)s: %(message)s')
     if os.path.exists(dst_yaml_path):
         os.remove(dst_yaml_path)
     op_kernel_list = {}
@@ -40,7 +39,7 @@ def build_op_list(ops_src_root_dir, dst_yaml_path):
         for file in file_list:
             if file == 'CMakeLists.txt':
                 file_path = os.path.join(path, file)
-                with open (file_path) as fd:
+                with open(file_path, encoding="utf-8") as fd:
                     context = fd.read().replace('\n', ' ')
                     match_operation = re.search(pattern_operation, context)
                     if not match_operation:
@@ -61,35 +60,34 @@ def build_op_list(ops_src_root_dir, dst_yaml_path):
                             kernel_list[kernel_name] = {soc: True}
                     op_kernel_list[op_name] = kernel_list if kernel_list else 'host-only'
 
-    with open(dst_yaml_path, 'w') as yf:
+    with open(dst_yaml_path, 'w', encoding='utf-8') as yf:
         yaml_context = yaml.dump(op_kernel_list, indent=4)
         yf.write(yaml_context)
         logging.debug(yaml_context)
-        logging.info(f'op list is build at {dst_yaml_path}')
+        logging.info('op list is build at %s', dst_yaml_path)
 
 
 def input_args_check(src_root_dir, dst_yaml_dir):
     if not os.path.exists(os.path.join(src_root_dir, 'CMakeLists.txt')):
-        logging.error(f'input dir {src_root_dir} is not root directory')
-        exit(1)
+        logging.error('input dir %s is not root directory', src_root_dir)
+        sys.exit(1)
     if not os.path.exists(dst_yaml_dir):
-        logging.error(f'dest dir {dst_yaml_dir} do not exist')
-        exit(1)
+        logging.error('dest dir %s do not exist', dst_yaml_dir)
+        sys.exit(1)
 
 
 def build_cmake_options(yaml_file_path, cmake_option_path, json_ini_path=''):
-    logging.basicConfig(level=logging.INFO,
-                        format='%(filename)s [line:%(lineno)d] - %(levelname)s: %(message)s')
+    logging.basicConfig(level=logging.INFO, format='%(filename)s [line:%(lineno)d] - %(levelname)s: %(message)s')
     if os.path.basename(yaml_file_path) != 'op_list.yaml':
-        logging.error(f'{yaml_file_path}: file name error')
-        exit(1)
+        logging.error('%s: file name error', yaml_file_path)
+        sys.exit(1)
     if not os.path.exists(os.path.dirname(cmake_option_path)):
-        logging.error(f'{os.path.dirname(cmake_option_path)} do not exist')
-        exit(1)
+        logging.error('%s do not exist', os.path.dirname(cmake_option_path))
+        sys.exit(1)
 
     tbe_ini = None
     if not os.path.exists(os.path.dirname(json_ini_path)):
-        logging.warning(f'{os.path.dirname(json_ini_path)} do not exist')
+        logging.warning('%s do not exist', os.path.dirname(json_ini_path))
     else:
         tbe_ini = configparser.RawConfigParser()
         tbe_ini.optionxform = lambda option: option
@@ -97,16 +95,15 @@ def build_cmake_options(yaml_file_path, cmake_option_path, json_ini_path=''):
             tbe_ini.read(json_ini_path)
         except configparser.MissingSectionHeaderError:
             logging.error("ini file: %s format error!", json_ini_path)
-            exit(1)
+            sys.exit(1)
         except configparser.ParsingError:
             logging.error("ini file: %s format error!", json_ini_path)
-            exit(1)
-
+            sys.exit(1)
 
     option_list = []
     built_device_list, all_device_list = build_util.get_build_target_list(with_all=True)
     try:
-        with open(yaml_file_path) as f:
+        with open(yaml_file_path, encoding='utf-8') as f:
             op_kernel_list = yaml.safe_load(f)
             for op_name in op_kernel_list:
                 if not op_name.endswith('Operation'):
@@ -139,44 +136,53 @@ def build_cmake_options(yaml_file_path, cmake_option_path, json_ini_path=''):
                         option_list.append(f'set({option_name} {op_switch})')
                         if soc_list[soc]:
                             kernel_built_count += 1
-                logging.debug(f'{op_name} has {kernel_built_count} ascendc kernels built')
+                logging.debug('%s has %s ascendc kernels built', op_name, kernel_built_count)
 
     except FileExistsError:
-        logging.error(f'can not open yaml file, {yaml_file_path} do not exist')
-        exit(1)
+        logging.error('can not open yaml file, %s do not exist', yaml_file_path)
+        sys.exit(1)
     except yaml.YAMLError as e:
         if isinstance(e, yaml.scanner.ScannerError) and hasattr(e, 'problem_mark'):
             mark = e.problem_mark
-            logging.error(f"{yaml_file_path} parsed failed at line {mark.line}, col {mark.column + 1}")
+            logging.error('%s parsed failed at line %s, col %s', yaml_file_path, mark.line, mark.column + 1)
         else:
-            logging.error(f'an error occurred when parse {yaml_file_path}')
-        exit(1)
+            logging.error('an error occurred when parse %s', yaml_file_path)
+        sys.exit(1)
     except ValueError as e:
         logging.error(e.args[0])
-        exit(1)
+        sys.exit(1)
     except TypeError as e:
-        logging.error(f'{op_name} get invalid value type, error info: {e.args[0]}')
-        exit(1)
+        logging.error('%s get invalid value type, error info: %s', op_name, e.args[0])
+        sys.exit(1)
 
-    with open(cmake_option_path, 'w') as cmake_file:
+    with open(cmake_option_path, 'w', encoding='utf-8') as cmake_file:
         cmake_file.write('\n'.join(option_list))
-        logging.info(f'cmake file is build at {cmake_option_path}')
+        logging.info('cmake file is build at %s', cmake_option_path)
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO,
-                        format='%(filename)s [line:%(lineno)d] - %(levelname)s: %(message)s')
+    logging.basicConfig(level=logging.INFO, format='%(filename)s [line:%(lineno)d] - %(levelname)s: %(message)s')
     scripts_dir = os.path.dirname(__file__)
     parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--src_root_dir', type=str, required=False,
-                        default=f'{scripts_dir}/../../..',
-                        help='root directory that contains a CMakeLists.txt file')
-    parser.add_argument('-d', '--dst_yaml_dir', type=str, required=False,
-                        default=f'{scripts_dir}/../../../configs',
-                        help='destination path of op list yaml file')
+    parser.add_argument(
+        '-s',
+        '--src_root_dir',
+        type=str,
+        required=False,
+        default=f'{scripts_dir}/../../..',
+        help='root directory that contains a CMakeLists.txt file',
+    )
+    parser.add_argument(
+        '-d',
+        '--dst_yaml_dir',
+        type=str,
+        required=False,
+        default=f'{scripts_dir}/../../../configs',
+        help='destination path of op list yaml file',
+    )
     input_args = parser.parse_args()
-    src_root_dir = os.path.abspath(input_args.src_root_dir)
-    dst_yaml_dir = os.path.abspath(input_args.dst_yaml_dir)
-    input_args_check(src_root_dir, dst_yaml_dir)
-    dst_yaml_path = os.path.join(dst_yaml_dir, 'op_list.yaml')
-    build_op_list(src_root_dir, dst_yaml_path)
+    cli_src_root = os.path.abspath(input_args.src_root_dir)
+    cli_dst_dir = os.path.abspath(input_args.dst_yaml_dir)
+    input_args_check(cli_src_root, cli_dst_dir)
+    cli_dst_path = os.path.join(cli_dst_dir, 'op_list.yaml')
+    build_op_list(cli_src_root, cli_dst_path)
