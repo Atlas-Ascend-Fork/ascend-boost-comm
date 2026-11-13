@@ -86,6 +86,7 @@ git config --global user.email "email@your_email.com"
     ```
     # 下载远程仓库到本地
     git clone https://gitcode.com/$user_name/ascend-boost-comm.git
+    cd ascend-boost-comm
     # 设置本地工作目录的上游源（原始仓库）
     git remote add upstream https://gitcode.com/cann/ascend-boost-comm.git
     ```

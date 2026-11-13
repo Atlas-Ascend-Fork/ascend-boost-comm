@@ -86,6 +86,7 @@ git config --global user.email "email@your_email.com"
     ```
     # Download the remote repository.
     git clone https://gitcode.com/$user_name/ascend-boost-comm.git
+    cd ascend-boost-comm
     # Set the upstream source of the local working directory to the original repository.
     git remote add upstream https://gitcode.com/cann/ascend-boost-comm.git
     ```
