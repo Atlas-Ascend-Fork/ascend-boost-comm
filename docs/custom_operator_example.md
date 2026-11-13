@@ -4,7 +4,10 @@ This tutorial uses the add operator as an example to provide a guide for writing
 
 ### Operator Function
 
-Add two input tensors along a specified dimension to produce one output tensor.
+Add corresponding elements of two input tensors to produce one output tensor:
+`z[i] = x[i] + y[i]`. The test in this tutorial uses one-dimensional FP16 tensors
+with the same shape. `OpParam::Addcustom` has no dimension parameter, so the
+operator parameters in the test should be an empty dictionary `{}`.
 ![AddcustomOperation](images/addcustom_operation.png)
 ### New Files
 
@@ -337,7 +340,7 @@ import op_test
 
 
 OP_NAME = "AddcustomOperation"
-OP_PARAM0 = {"addcustomDim": 0}
+OP_PARAM0 = {}
 
 
 class TestAddcustom(op_test.OpTest):
