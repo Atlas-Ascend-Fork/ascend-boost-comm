@@ -167,7 +167,7 @@ bash scripts/build.sh example --no_werror
 2.  编译加速库
 
     ```shell
-    cd ascend-transformer-boost/
+    cd ../ascend-transformer-boost/
     source scripts/set_env.sh
     bash scripts/build.sh testframework
     source output/atb/set_env.sh

@@ -167,7 +167,7 @@ In the following example, the Ascend Boost Comm and the acceleration library (As
 2.  Compile the acceleration library.
 
     ```shell
-    cd ascend-transformer-boost/
+    cd ../ascend-transformer-boost/
     source scripts/set_env.sh
     bash scripts/build.sh testframework
     source output/atb/set_env.sh
