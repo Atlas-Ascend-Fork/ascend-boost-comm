@@ -8,32 +8,39 @@
  * See LICENSE in the root of the software repository for the full text of the License.
  */
 #include "mki/utils/share_memory/share_memory.h"
-#include <sys/stat.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
+
 #include <fcntl.h>
 #include <securec.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <sys/stat.h>
+
 #include <functional>
+
 #include "mki/utils/assert/assert.h"
 #include "mki/utils/env/env.h"
 #include "mki/utils/log/log.h"
 
-namespace {
+namespace
+{
 constexpr int SEM_TIMEOUT = 300;
 const size_t MAX_ENV_STRING_LEN = 12800;
-}
+}  // namespace
 
-namespace Mki {
+namespace Mki
+{
 ShareMemory::ShareMemory(const std::string &name, uint32_t size) : memSize_(size)
 {
     fullName_ = name;
     const char *shareMemoryNameSuffix = Mki::GetEnv("ATB_SHARE_MEMORY_NAME_SUFFIX");
-    if (shareMemoryNameSuffix && strlen(shareMemoryNameSuffix) <= MAX_ENV_STRING_LEN) {
+    if (shareMemoryNameSuffix && strlen(shareMemoryNameSuffix) <= MAX_ENV_STRING_LEN)
+    {
         MKI_LOG(INFO) << "ATB_SHARE_MEMORY_NAME_SUFFIX is validate, value: " << std::string(shareMemoryNameSuffix);
         fullName_ += std::string(shareMemoryNameSuffix);
     }
     sem_ = sem_open(fullName_.c_str(), O_CREAT, S_IRUSR | S_IWUSR, 1);
-    if (SEM_FAILED == sem_) {
+    if (SEM_FAILED == sem_)
+    {
         MKI_LOG(ERROR) << "share memory open fail, fullName:" << fullName_;
         return;
     }
@@ -47,16 +54,17 @@ ShareMemory::ShareMemory(const std::string &name, uint32_t size) : memSize_(size
 
 ShareMemory::~ShareMemory()
 {
+    if (sem_ == SEM_FAILED)
+    {
+        return;
+    }
     SemLock();
     CleanUpShm();
     SemUnLock();
     CleanUpSem();
 }
 
-void *ShareMemory::GetShm()
-{
-    return shareMemory_;
-}
+void *ShareMemory::GetShm() { return shareMemory_; }
 
 void ShareMemory::SemLock() const
 {
@@ -66,21 +74,18 @@ void ShareMemory::SemLock() const
     int ret = sem_timedwait(sem_, &ts);
     // 等待信号量超时
     MKI_LOG_IF(ret == -1 && errno == ETIMEDOUT, ERROR) << "The semaphore waiting duration exceeds 5 minutes. Run the "
-        "rm -rf /dev/shm/sem." <<
-        fullName_ << " command to clear the semaphore.";
+                                                          "rm -rf /dev/shm/sem."
+                                                       << fullName_ << " command to clear the semaphore.";
 }
 
-void ShareMemory::SemUnLock() const
-{
-    sem_post(sem_);
-}
+void ShareMemory::SemUnLock() const { sem_post(sem_); }
 
 void *ShareMemory::CreateShareMemory(const std::string &name, uint32_t size)
 {
     void *memory = nullptr;
     struct shmid_ds buf;
     key_t key = static_cast<key_t>(std::hash<std::string>{}(name));
-    shmid_ = shmget(key, size, IPC_CREAT | 0600); // 0600提供文件所有者有读和写的权限
+    shmid_ = shmget(key, size, IPC_CREAT | 0600);  // 0600提供文件所有者有读和写的权限
     MKI_LOG(INFO) << "key: " << key << " shmid: " << shmid_;
     MKI_CHECK(shmid_ != -1, "shmget err, errno is: " << errno, return nullptr);
 
@@ -89,7 +94,8 @@ void *ShareMemory::CreateShareMemory(const std::string &name, uint32_t size)
 
     shmctl(shmid_, IPC_STAT, &buf);
 
-    if (buf.shm_nattch == 1) {
+    if (buf.shm_nattch == 1)
+    {
         int ret = memset_s(memory, size, 0, size);
         MKI_LOG_IF(ret != EOK, ERROR) << "memset_s Error! Error Code: " << ret;
     }
@@ -102,10 +108,12 @@ void ShareMemory::CleanUpShm()
     MKI_LOG_IF(ret != 0, ERROR) << "shmdt failed, errno is: " << errno;
     shmid_ds buf{};
     shmctl(shmid_, IPC_STAT, &buf);
-    if (shmid_ != -1 && buf.shm_nattch == 0) {
+    if (shmid_ != -1 && buf.shm_nattch == 0)
+    {
         ret = shmctl(shmid_, IPC_RMID, nullptr);
-        MKI_LOG_IF(ret != 0, ERROR) << "shmid: " << shmid_ << " delete share memory fail(shmctl IPC_RMID failed.) ret: "
-            << ret << " errno is: " << errno;
+        MKI_LOG_IF(ret != 0, ERROR) << "shmid: " << shmid_
+                                    << " delete share memory fail(shmctl IPC_RMID failed.) ret: " << ret
+                                    << " errno is: " << errno;
     }
 }
 
@@ -116,4 +124,4 @@ void ShareMemory::CleanUpSem()
     ret = sem_unlink(fullName_.c_str());
     MKI_LOG_IF(ret != 0, INFO) << "Already unlink sem";
 }
-}
+}  // namespace Mki
