@@ -8,13 +8,17 @@
  * See LICENSE in the root of the software repository for the full text of the License.
  */
 #include "mki/utils/dl/dl.h"
-#include <atomic>
-#include <unistd.h>
+
 #include <dlfcn.h>
+#include <unistd.h>
+
+#include <atomic>
+
 #include "mki/utils/assert/assert.h"
-#include "mki/utils/log/log.h"
 #include "mki/utils/file_system/file_system.h"
-namespace Mki {
+#include "mki/utils/log/log.h"
+namespace Mki
+{
 std::atomic_int g_memfdNextId(0);
 
 Dl::Dl(const std::string &dlFilePath, bool checkSymlinks) : memFd_(0), dlHandle_(nullptr)
@@ -23,33 +27,33 @@ Dl::Dl(const std::string &dlFilePath, bool checkSymlinks) : memFd_(0), dlHandle_
     std::string realPath = FileSystem::PathCheckAndRegular(dlFilePath, checkSymlinks);
     MKI_CHECK(!realPath.empty(), "file path is invalid", return);
     MKI_CHECK((FileSystem::FileSize(realPath) > 0 && FileSystem::FileSize(realPath) <= MAX_FILE_SIZE / 10),
-        "File size is invalid", return);   // MAX_FILE_SIZE / 10 = 1GB
+              "File size is invalid", return);  // MAX_FILE_SIZE / 10 = 1GB
     dlHandle_ = dlopen(realPath.c_str(), RTLD_LAZY);
     MKI_LOG_IF(dlHandle_ == nullptr, ERROR) << "dlopen " << dlFilePath << " fail, error:" << dlerror();
-    dlSuccess_ = true;
+    dlSuccess_ = dlHandle_ != nullptr;
 }
 
 Dl::~Dl()
 {
-    if (dlHandle_) {
+    if (dlHandle_)
+    {
         dlclose(dlHandle_);
         dlHandle_ = nullptr;
     }
 
-    if (memFd_ > 0) {
+    if (memFd_ > 0)
+    {
         close(memFd_);
         memFd_ = 0;
     }
 }
 
-bool Dl::IsValid() const
-{
-    return dlSuccess_;
-}
+bool Dl::IsValid() const { return dlSuccess_; }
 
 void *Dl::GetSymbol(const std::string &symbolName) const
 {
-    if (dlHandle_ == nullptr) {
+    if (dlHandle_ == nullptr)
+    {
         return nullptr;
     }
 
@@ -63,4 +67,4 @@ std::string Dl::GetNewMemFdFileName() const
     fileName = "dl_" + std::to_string(id);
     return fileName;
 }
-} // namespace Mki
+}  // namespace Mki
