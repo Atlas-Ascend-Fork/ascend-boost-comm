@@ -325,6 +325,42 @@ After building, set the environment variables:
 source output/mki/set_env.sh
 ```
 
+### Debug Logging
+
+Use `MKI_LOG(INFO) << "..."` in operator code to print debug information. See `example/ops/addcustom/tiling/addcustom_tiling.cpp` for usage.
+
+**Note**: MKI logs output only ERROR and above by default, and are not printed to the terminal by default. When you run the sample as described above, a newly added `MKI_LOG(INFO)` line produces no visible output even though the code does run.
+
+The related environment variables are described below:
+
+| Environment Variable | Value | Description |
+|---|---|---|
+| `ASCEND_GLOBAL_LOG_LEVEL` | `0`=TRACE (including DEBUG), `1`=INFO, `2`=WARN, `3`=ERROR (default), `4`=logging disabled | Global log level. Only logs at or above this level are output. |
+| `ASCEND_SLOG_PRINT_TO_STDOUT` | `1` | Also print logs to the terminal. If not set, logs are written to a file only. |
+| `ASCEND_MODULE_LOG_LEVEL` | For example, `OP=1` | Overrides the global log level when set. The key must be `OP`; other keys have no effect. Note that it applies to the whole process, not only to logs emitted inside the OP module. |
+
+To print INFO-level logs to the terminal:
+
+```shell
+export ASCEND_GLOBAL_LOG_LEVEL=1
+export ASCEND_SLOG_PRINT_TO_STDOUT=1
+python example/tests/pythontest/optest/test_addcustom.py
+```
+
+If you set only `ASCEND_GLOBAL_LOG_LEVEL=1` without `ASCEND_SLOG_PRINT_TO_STDOUT`, logs are not printed to the terminal. They are written to a log file instead.
+
+The log directory is resolved in the following order of precedence:
+
+| Environment Variable (highest to lowest) | Log Directory |
+|---|---|
+| `ASCEND_PROCESS_LOG_PATH` | `$ASCEND_PROCESS_LOG_PATH/atb/` |
+| `ASCEND_WORK_PATH` | `$ASCEND_WORK_PATH/log/atb/` |
+| Neither is set | `$HOME/ascend/log/atb/` |
+
+Log file names use the format `atb_<pid>_<timestamp>.log`, for example `$HOME/ascend/log/atb/atb_12345_20261113170000.log`.
+
+> **Troubleshooting**: If no logs appear even after you set the log level, verify that the disk holding the log directory has more than 10 GB free (if less than 10 GB is available, file logging is skipped). Also note that if the code emits only logs below the current level (for example, only one `MKI_LOG(INFO)` at the default level), no log file is created at all.
+
 ### Testing
 To test the operator you have written, create `test_addcustom.py` under the `example/tests/pythontest/optest/` directory:
 ```python

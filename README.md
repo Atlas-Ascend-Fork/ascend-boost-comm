@@ -195,6 +195,8 @@ bash scripts/build.sh example --no_werror
 
     运行前请确认已执行 `source output/mki/set_env.sh`，且 CANN / NPU 驱动环境可用。
 
+    如需查看算子中的 `MKI_LOG` 调试输出，需先设置日志级别与输出开关，详见[调试日志](docs/自定义算子开发示例.md#调试日志)。
+
 您可参考该文档进行自定义算子开发：[自定义算子开发示例](docs/自定义算子开发示例.md)
 
 ## 参与贡献

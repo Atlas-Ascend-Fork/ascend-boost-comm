@@ -195,6 +195,8 @@ This scenario is for users who want to simply test a newly written single operat
 
     Before running the code, ensure that the `source output/mki/set_env.sh` command has been executed and the CANN/NPU driver environment is available.
 
+    To view `MKI_LOG` debug output from your operator, set the log level and output switch first. For details, see [Debug Logging](docs/custom_operator_example.md#debug-logging).
+
 You can refer to this document to develop custom operators: [Example of Developing a Custom Operator](docs/custom_operator_example.md).
 
 ## Contributing
