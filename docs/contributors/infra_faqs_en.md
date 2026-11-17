@@ -60,7 +60,7 @@ The code review process using the "/lgtm" or "/approve" comment ensures that at 
 #### **What commands can I use in the comments of Ascend community repositories and what are their functions?**
 
 
-For details about the supported commands, see [Ascend Community Comment Commands](infra-command.md).
+For details about the supported commands, see [Ascend Community Comment Commands](infra_command_en.md).
 
 #### **Why is CI build not triggered after I submit a PR?**
 

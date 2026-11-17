@@ -1,5 +1,5 @@
 ## Understanding Code of Conduct
-Ascend Boost Comm is a CANN open project. Before contributing, please read the [CANN Open Project Code of Conduct](contributors/code-of-conduct.md). All your activities in the Ascend Boost Comm project (including but not limited to posting comments, submitting issues, and publishing wikis) must comply with this code of conduct.
+Ascend Boost Comm is a CANN open project. Before contributing, please read the [CANN Open Project Code of Conduct](contributors/code_of_conduct_en.md). All your activities in the Ascend Boost Comm project (including but not limited to posting comments, submitting issues, and publishing wikis) must comply with this code of conduct.
 
 ## Signing CLA
 
@@ -21,8 +21,8 @@ All discovered issues or new ideas you wish to contribute can be discussed and t
 
 > 📝 **Note**
 >
-> - For details about the GitCode workflow, see [Gitcode Workflow Description](contributors/gitcode-workflow.md).
-> - If you encounter any problems when submitting a PR, refer to [FAQ](contributors/infra-faqs.md).
+> - For details about the GitCode workflow, see [Gitcode Workflow Description](contributors/gitcode_workflow_en.md).
+> - If you encounter any problems when submitting a PR, refer to [FAQ](contributors/infra_faqs_en.md).
 
 ### Contribution Categories
 
@@ -56,7 +56,7 @@ All discovered issues or new ideas you wish to contribute can be discussed and t
 
   If you want to report a bug, submit a requirement, or send your feedback to the community, please submit an issue.
 
-  For details, see [Issue Submission Guide](contributors/issue-submit.md).
+  For details, see [Issue Submission Guide](contributors/issue_submit_en.md).
 
 - Participating in issue discussions
 
