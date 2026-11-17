@@ -9,16 +9,19 @@
  */
 #ifndef MKI_UTILS_FILESYSTEM_FILESYSTEM_H
 #define MKI_UTILS_FILESYSTEM_FILESYSTEM_H
+#include <sys/stat.h>
+
 #include <cstdint>
 #include <string>
 #include <vector>
-#include <sys/stat.h>
-namespace Mki {
-constexpr int64_t MAX_FILE_SIZE = 10737418240;   // 10737418240 即10GB
-constexpr int64_t MAX_FILE_NUM = 100;
+namespace Mki
+{
+constexpr int64_t MAX_FILE_SIZE = 10737418240;  // 10737418240 即10GB
+constexpr int64_t MAX_FILE_NUM = 1000;
 constexpr mode_t FILE_MODE = S_IRUSR | S_IWUSR | S_IRGRP;
-class FileSystem {
-public:
+class FileSystem
+{
+   public:
     static void GetDirChildItems(const std::string &dirPath, std::vector<std::string> &itemPaths);
     static void GetDirChildFiles(const std::string &dirPath, std::vector<std::string> &filePaths);
     static void GetDirChildDirs(const std::string &dirPath, std::vector<std::string> &dirPaths);
@@ -38,9 +41,9 @@ public:
     static std::string PathCheckAndRegular(const std::string &path, bool symlinkCheck = true,
                                            bool parentReferenceCheck = true);
     static std::string PathCheckAndRegularNoLog(const std::string &path, bool symlinkCheck = true,
-                                           bool parentReferenceCheck = true);
+                                                bool parentReferenceCheck = true);
 
-private:
+   private:
     // A symlink with a trailing slash (/) is not recognized as a symlink,
     // which is consistent with the operating system.
     static bool IsSymLink(const std::string &filePath);
@@ -48,5 +51,5 @@ private:
     static void GetDirChildItemsImpl(const std::string &dirPath, bool matchFile, bool matchDir,
                                      std::vector<std::string> &itemPaths);
 };
-} // namespace Mki
+}  // namespace Mki
 #endif
