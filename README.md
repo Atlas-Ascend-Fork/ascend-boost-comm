@@ -69,20 +69,53 @@ ascend-boost-comm
 > pip install torch==2.7.1 torch-npu==2.7.1.post4
 > ```
 
+**与加速库一起编译出包的附加依赖（仅「使用说明」中的『与加速库一起编译出包使用』需要）**：
+
+| 组件 | 版本要求 | 说明 |
+|---|---|---|
+| nnal（Ascend-cann-nnal） | **须与toolkit、ops的版本号完全一致** | 提供`libtbe_adapter.so`，加速库（本仓以ATB为例）编译时必需 |
+
+> ⚠️ **重要前提**：CANN weekly / 主线构建的toolkit **可能没有同版本的nnal软件包**。若您要按「使用说明」中的『与加速库一起编译出包使用』操作，请改用toolkit、ops、nnal三个包**统一版本**的正式发布版本（例如统一使用9.2.0），即下文的**安装方式B**；否则加速库编译时会因缺少`libtbe_adapter.so`而失败。
+
 ### 快速安装CANN软件
 
 对于有昇腾设备的开发者，若您想手动搭建昇腾环境，请参考下述步骤。
 
 #### 安装软件
 
-**场景1：基于CANN weekly版本体验最新master能力或开发**
+**安装方式A：基于CANN weekly版本体验最新master能力或开发**
 
 请参考[CANN快速安装](https://hiascend.com/cann/download?versionId=802&ids=d806%2Ch0501%2Ch0601%2Ch0703&currentTab=1)，选择Weekly版本，并根据产品系列、CPU架构、操作系统等下载对应包，最后参考页面提供的命令完成安装。
 
-**场景2：基于CANN稳定版本体验分支能力或开发**
+> ℹ️ weekly版本适用于体验本仓最新master能力、以及只编译本仓自身的场景（即「使用说明」中的『单算子工程』）。weekly构建的toolkit可能暂无同版本的nnal软件包，因此**不建议**用它执行「与加速库一起编译出包使用」，请改用下方的安装方式B。
+
+**安装方式B：基于CANN稳定版本体验分支能力或开发（推荐）**
 
 请参考[CANN快速安装](https://hiascend.com/cann/download?versionId=810&ids=d806%2Ch0501%2Ch0601%2Ch0702&currentTab=0)，选择稳定版本（仅支持CANN 8.5.0及后续版本），并根据产品系列、CPU架构、操作系统等下载对应包，最后参考页面提供的命令完成安装。
 
+稳定版本线同时提供toolkit、各芯片ops与nnal三个包，可满足「与加速库一起编译出包使用」对`libtbe_adapter.so`的依赖。
+
+#### 安装nnal软件包（仅「与加速库一起编译出包使用」需要）
+
+若您要执行「使用说明」中的『与加速库一起编译出包使用』，除toolkit与ops外还需安装nnal软件包，其版本号必须与toolkit、ops **完全一致**。
+
+nnal软件包可在[CANN下载页](https://www.hiascend.com/developer/download/community)获取：选择产品系列与型号、选择**与已安装toolkit相同的解决方案版本**，在CANN区域选择`Ascend-cann-nnal_${VERSION}_linux-$(arch).run`下载。
+
+```shell
+# 包名形如：Ascend-cann-nnal_${VERSION}_linux-$(arch).run
+chmod +x Ascend-cann-nnal_${VERSION}_linux-$(arch).run
+./Ascend-cann-nnal_${VERSION}_linux-$(arch).run --check     # 校验包完整性与一致性
+./Ascend-cann-nnal_${VERSION}_linux-$(arch).run --install   # 出现 "xxx install success!" 即安装成功
+```
+
+安装后先做一次5秒自检，确认`libtbe_adapter.so`已就位（`/usr/local/Ascend`为root默认安装路径，非root用户请替换为`${HOME}/Ascend`）：
+
+```shell
+ls /usr/local/Ascend/nnal/atb/latest/atb/cxx_abi_0/lib/libtbe_adapter.so \
+   /usr/local/Ascend/nnal/atb/latest/atb/cxx_abi_1/lib/libtbe_adapter.so
+```
+
+两个路径**至少要有一个存在**：`cxx_abi_1`对应`_GLIBCXX_USE_CXX11_ABI=1`，`cxx_abi_0`对应`=0`。具体用哪个由编译时的PyTorch ABI决定（见下方「使用说明」）。若两个路径都不存在，说明nnal未安装或安装到了非默认路径，请按`nnal安装在非默认路径`的情况处理（设置`ATB_BUILD_DEPENDENCY_PATH`）。
 
 #### 环境验证
 
@@ -112,6 +145,16 @@ cat /home/developer/Ascend/cann/${arch}-linux/ascend_ops_install.info
 ```
 
 其中`${arch}`可通过`uname -m`查询当前架构，如aarch64、x86_64。
+
+**检查nnal是否就位（仅「与加速库一起编译出包使用」需要）**
+
+```shell
+# 任一路径能列出libtbe_adapter.so即为就位（/usr/local/Ascend为root默认安装路径）
+ls /usr/local/Ascend/nnal/atb/latest/atb/cxx_abi_0/lib/libtbe_adapter.so \
+   /usr/local/Ascend/nnal/atb/latest/atb/cxx_abi_1/lib/libtbe_adapter.so
+```
+
+nnal版本号需与toolkit、ops完全一致，不一致时加速库编译会出现ABI不匹配或链接错误。
 
 #### 环境变量配置
 
@@ -155,8 +198,31 @@ bash scripts/build.sh example --no_werror
 两种典型使用场景：
 
 - 场景1. 与加速库一起编译出包使用
+
+  **前置条件（缺一不可，请先完成再执行下方步骤）**：
+
+  1. CANN环境采用**安装方式B（稳定版本线）**，且toolkit、各芯片ops、nnal三个包版本号完全一致；**不要使用weekly版本**（weekly可能无同版本nnal）。
+  2. 已安装nnal软件包，`libtbe_adapter.so`存在（自检命令见上文『安装nnal软件包』小节）。
+  3. 已按需设置`ATB_BUILD_DEPENDENCY_PATH`（仅当nnal安装在**非默认路径**时需要）：
+
+     ```shell
+     # 1) 先确定编译使用的ABI：未安装PyTorch用cxx_abi_1；
+     #    已安装PyTorch时，下面命令输出1用cxx_abi_1，输出0用cxx_abi_0
+     python3 -c "import torch; print(1 if torch.compiled_with_cxx11_abi() else 0)"
+
+     # 2) nnal安装在非默认路径时手动指定（示例：安装在${HOME}/Ascend）
+     export ATB_BUILD_DEPENDENCY_PATH=${HOME}/Ascend/nnal/atb/latest/atb/cxx_abi_1
+     ```
+
+     > nnal安装在默认路径`/usr/local/Ascend/nnal/...`时**无需设置**该变量，加速库编译脚本会按检测到的ABI自动选择`cxx_abi_0` / `cxx_abi_1`。
+
+  4. 若此前用另一种ABI编译过加速库，切换ABI后需先清理缓存再重编（`bash scripts/build.sh --clean-first`），否则残留的CMake缓存与已拷贝的`libtbe_adapter.so`会导致ABI不匹配或链接错误。
+
+  > 提示：若未满足上述条件，加速库编译会报`libtbe_adapter.so does not exist, please set correct ATB_BUILD_DEPENDENCY_PATH`，并在后续链接`asdops.so`时失败（`gmake Error 2`），此时请回到前置条件逐项核对。
+
 下面假设 Ascend Boost Comm、加速库（本例中是Ascend Transformer Boost）代码都已经准备好，且处于同一级目录下。
-1.  使用算子命名空间作为参数， 编译Ascend Boost Comm, 并将编译产物拷贝到加速库的3rdparty目录：在这里例子中， 命名空间参数是AtbOps
+
+1.  编译Ascend Boost Comm, 并将编译产物拷贝到加速库的3rdparty目录
 
     ```shell
     cd ascend-boost-comm
