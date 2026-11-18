@@ -51,10 +51,11 @@ void JsonToOpParam(const nlohmann::json &opDescJson, Mki::LaunchParam &launchPar
     }
 }'''
 
+
 def parse_param_file(operation_param_file):
     struct_name = ""
     mem_list = []
-    with open(operation_param_file) as fd:
+    with open(operation_param_file, encoding="utf-8") as fd:
         lines = fd.readlines()
         process_line = False
         end_line = False
@@ -82,37 +83,36 @@ def parse_param_file(operation_param_file):
 
 
 def add_default_param_code(code_lines, mem_name):
-    code_lines.append(f"    try {{")
+    code_lines.append("    try {")
     code_lines.append(f"        param.{mem_name} = opDescJson[\"specificParam\"].at(\"{mem_name}\");")
-    code_lines.append(f"    }} catch (...) {{")
+    code_lines.append("    } catch (...) {")
     code_lines.append(f"        MKI_LOG(INFO) << \"{mem_name} not set, use default\";")
-    code_lines.append(f"    }}")
+    code_lines.append("    }")
 
 
 def add_cast_types_code(code_lines, mem_type, mem_name):
-    code_lines.append(f"    try {{")
+    code_lines.append("    try {")
     code_lines.append(f"        param.{mem_name} = static_cast<{NAMESPACE}::{mem_type}>(")
     code_lines.append(f"            opDescJson[\"specificParam\"].at(\"{mem_name}\"));")
-    code_lines.append(f"    }} catch (...) {{")
+    code_lines.append("    } catch (...) {")
     code_lines.append(f"        MKI_LOG(INFO) << \"{mem_name} not set, use default\";")
-    code_lines.append(f"    }}")
+    code_lines.append("    }")
 
 
 def add_cast_param_code(code_lines, struct_name, mem_type, mem_name):
-    code_lines.append(f"    try {{")
+    code_lines.append("    try {")
     code_lines.append(f"        param.{mem_name} = static_cast<{NAMESPACE}::OpParam::{struct_name}::{mem_type}>(")
     code_lines.append(f"            opDescJson[\"specificParam\"].at(\"{mem_name}\"));")
-    code_lines.append(f"    }} catch (...) {{")
+    code_lines.append("    } catch (...) {")
     code_lines.append(f"        MKI_LOG(INFO) << \"{mem_name} not set, use default\";")
-    code_lines.append(f"    }}")
+    code_lines.append("    }")
 
 
 def get_operation_json_func(operation_param_file):
     struct_name, mem_list = parse_param_file(operation_param_file)
 
     code_lines = []
-    code_lines.append(
-        f"void {struct_name}Json(const nlohmann::json &opDescJson, Mki::LaunchParam &launchParam)")
+    code_lines.append(f"void {struct_name}Json(const nlohmann::json &opDescJson, Mki::LaunchParam &launchParam)")
     code_lines.append("{")
     code_lines.append(f"    {NAMESPACE}::OpParam::{struct_name} param;")
     for mem in mem_list:
@@ -122,39 +122,43 @@ def get_operation_json_func(operation_param_file):
             add_default_param_code(code_lines, mem_name)
         elif mem_type == "std::string":
             add_default_param_code(code_lines, mem_name)
-        elif mem_type in set(("Mki::SVector<int64_t>", "SVector<int64_t>",
-                "Mki::SVector<int32_t>", "SVector<int32_t>",
-                "Mki::SVector<float>", "SVector<float>")):
+        elif mem_type in set(
+            (
+                "Mki::SVector<int64_t>",
+                "SVector<int64_t>",
+                "Mki::SVector<int32_t>",
+                "SVector<int32_t>",
+                "Mki::SVector<float>",
+                "SVector<float>",
+            )
+        ):
             type_name = mem_type.split('<')[1][:-1]
             code_lines.append("    try {")
-            code_line = f"        std::vector<{type_name}> {mem_name}Values = opDescJson[\"specificParam\"].at(\"{mem_name}\");"
+            code_line = (
+                f"        std::vector<{type_name}> {mem_name}Values = opDescJson[\"specificParam\"].at(\"{mem_name}\");"
+            )
             code_lines.append(code_line)
-            code_lines.append(
-                f"        const int {mem_name}Sizes = int({mem_name}Values.size());")
-            code_lines.append(
-                f"        param.{mem_name}.resize({mem_name}Sizes);")
-            code_lines.append(
-                f"        for(int i = 0; i < {mem_name}Sizes; ++i)" + "{")
-            code_lines.append(
-                f"            param.{mem_name}[i] = {mem_name}Values[i];")
+            code_lines.append(f"        const int {mem_name}Sizes = int({mem_name}Values.size());")
+            code_lines.append(f"        param.{mem_name}.resize({mem_name}Sizes);")
+            code_lines.append(f"        for(int i = 0; i < {mem_name}Sizes; ++i)" + "{")
+            code_lines.append(f"            param.{mem_name}[i] = {mem_name}Values[i];")
             code_lines.append("        }")
             code_lines.append("    } catch(...) {")
             code_lines.append(f"        MKI_LOG(INFO) << \"{mem_name} not set, use default\";")
             code_lines.append("    }")
-        elif mem_type in set(("std::vector<int64_t>", "std::vector<int32_t>",
-                "std::vector<float>","std::vector<int8_t>")):
+        elif mem_type in set(
+            ("std::vector<int64_t>", "std::vector<int32_t>", "std::vector<float>", "std::vector<int8_t>")
+        ):
             type_name = mem_type.split('<')[1][:-1]
             code_lines.append("    try {")
-            code_line = f"        std::vector<{type_name}> {mem_name}Values = opDescJson[\"specificParam\"].at(\"{mem_name}\");"
+            code_line = (
+                f"        std::vector<{type_name}> {mem_name}Values = opDescJson[\"specificParam\"].at(\"{mem_name}\");"
+            )
             code_lines.append(code_line)
-            code_lines.append(
-                f"        const int {mem_name}Sizes = int({mem_name}Values.size());")
-            code_lines.append(
-                f"        param.{mem_name}.resize({mem_name}Sizes);")
-            code_lines.append(
-                f"        for(int i = 0; i < {mem_name}Sizes; ++i)" + "{")
-            code_lines.append(
-                f"            param.{mem_name}[i] = {mem_name}Values[i];")
+            code_lines.append(f"        const int {mem_name}Sizes = int({mem_name}Values.size());")
+            code_lines.append(f"        param.{mem_name}.resize({mem_name}Sizes);")
+            code_lines.append(f"        for(int i = 0; i < {mem_name}Sizes; ++i)" + "{")
+            code_lines.append(f"            param.{mem_name}[i] = {mem_name}Values[i];")
             code_lines.append("        }")
             code_lines.append("    } catch(...) {")
             code_lines.append(f"        MKI_LOG(INFO) << \"{mem_name} not set, use default\";")
@@ -174,50 +178,46 @@ def get_operation_json_func(operation_param_file):
     return struct_name, "\n".join(code_lines)
 
 
-def run(param_dir, dest_file_path):
+def run(param_dir, output_path):
     logging.info("param_dir: %s", param_dir)
     op_func_list = []
     for path, _, file_list in os.walk(param_dir):
         for file in file_list:
             if file == "params.h":
                 continue
-            op_func_list.append(
-                get_operation_json_func(os.path.join(path, file)))
-    if os.path.exists(dest_file_path):
-        os.remove(dest_file_path)
+            op_func_list.append(get_operation_json_func(os.path.join(path, file)))
+    if os.path.exists(output_path):
+        os.remove(output_path)
 
-    with os.fdopen(os.open(dest_file_path, os.O_WRONLY | os.O_CREAT, stat.S_IWUSR | stat.S_IRUSR), 'w') as fd:
+    with os.fdopen(os.open(output_path, os.O_WRONLY | os.O_CREAT, stat.S_IWUSR | stat.S_IRUSR), 'w') as fd:
         fd.write(HEAD)
         fd.write("\n")
         for _, op_func in op_func_list:
             fd.write(op_func)
             fd.write("\n\n")
-        fd.write(
-            "using LaunchParamSetFunc = std::function<void(const nlohmann::json &, Mki::LaunchParam &)>;\n\n")
-        fd.write(
-            "static const std::map<std::string, LaunchParamSetFunc> OP_DESC_JSON_FUNC_MAP = {\n")
+        fd.write("using LaunchParamSetFunc = std::function<void(const nlohmann::json &, Mki::LaunchParam &)>;\n\n")
+        fd.write("static const std::map<std::string, LaunchParamSetFunc> OP_DESC_JSON_FUNC_MAP = {\n")
         for op_name, _ in op_func_list:
-            fd.write(
-                "    {" + f"\"{op_name}Operation\", {op_name}Json" + "},\n")
+            fd.write("    {" + f"\"{op_name}Operation\", {op_name}Json" + "},\n")
         fd.write("};")
         fd.write("\n")
         fd.write(JSON_TO_OP_FUNC)
         fd.write("\n")
-        fd.write(f'''
+        fd.write('''
 Mki::Operation *GetOpByName(const std::string &operationName)
-{{
+{
     return OpSpace::Ops::Instance().GetOperationByName(operationName);
-}}
-}}
-}}''')
-    logging.info("generate %s", dest_file_path)
+}
+}
+}''')
+    logging.info("generate %s", output_path)
 
 
 def main():
-    current_dir = os.path.split(os.path.realpath(__file__))[0]
-    op_params_dir = os.path.join(current_dir, f"{os.environ['OPS_ROOT']}/include/params")
-    dest_file_path = os.path.join(current_dir, "op_desc_json.cpp")
-    run(op_params_dir, dest_file_path)
+    main_script_dir = os.path.split(os.path.realpath(__file__))[0]
+    main_op_params_dir = os.path.join(main_script_dir, f"{os.environ['OPS_ROOT']}/include/params")
+    main_output_path = os.path.join(main_script_dir, "op_desc_json.cpp")
+    run(main_op_params_dir, main_output_path)
 
 
 if __name__ == "__main__":
@@ -226,7 +226,7 @@ if __name__ == "__main__":
     parser.add_argument('--params_path', type=str, required=True)
     input_args = parser.parse_args()
     NAMESPACE = input_args.namespace
-    current_dir = os.path.split(os.path.realpath(__file__))[0]
-    op_params_dir = os.path.join(current_dir, f"{input_args.params_path}/params")
-    dest_file_path = os.path.join(current_dir, "op_desc_json.cpp")
-    run(op_params_dir, dest_file_path)
+    cli_script_dir = os.path.split(os.path.realpath(__file__))[0]
+    cli_op_params_dir = os.path.join(cli_script_dir, f"{input_args.params_path}/params")
+    cli_output_path = os.path.join(cli_script_dir, "op_desc_json.cpp")
+    run(cli_op_params_dir, cli_output_path)
