@@ -73,17 +73,81 @@ File path: `example/ops/addcustom/tiling/tiling_data.h`
 Main function: Describes the structured data definitions required for tiling computation.
 
 ```c++
-#ifndef ASCEND_OPS_ADDCUSTOM_TILING_DATA
-#define ASCEND_OPS_ADDCUSTOM_TILING_DATA
+#ifndef ATBOPS_ADDCUSTOM_TILING_DATA
+#define ATBOPS_ADDCUSTOM_TILING_DATA
 
 #include <cstdint>
 
 namespace Mki {
+// Minimum element count per core. For half this is 16 elements on a 32B boundary;
+// a larger split granularity is used here.
+constexpr uint32_t ADDCUSTOM_MIN_BLOCK_LENGTH = 32;
+// DataCopy requires the half element count to be 32-byte aligned.
+constexpr uint32_t ADDCUSTOM_ELEM_ALIGN = 16;
+// Inter-core splits are aligned to a 64B cache line (32 half elements) so that
+// different cores never write the same cache line.
+constexpr uint32_t ADDCUSTOM_BLOCK_ALIGN = 32;
+// The three half UB buffers (x/y/z) take about 96KB, so one tile is 16384 aligned elements.
+constexpr uint32_t ADDCUSTOM_MAX_TILE_LENGTH = 16384;
+
 struct AddcustomTilingData {
-    uint32_t totalLength;  // Total data length
-    uint32_t tileNum;      // Number of tiles
+    uint32_t totalLength;   // Total data length
+    uint32_t formerNum;     // Number of front cores with aligned splits (blockDim-1 when blockDim>1)
+    uint32_t formerLength;  // Element count on each front core, a multiple of ADDCUSTOM_BLOCK_ALIGN
+    uint32_t tailLength;    // Element count on the last core, which takes the remainder
 };
+
+// Element range handled by a single core.
+struct AddcustomBlockRange {
+    uint32_t start;
+    uint32_t length;
+};
+
+// Per-core tiling plan: alignLength goes through DataCopy, the remaining tail goes through UB.
+struct AddcustomTilePlan {
+    uint32_t tileLength;
+    uint32_t alignLength;
+};
+
+// Shared by host and kernel code, so it has to compile in both environments.
+#if defined(__CCE_AICORE__) || defined(__CCE_KT_TEST__)
+#define ADDCUSTOM_FN __aicore__ inline
+#else
+#define ADDCUSTOM_FN inline
+#endif
+
+// The first formerNum cores each handle formerLength elements (start and length are 64B aligned),
+// the remaining cores handle tailLength elements.
+ADDCUSTOM_FN AddcustomBlockRange GetAddcustomBlockRange(const AddcustomTilingData &tiling, uint32_t blockIdx)
+{
+    AddcustomBlockRange range{0, 0};
+    if (blockIdx < tiling.formerNum) {
+        range.length = tiling.formerLength;
+        range.start = static_cast<uint32_t>(static_cast<uint64_t>(blockIdx) * tiling.formerLength);
+    } else {
+        range.length = tiling.tailLength;
+        uint64_t start = static_cast<uint64_t>(tiling.formerNum) * tiling.formerLength +
+                         static_cast<uint64_t>(blockIdx - tiling.formerNum) * tiling.tailLength;
+        range.start = static_cast<uint32_t>(start);
+    }
+    return range;
 }
+
+// The aligned part uses vector DataCopy; the non-aligned tail is moved through a UB block
+// (DataCopyPad on 910B) so it never shares a cache line with the scalar write-back of the aligned part.
+ADDCUSTOM_FN AddcustomTilePlan MakeAddcustomTilePlan(uint32_t blockLength)
+{
+    AddcustomTilePlan plan{0, 0};
+    plan.alignLength = blockLength / ADDCUSTOM_ELEM_ALIGN * ADDCUSTOM_ELEM_ALIGN;
+    if (plan.alignLength == 0) {
+        return plan;
+    }
+    plan.tileLength = plan.alignLength < ADDCUSTOM_MAX_TILE_LENGTH ? plan.alignLength : ADDCUSTOM_MAX_TILE_LENGTH;
+    return plan;
+}
+
+#undef ADDCUSTOM_FN
+}  // namespace Mki
 #endif
 ```
 
@@ -91,18 +155,25 @@ struct AddcustomTilingData {
 File path: `example/ops/addcustom/tiling/addcustom_tiling.h`
 Main function: The tiling process primarily performs data partitioning. This file contains function declarations.
 ```c++
-#ifndef ASCEND_OPS_ADDCUSTOM_TILING_H
-#define ASCEND_OPS_ADDCUSTOM_TILING_H
+#ifndef ATBOPS_ADDCUSTOM_TILING_H
+#define ATBOPS_ADDCUSTOM_TILING_H
 
-#include <mki/launch_param.h>
 #include <mki/kernel_info.h>
+#include <mki/launch_param.h>
 #include <mki/utils/status/status.h>
 
-namespace Mki {
-Status AddcustomTiling(const LaunchParam &launchParam, KernelInfo &kernelInfo);
-}
+#include <cstdint>
 
-#endif
+#include "tiling_data.h"
+
+namespace Mki {
+// Computes the per-core split from the total length and vector core count; host and kernel share the same offset math.
+Status BuildAddcustomTiling(uint32_t totalLength, uint32_t coreNum, AddcustomTilingData &tilingData,
+                            uint32_t &blockDim);
+Status AddcustomTiling(const LaunchParam &launchParam, KernelInfo &kernelInfo);
+}  // namespace Mki
+
+#endif  // ATBOPS_ADDCUSTOM_TILING_H
 ```
 
 #### addcustom_tiling.cpp
@@ -110,18 +181,29 @@ File path: `example/ops/addcustom/tiling/addcustom_tiling.cpp`
 Main function: Implements the main function for data partitioning. Refer to the content under the file paths above for specific function implementations.
 ```c++
 #include "addcustom_tiling.h"
+
 #include <mki/utils/assert/assert.h>
 #include <mki/utils/log/log.h>
 #include <mki/utils/platform/platform_info.h>
-#include <mki/utils/math/math.h>
-#include <mki/utils/SVector/SVector.h>
+
+#include <algorithm>
+#include <cstdint>
+#include <limits>
+
 #include "atbops/params/addcustom.h"
 #include "tiling_data.h"
 
-// Define the minimum block length
-constexpr uint32_t MIN_BLOCK_LENGTH = 32;
+// Splitting constants (ADDCUSTOM_MIN_BLOCK_LENGTH, ADDCUSTOM_ELEM_ALIGN,
+// ADDCUSTOM_BLOCK_ALIGN, ADDCUSTOM_MAX_TILE_LENGTH) are defined in tiling_data.h.
 
 namespace Mki {
+// Computes the per-core split from the total length and vector core count; host and kernel share the same offset math.
+Status BuildAddcustomTiling(uint32_t totalLength, uint32_t coreNum, AddcustomTilingData &tilingData,
+                            uint32_t &blockDim)
+{
+    // Refer to the content under the file paths above for specific function implementations
+}
+
 Status AddcustomTiling(const LaunchParam &launchParam, KernelInfo &kernelInfo)
 {
     // Refer to the content under the file paths above for specific function implementations
@@ -141,14 +223,13 @@ Main function: Handles all data movement and computation based on the tiling inf
 #include "ops/addcustom/tiling/tiling_data.h"
 
 static constexpr uint32_t BUFFER_NUM = 1;
-static constexpr uint32_t MAX_UB_SIZE = 188 * 1024; // Double buffer, 94KB per block, 188KB total
 
 class Addcustom {
 public:
     __aicore__ inline Addcustom() {}
-    __aicore__ inline void Init(GM_ADDR x, GM_ADDR y, GM_ADDR z, uint32_t totalLength, uint32_t tileNum)
+    __aicore__ inline void Init(GM_ADDR x, GM_ADDR y, GM_ADDR z, const Mki::AddcustomTilingData &tiling)
     {
-        // Refer to the content under the file paths above for specific function implementations
+        // Process by block start and actual length, and cover the tail elements. See the file path above.
     }
     __aicore__ inline void Process()
     {
@@ -156,15 +237,30 @@ public:
     }
 
 private:
-    __aicore__ inline void CopyIn(int32_t progress)
+    // Aligned range: GM -> UB -> vector Add -> GM, lengths are ADDCUSTOM_ELEM_ALIGN aligned.
+    __aicore__ inline void ProcessVector()
     {
         // Refer to the content under the file paths above for specific function implementations
     }
-    __aicore__ inline void Compute(int32_t progress)
+    // Ascend910B: the tail block is moved through UB with DataCopyPad so it never shares a cache line with DataCopy.
+    __aicore__ inline void ProcessTailPad()
     {
         // Refer to the content under the file paths above for specific function implementations
     }
-    __aicore__ inline void CopyOut(int32_t progress)
+    // Ascend910 has no DataCopyPad; a non-aligned tail makes the whole block run scalar.
+    __aicore__ inline void ProcessScalar(uint32_t offset, uint32_t len)
+    {
+        // Refer to the content under the file paths above for specific function implementations
+    }
+    __aicore__ inline void CopyIn(uint32_t offset, uint32_t len)
+    {
+        // Refer to the content under the file paths above for specific function implementations
+    }
+    __aicore__ inline void Compute(uint32_t len)
+    {
+        // Refer to the content under the file paths above for specific function implementations
+    }
+    __aicore__ inline void CopyOut(uint32_t offset, uint32_t len)
     {
         // Refer to the content under the file paths above for specific function implementations
     }
@@ -176,9 +272,9 @@ private:
     AscendC::GlobalTensor<half> xGm;
     AscendC::GlobalTensor<half> yGm;
     AscendC::GlobalTensor<half> zGm;
-    uint32_t blockLength;
-    uint32_t tileNum;
-    uint32_t tileLength;
+    uint32_t blockLength{0};
+    uint32_t alignLength{0};
+    uint32_t tileLength{0};
 };
 
 inline __aicore__ void InitTilingData(const __gm__ uint8_t *p_tilingdata, Mki::AddcustomTilingData *tilingdata)
